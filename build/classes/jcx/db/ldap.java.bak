@@ -1,0 +1,365 @@
+/*
+ * @(#)Servlet.java	1.00 2000/08/01
+ *
+ * Copyright 2000-20010 by Internet Information Corp.,
+ * All rights reserved.
+ * 
+ */
+
+package jcx.db;
+import javax.naming.*;
+import javax.naming.directory.*;
+import java.util.*;
+/**
+ * 此類別 <code>ldap</code> 為存取 LDAP Server 元件,在使用前先請確認已安裝 JNDI 相關 API.
+ * 
+ */
+
+public class ldap {
+	String host="localhost";
+	String dn="user name";
+	String pwd="pwd";
+	static String AUTHENTICATION_TYPE="simple";
+	static String driver="com.sun.jndi.ldap.LdapCtxFactory";
+	public ldap(String host,String target){
+	}
+	
+    /**
+     * 查詢 LDAP Tree ，傳回該層資料,(Login as anonymous).
+     *
+     * @param   host   LDAP參數名稱,(Ex: "ldap://202.132.195.7/ou=people,o=interinfo.com.tw"").
+     * @return  Enumeration 表示共有多少 Object 在這層
+     */
+	
+	public static Hashtable query(String host) throws Exception{
+		return query(host,"");
+	}
+
+	
+    /**
+     * 查詢 LDAP Tree ，傳回該層資料,(Login as anonymous).
+     *
+     * @param   host   LDAP參數名稱,(Ex: "ldap://202.132.195.7/ou=people,o=interinfo.com.tw"").
+     * @param   target 指定查詢目標,(Ex: "uid=chris").
+     * @return  Enumeration 表示共有多少 Object 在這層
+     */
+	public static Hashtable query(String host,String target) throws Exception{
+		Hashtable h=new Hashtable();
+		Properties env = new Properties();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,driver);
+		env.put(Context.PROVIDER_URL,host);
+		try {
+			DirContext ctx = new InitialDirContext(env);
+
+			NamingEnumeration nl=ctx.list(target);
+
+			while (nl.hasMore()){
+				Object o=nl.next();
+				NameClassPair p1=(NameClassPair)o;
+//				System.err.println(p1.getName()+"  "+p1.getClassName());
+				
+
+				Attributes a1=ctx.getAttributes(p1.getName());
+				NamingEnumeration n1=a1.getIDs();
+				Hashtable h1=new Hashtable();
+				while(n1.hasMore()){
+					String key=n1.next().toString();
+					Attribute aa=a1.get(key);
+//					h1.put(key,aa.toString());
+					h1.put(key,aa);
+				}
+				h.put(p1.getName(),h1);
+			}
+			return h;
+
+		} catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+    /**
+     * 查詢 LDAP Tree ，傳回共有多少使用者,(Login as anonymous).
+     *
+     * @param   host   LDAP參數名稱,(Ex: "ldap://202.132.195.7/ou=people,o=interinfo.com.tw"").
+     * @param   filter 指定過濾條件,(Ex: "uid=*").
+     * @return  Hashtable 表示共有多少 Object 在這層以下
+     */
+	public static Hashtable getAllUser(String host,String filter) throws Exception{
+		return getAllUser(host,filter,"","");
+	}
+    /**
+     * 查詢 LDAP Tree ，傳回共有多少使用者,(Login as normal).
+     *
+     * @param   host   LDAP參數名稱,(Ex: "ldap://202.132.195.7/ou=people,o=interinfo.com.tw"").
+     * @param   filter 指定過濾條件,(Ex: "uid=*").
+     * @param   user  user,(Ex: "cn=Directory manager or uid=id,ou=people,o=inet.com.tw").
+     * @param   pwd  password.
+     * @return  Hashtable 表示共有多少 Object 在這層以下
+     */
+	public static Hashtable getAllUser(String host,String filter,String user,String pwd) throws Exception{
+		return getAllUser(host,filter,user,pwd,"",3);
+	}
+    /**
+     * 查詢 LDAP Tree ，傳回共有多少使用者,(Login as normal).
+     *
+     * @param   host   LDAP參數名稱,(Ex: "ldap://202.132.195.7/ou=people,o=interinfo.com.tw"").
+     * @param   filter 指定過濾條件,(Ex: "uid=*").
+     * @param   user  user,(Ex: "cn=Directory manager or uid=id,ou=people,o=inet.com.tw").
+     * @param   pwd  password.
+     * @param   attribute  傳回的屬性欄位,以逗點格開 Ex. sn,telephonenumber,mail .
+     * @param   scape  範圍 1:OBJECT_SCOPE  ,2:one level  ,3:sub-tree.
+     * @return  Hashtable 表示共有多少 Object 在這層以下
+     */
+	public static Hashtable getAllUser(String host,String filter,String user,String pwd,String attribute,int scope) throws Exception{
+		Hashtable h=new Hashtable();
+		Properties env = new Properties();
+		env.put(Context.INITIAL_CONTEXT_FACTORY,driver);
+		env.put(Context.PROVIDER_URL,host);
+
+//System.err.println("user="+user);
+//System.err.println("pwd="+pwd);
+		if(user.length()!=0){
+			env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_TYPE); 
+			env.put(Context.SECURITY_PRINCIPAL,user); 
+			env.put(Context.SECURITY_CREDENTIALS, pwd);
+		}
+
+		try {
+			DirContext ctx = new InitialDirContext(env);
+
+			SearchControls ctls = new SearchControls();
+			if(attribute.trim().length()!=0){
+				StringTokenizer st=new StringTokenizer(attribute,",");
+				Vector v=new Vector();
+				while(st.hasMoreTokens()){
+					v.addElement(st.nextToken());
+				}
+				String attrid[]=new String[v.size()];
+				for(int i=0;i<attrid.length;i++){
+					attrid[i]=v.elementAt(i).toString();
+				}
+				ctls.setReturningAttributes(attrid);
+			}
+			if(scope==1){
+				ctls.setSearchScope(SearchControls.OBJECT_SCOPE);
+			} else if(scope==2){
+				ctls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+			} else {
+				ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+			}
+			NamingEnumeration nl = ctx.search("",filter,ctls);
+
+//			NamingEnumeration nl=ctx.list(target);
+
+			while (nl.hasMore()){
+				Object o=nl.next();
+				NameClassPair p1=(NameClassPair)o;
+//				System.err.println(p1.getName()+"  "+p1.getClassName());
+				
+
+				Attributes a1=ctx.getAttributes(p1.getName());
+				NamingEnumeration n1=a1.getIDs();
+				Hashtable h1=new Hashtable();
+				while(n1.hasMore()){
+					String key=n1.next().toString();
+					Attribute aa=a1.get(key);
+//					h1.put(key,aa.toString());
+					h1.put(key,aa);
+					if(key.equals("objectSid")){
+//						System.err.println("aa="+new java.math.BigInteger(aa.get().toString().getBytes()).intValue());
+					}
+				}
+				String id=p1.getName();
+				if(id.indexOf(",")!=-1){
+					int pos=id.indexOf(",");
+					id=id.substring(0,pos);
+					h1.put("ou",p1.getName().substring(pos+1));
+				}
+				h.put(id,h1);
+			}
+			return h;
+
+		} catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+
+    /**
+     * 登入 LDAP Tree ，傳回該使用者資料,(Login as normal user).
+     *
+     * @param   host   LDAP參數名稱,(Ex: "ldap://202.132.195.7/ou=people,o=interinfo.com.tw").
+     * @param   bindStr 登入使用者資料,(Ex: "uid=john,ou=people,o=interinfo.com.tw").
+     * @param   pwd     登入使用者密碼.
+     * @return  Hashtable 使用者資料 以 下列型式存在 <pre>
+	 *  key = value
+	 *  ------------------------------------
+	 *  cn = cn: john hu
+	 *  uid = uid: john
+	 *  givenname = givenname: john
+	 *  sn = sn: ho
+	 *  telephonenumber = telephonenumber: 23939889
+     */
+	public static Hashtable bind(String host,String bindStr,String pwd) throws Exception{
+		return bind(host,bindStr,pwd,"","");
+	}
+	public static Hashtable bind(String host,String bindStr,String pwd,String admin_id,String admin_pwd) throws Exception{
+		Hashtable h=new Hashtable();
+		Properties env = new Properties();
+		String uid=bindStr;
+		if(uid.indexOf(",")!=-1){
+			int pos=uid.indexOf(",");
+			uid=uid.substring(0,pos);
+		}
+		String ou="";
+		if(bindStr.indexOf("ou=")!=-1){
+			int pos=bindStr.indexOf("ou=");
+			int pos1=bindStr.indexOf(",",pos+1);
+			ou=bindStr.substring(pos,pos1);
+		}
+//System.err.println("admin_id="+admin_id);
+//		Vector v=getAllOU(host,uid,ou);
+		Vector v=getAllOU(host,uid,ou,admin_id,admin_pwd);
+		if(v.size()!=1){
+			throw new Exception("User count="+v.size());
+		}
+		String o1=bindStr;
+		if(o1.indexOf(",")!=-1){
+			int pos=o1.indexOf(",");
+			o1=o1.substring(pos+1);
+		}
+		bindStr=v.elementAt(0).toString()+","+o1;
+//System.err.println("bindStr="+bindStr);
+//System.err.println("pwd="+pwd);
+		env.put(Context.INITIAL_CONTEXT_FACTORY,driver);
+		env.put(Context.PROVIDER_URL,host);
+		env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_TYPE); 
+		env.put(Context.SECURITY_PRINCIPAL,bindStr); 
+		env.put(Context.SECURITY_CREDENTIALS, pwd); 
+		try {
+			DirContext ctx = new InitialDirContext(env);
+			NamingEnumeration nl=ctx.listBindings("");
+//			Object oo=ctx.lookup("uid=chris");
+////				NameClassPair p2=(NameClassPair)oo;
+//System.err.println("----------"+oo.getClass().getName());
+			while (nl.hasMore()){
+				Object o=nl.next();
+				NameClassPair p1=(NameClassPair)o;
+				if(bindStr.startsWith(p1.getName())){
+//					System.err.println(p1.getName()+"  "+p1.getClassName());
+
+					Attributes a1=ctx.getAttributes(p1.getName());
+					NamingEnumeration n1=a1.getIDs();
+					while(n1.hasMore()){
+						String key=n1.next().toString();
+						Attribute aa=a1.get(key);
+						h.put(key,aa);
+//				System.err.println(aa);
+					}
+					return h;
+//					return n1;
+				}
+			}
+			return h;
+
+		} catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}
+
+	}
+	 private static Vector getAllOU(String host,String bindStr,String ou,String admin_id,String admin_pwd)throws Exception{
+		Vector v=new Vector();
+		Hashtable h=new Hashtable();
+		Properties env = new Properties();
+
+//System.err.println("host="+host);
+//System.err.println("bind_str="+bindStr);
+//System.err.println("ou="+ou);
+//System.err.println("admin_id="+admin_id);
+		env.put(Context.INITIAL_CONTEXT_FACTORY,driver);
+		env.put(Context.PROVIDER_URL,host);
+		if(admin_id.length()!=0){
+			env.put(Context.SECURITY_AUTHENTICATION, AUTHENTICATION_TYPE); 
+			env.put(Context.SECURITY_PRINCIPAL,admin_id); 
+			env.put(Context.SECURITY_CREDENTIALS, admin_pwd);
+		}
+		try {
+			DirContext ctx = new InitialDirContext(env);
+
+			SearchControls ctls = new SearchControls();
+//			ctls.setReturningAttributes(attrIDs);
+			ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+
+//			Attributes matchAttrs = new BasicAttributes(true); // ignore attribute name case
+//			matchAttrs.put(new BasicAttribute("uid", "chris"));
+//			matchAttrs.put(new BasicAttribute("mail"));
+
+			// Search for objects that have those matching attributes
+//System.err.println("ou="+ou);
+//System.err.println("bind_str="+bindStr);
+			NamingEnumeration nl = ctx.search(ou, bindStr,ctls);
+			try{
+				while (nl.hasMore()){
+					Object o=nl.next();
+					NameClassPair p1=(NameClassPair)o;
+	//			System.err.println("o="+o);
+	//			System.err.println("p1.getName()="+p1.getName());
+						System.err.println(p1.getName()+"  "+p1.getClassName());
+						v.addElement(p1.getName());
+	//					return h;
+				}
+			} catch(Exception e1){
+				if(v.size()!=0){
+					return v;
+				}
+				e1.printStackTrace();
+				throw e1;
+			}
+//			return h;
+		} catch(Exception e){
+			e.printStackTrace();
+			throw e;
+		}
+		
+		return v;
+	 }
+	
+	public static void main(String[] args) throws Exception{
+//		query("ldap://202.90.87.7/ou=people,o=interinfo.com.tw");
+//		query("ldap://202.90.87.121/cn=users,dc=interinfo,dc=oa");
+//		if(true) return;
+//		query("ldap://202.132.195.7/ou=people,o=interinfo.com.tw","uid=chris,ou=people,o=interinfo.com.tw","123");
+
+//		Hashtable h=bind("ldap://202.154.200.7/o=interinfo.com.tw","uid=chris,o=interinfo.com.tw","123");
+//		Hashtable h=query("ldap://202.154.200.7/o=interinfo.com.tw");
+		Hashtable h=getAllUser("ldap://202.154.200.7/ou=groups,o=interinfo.com.tw","objectclass=groupOfUniqueNames","cn=Directory manager","admin123");
+
+//		Hashtable h=query("ldap://202.154.200.121/cn=users,dc=interinfo,dc=oa");
+//		Hashtable h=bind("ldap://202.132.195.67/ou=is,o=interinfo","uid=admin,ou=people,o=interinfo.com.tw","123");
+
+//		Hashtable h=getAllUser("ldap://202.154.200.121/ou=interinfo,dc=interinfo,dc=oa","ou=*","cn=administrator,cn=users,dc=interinfo,dc=oa","electricdreams","cn",3);
+
+//		Hashtable h=bind("ldap://202.154.200.121/cn=users,dc=interinfo,dc=oa","samaccountName=administrator,cn=users,dc=interinfo,dc=oa","electricdreams","cn=administrator,cn=users,dc=interinfo,dc=oa","electricdreams");
+
+//System.err.println("h="+h);
+ for (Enumeration e = h.keys() ; e.hasMoreElements() ;) {
+		String key1=e.nextElement().toString();
+                   System.out.println(key1);
+				   Object o=h.get(key1);
+				   if(o instanceof Hashtable){
+					   Hashtable h1=(Hashtable)o;
+						for (Enumeration e1 = h1.keys() ; e1.hasMoreElements() ;) {
+							String key2=e1.nextElement().toString();
+			               System.out.println("	"+key2+" = "+h1.get(key2)+"  "+h1.get(key2).getClass().getName());
+						}
+				   } else {
+		               System.out.println(key1+" = "+h.get(key1));
+				   }
+
+               }
+//           		System.err.println(n1);
+    }
+}

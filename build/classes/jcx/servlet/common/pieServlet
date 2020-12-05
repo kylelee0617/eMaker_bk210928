@@ -1,0 +1,27 @@
+/*
+ * @(#)Servlet.java	1.00 2000/08/01
+ *
+ * Copyright 2000-20010 by Internet Information Corp.,
+ * All rights reserved.
+ * 
+ */
+package jcx.servlet.common;
+
+import java.io.PrintStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.io.*;
+import java.util.*;
+import jcx.servlet.*;
+
+/**
+ * 此類別 <code>ImageServlet</code> 為一ImageServlet 之基礎類別,
+ * 凡是所有Servlet 程式欲產生圖形均須要為繼承此類別另做發展。
+ */
+
+public abstract class barServlet extends EISServlet {
+
+    abstract public void run1() throws Exception;
+	
+}
+
