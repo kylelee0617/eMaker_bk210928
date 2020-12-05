@@ -30,6 +30,8 @@ public class AMLBean {
   private String customNames = "";
   private String orderNos = ""; 
   
+  private String orderOrDocNo = "";
+  
   
   public String getOrderNo() {
     return orderNo;
@@ -138,6 +140,12 @@ public class AMLBean {
   }
   public void setOrderNos(String orderNos) {
     this.orderNos = orderNos;
+  }
+  public String getOrderOrDocNo() {
+    return orderOrDocNo;
+  }
+  public void setOrderOrDocNo(String orderOrDocNo) {
+    this.orderOrDocNo = orderOrDocNo;
   }
   
 }

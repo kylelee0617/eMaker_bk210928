@@ -23,7 +23,7 @@ import java.util.Date;
 
 public class CheckAML2 extends bproc{
 	public String getDefaultValue(String value)throws Throwable{
-		//20191107 ¬~¿ú¤Î¸ê®£­·ÀIºŞ²z¬Fµ¦³B²zµ{§Ç§@·~+¨¾¨î¬~¿ú¤Î¥´À»¸ê®£­·ÀIµû¦ô³B²zµ{§Ç§@·~+¬~¿ú¤Î¸ê®£¦W³æ¤ñ¹ï³B²zµ{§Ç§@·~
+		//20191107 æ´—éŒ¢åŠè³‡æé¢¨éšªç®¡ç†æ”¿ç­–è™•ç†ç¨‹åºä½œæ¥­+é˜²åˆ¶æ´—éŒ¢åŠæ‰“æ“Šè³‡æé¢¨éšªè©•ä¼°è™•ç†ç¨‹åºä½œæ¥­+æ´—éŒ¢åŠè³‡æåå–®æ¯”å°è™•ç†ç¨‹åºä½œæ¥­
 		System.out.println("===========AML============S");
 		talk  dbSale =  getTalk("Sale") ;
 		talk  db400CRM =  getTalk("400CRM") ;
@@ -39,24 +39,24 @@ public class CheckAML2 extends bproc{
 		String str400sql = "";
 		String stringSQL = "";
 		String strPW0Dsql = "";
-		String[][]   ret080Table;//²{ª÷
-		String[][]   ret083Table;//«H¥Î¥d
-		String[][]   ret328Table;//»È¦æ
-		String[][]   ret082Table;//²¼¾Ú
+		String[][]   ret080Table;//ç¾é‡‘
+		String[][]   ret083Table;//ä¿¡ç”¨å¡
+		String[][]   ret328Table;//éŠ€è¡Œ
+		String[][]   ret082Table;//ç¥¨æ“š
 		String[][]  ret070Table;
 		String[][] retPDCZPFTable;
 		String[][] retQueryLog;
 		String[][] retCList;
-		//¨úµe­±­È
-		String strActionName =  getValue("actionName").trim() ;//§@°Ê¦WºÙ
-		String strCreditCardMoney  =  getValue("CreditCardMoney").trim() ;//«H¥Î¥d
-		String strCashMoney  =  getValue("CashMoney").trim() ;//²{ª÷
-		String strBankMoney  =  getValue("BankMoney").trim() ;//»È¦æ
-		String strCheckMoney  =  getValue("CheckMoney").trim() ;//²¼¾Ú
-		String strReceiveMoney = getValue("ReceiveMoney").trim() ;//¦¬´ÚÁ`ÃB
-		String strProjectID1 =  getValue("field2").trim() ;//®×§O¥N½X
-		String strEDate =  getValue("field3").trim() ;//¦¬´Ú¤é´Á
-		String strDocNo =  getValue("field4").trim() ;//½s¸¹
+		//å–ç•«é¢å€¼
+		String strActionName =  getValue("actionName").trim() ;//ä½œå‹•åç¨±
+		String strCreditCardMoney  =  getValue("CreditCardMoney").trim() ;//ä¿¡ç”¨å¡
+		String strCashMoney  =  getValue("CashMoney").trim() ;//ç¾é‡‘
+		String strBankMoney  =  getValue("BankMoney").trim() ;//éŠ€è¡Œ
+		String strCheckMoney  =  getValue("CheckMoney").trim() ;//ç¥¨æ“š
+		String strReceiveMoney = getValue("ReceiveMoney").trim() ;//æ”¶æ¬¾ç¸½é¡
+		String strProjectID1 =  getValue("field2").trim() ;//æ¡ˆåˆ¥ä»£ç¢¼
+		String strEDate =  getValue("field3").trim() ;//æ”¶æ¬¾æ—¥æœŸ
+		String strDocNo =  getValue("field4").trim() ;//ç·¨è™Ÿ
 		if("".equals(strCreditCardMoney)){
 			strCreditCardMoney = "0";
 		}
@@ -69,7 +69,7 @@ public class CheckAML2 extends bproc{
 		if("".equals(strCheckMoney)){
 			strCheckMoney = "0";
 		}
-		//¥NÃº¤H¬ÛÃö
+		//ä»£ç¹³äººç›¸é—œ
 		String strDeputy=getValue("PaymentDeputy").trim();
 		String strDeputyName = getValue("DeputyName").trim();
 		String strDeputyID=getValue("DeputyID").trim();
@@ -77,7 +77,7 @@ public class CheckAML2 extends bproc{
 		String bStatus=getValue("B_STATUS").trim();
 		String cStatus=getValue("C_STATUS").trim();
 		String rStatus=getValue("R_STATUS").trim();
-		//ÁÊ¶R¤H©m¦W
+		//è³¼è²·äººå§“å
 		String allOrderID = "";
 		String allOrderName = "";
 		String percentage = ""; 
@@ -88,19 +88,19 @@ public class CheckAML2 extends bproc{
 				allOrderName =  orderCustomTable[g][4].trim();
 				percentage = orderCustomTable[g][5].trim();
 			}else{
-				allOrderID = allOrderID+"¡B"+ orderCustomTable[g][3].trim();
-				allOrderName = allOrderName+"¡B"+ orderCustomTable[g][4].trim();
-				percentage = percentage+"¡B"+ orderCustomTable[g][5].trim();
+				allOrderID = allOrderID+"ã€"+ orderCustomTable[g][3].trim();
+				allOrderName = allOrderName+"ã€"+ orderCustomTable[g][4].trim();
+				percentage = percentage+"ã€"+ orderCustomTable[g][5].trim();
 			}
 		}
 		//13,14
 		String rule13=getValue("Rule13").trim();
 		String rule14=getValue("Rule14").trim();
-		//¦@¥Î
+		//å…±ç”¨
 		String errMsg="";
 		String allCustomName = allOrderName;
 		String allCustomID = allOrderID;
-		//¦¬´Ú¤é´Á¥Á°ê®æ¦¡
+		//æ”¶æ¬¾æ—¥æœŸæ°‘åœ‹æ ¼å¼
 		String[] tempEDate = strEDate.split("/");
 		String rocDate = "";
 		String year = tempEDate[0];
@@ -116,7 +116,7 @@ public class CheckAML2 extends bproc{
 		String strNowTime = nowTimeSdf.format(now);
 		SimpleDateFormat nowTimestampSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String strNowTimestamp =  nowTimestampSdf.format(now);
-		//­û½s
+		//å“¡ç·¨
 		String userNo = getUser().toUpperCase().trim();
 		String empNo="";
 		String [][] retEip=null;
@@ -125,7 +125,7 @@ public class CheckAML2 extends bproc{
 		if(retEip.length>0){
 			empNo=retEip[0][0] ;
 		}
-		//ÁÊª«ÃÒ©ú³æ¸¹
+		//è³¼ç‰©è­‰æ˜å–®è™Ÿ
 		String strOrderNo = "";
 		String orderNos = "";
 		String[][] orderNoTable =  getTableData("table4");
@@ -134,10 +134,10 @@ public class CheckAML2 extends bproc{
       if("".equals(orderNos)){
         orderNos =  orderNoTable[g][2].trim();
       }else{
-        orderNos += "¡B"+ orderNoTable[g][2].trim();
+        orderNos += "ã€"+ orderNoTable[g][2].trim();
       }
     }
-		//¬~¿ú°lÂÜ¬y¤ô¸¹
+		//æ´—éŒ¢è¿½è¹¤æµæ°´è™Ÿ
 		int intRecordNo =1;
 		strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='"+strOrderNo+"'";
 		ret070Table = dbSale.queryFromPool(strSaleSql);
@@ -153,63 +153,65 @@ public class CheckAML2 extends bproc{
 		String actionNo =strNowDate+ strNowTime+ram;
 		
 		
-		//start of ¼ËºA1~4  Kyle
-		//1¦P¤@«È¤á¦P¤@Àç·~¤é¤º2µ§(§t)¥H¤W¥]§t²{ª÷¡B¶×´Ú¡B«H¥Î¥d¡B¤ä²¼¥æ©ö¡A¥B¨Cµ§¬Ò¤¶©ó·s¥x¹ô450,000~499,999¤¸¡A¨t²ÎÀË®Ö¹wÄµ¡C
-		//2¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A¦³2¤é¥H²{ª÷©Î¶×´Ú¹F450,000~499,999¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C
-		//3¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C
-		//4¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A²Ö­pÃº¥æ²{ª÷¶W¹L50¸U¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C
+		//start of æ¨£æ…‹1~4  Kyle
+		//1åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥å…§2ç­†(å«)ä»¥ä¸ŠåŒ…å«ç¾é‡‘ã€åŒ¯æ¬¾ã€ä¿¡ç”¨å¡ã€æ”¯ç¥¨äº¤æ˜“ï¼Œä¸”æ¯ç­†çš†ä»‹æ–¼æ–°å°å¹£450,000~499,999å…ƒï¼Œç³»çµ±æª¢æ ¸é è­¦ã€‚
+		//2åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œæœ‰2æ—¥ä»¥ç¾é‡‘æˆ–åŒ¯æ¬¾é”450,000~499,999å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚
+		//3åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚
+		//4åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œç´¯è¨ˆç¹³äº¤ç¾é‡‘è¶…é50è¬å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚
 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		if(strCashMoney == null || "".equals(strCashMoney)) { //²{ª÷Á`ÃB
+		if(strCashMoney == null || "".equals(strCashMoney)) { //ç¾é‡‘ç¸½é¡
 		  strCashMoney = "0";
 		}
-		if(strCreditCardMoney == null || "".equals(strCreditCardMoney)) { //«H¥Î¥dÁ`ÃB
+		if(strCreditCardMoney == null || "".equals(strCreditCardMoney)) { //ä¿¡ç”¨å¡ç¸½é¡
 		  strCreditCardMoney = "0";
     }
-		if(strBankMoney == null || "".equals(strBankMoney)) { //»È¦æÁ`ÃB
+		if(strBankMoney == null || "".equals(strBankMoney)) { //éŠ€è¡Œç¸½é¡
 		  strBankMoney = "0";
     }
-		if(strCheckMoney == null || "".equals(strCheckMoney)) { //²¼¾ÚÁ`ÃB
+		if(strCheckMoney == null || "".equals(strCheckMoney)) { //ç¥¨æ“šç¸½é¡
 		  strCheckMoney = "0";
     }
-		if(strReceiveMoney == null || "".equals(strReceiveMoney)) { //¦¬´Ú³æÁ`ÃB
+		if(strReceiveMoney == null || "".equals(strReceiveMoney)) { //æ”¶æ¬¾å–®ç¸½é¡
 		  strReceiveMoney = "0";
     }
 		double dCashMoney = Double.parseDouble(strCashMoney);
 		double dCheckMoney = Double.parseDouble(strCheckMoney);
 		double dBankMoney = Double.parseDouble(strBankMoney);
 		double dReceiveMoney = Double.parseDouble(strReceiveMoney);
-		String[] orderNoss = orderNos.split("¡B");
-		String[] customNos = allCustomID.split("¡B");
-		String[] percentages = percentage.split("¡B");
+		String[] orderNoss = orderNos.split("ã€");
+		String[] customNos = allCustomID.split("ã€");
+		String[] percentages = percentage.split("ã€");
 		
 		KUtils kutil = new KUtils();
 		String tempMsg = "";
 		AMLBean aml = new AMLBean();
-		aml.setProjectID1(strProjectID1);
-		aml.setFuncName("¦¬´Ú");
-		aml.setActionName(strActionName);
-		aml.setCustomTitle("«È¤á");
-		aml.setTrxDate(strEDate);
-		aml.setOrderNos(kutil.genQueryInString(orderNoss));
-		aml.setCustomNos(kutil.genQueryInString(customNos));
-		aml.setCustomNames(allCustomName);
-		AMLTools amlTool = new AMLTools(aml);
+		aml.setDocNo(strDocNo);
+    aml.setOrderNo(strOrderNo);
+    aml.setProjectID1(strProjectID1);
+    aml.setFuncName("æ”¶æ¬¾");
+    aml.setActionName(strActionName);
+    aml.setCustomTitle("å®¢æˆ¶");
+    aml.setTrxDate(strEDate);
+    aml.setOrderNos(kutil.genQueryInString(orderNoss));
+    aml.setCustomNos(kutil.genQueryInString(customNos));
+    aml.setCustomNames(allCustomName);
+    AMLTools amlTool = new AMLTools(aml);
 		
-		//TODO: ºA¼Ë1
+		//æ…‹æ¨£1
 		tempMsg = amlTool.chkAML001(aml).getData().toString();
 		errMsg += tempMsg; 
 		
-		//TODO: ºA¼Ë2
-		//¥»³æ­Y¦³¤@µ§²{ª÷©Î¶×´Ú¤¶©ó45~49«hÀË¬d«e¨â¤Ñ
-		//Tips: ­q³æ¸ò«È¤á­n¤À¶}³B²z
+		//æ…‹æ¨£2
+		//æœ¬å–®è‹¥æœ‰ä¸€ç­†ç¾é‡‘æˆ–åŒ¯æ¬¾ä»‹æ–¼45~49å‰‡æª¢æŸ¥å‰å…©å¤©
+		//Tips: è¨‚å–®è·Ÿå®¢æˆ¶è¦åˆ†é–‹è™•ç†
 		if(dCashMoney > 0 || dBankMoney > 0) {
-		  if( (dCashMoney >= 450000 && dCashMoney <= 499999) || (dBankMoney >= 450000 && dBankMoney <= 499999) ) {  //­q³æ
+		  if( (dCashMoney >= 450000 && dCashMoney <= 499999) || (dBankMoney >= 450000 && dBankMoney <= 499999) ) {  //è¨‚å–®
 	      tempMsg = amlTool.chkAML002(aml , "order").getData().toString();
 	      errMsg += tempMsg;
 	    }
 	    for(int g=0 ; g<customNos.length ; g++) {
 	      if( (dCashMoney*Double.parseDouble(percentages[g].trim())/100 >= 450000 && dCashMoney*Double.parseDouble(percentages[g].trim())/100 <= 499999) 
-	          || (dBankMoney*Double.parseDouble(percentages[g].trim())/100 >= 450000 && dBankMoney*Double.parseDouble(percentages[g].trim())/100 <= 499999) ) {  //«È¤á
+	          || (dBankMoney*Double.parseDouble(percentages[g].trim())/100 >= 450000 && dBankMoney*Double.parseDouble(percentages[g].trim())/100 <= 499999) ) {  //å®¢æˆ¶
 	        aml.setCustomId( customNos[g].trim() );
 	        tempMsg = amlTool.chkAML002(aml , "custom").getData().toString();
 	        errMsg += tempMsg;
@@ -217,33 +219,33 @@ public class CheckAML2 extends bproc{
 	    }
 		}
 		
-		//TODO: ºA¼Ë3
+		//æ…‹æ¨£3
 		if(dCashMoney > 0) {
 		  tempMsg = amlTool.chkAML003(aml).getData().toString();
 	    errMsg += tempMsg;
 		}
 		
-		//TODO: ºA¼Ë4
+		//æ…‹æ¨£4
 		if(dCashMoney > 0) {
 		  tempMsg = amlTool.chkAML004(aml).getData().toString();
 	    errMsg += tempMsg;
 		}
 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		//End of ºA¼Ë1~4 Kyle
+		//End of æ…‹æ¨£1~4 Kyle
 		
 		
 		//Pattern5,8,9,10,11,17~20
-		//«H¥Î¥d
+		//ä¿¡ç”¨å¡
 		ret083Table  =  getTableData("table5");
 		if(ret083Table.length > 0) {
 			for(int e=0;e<ret083Table.length;e++){
-				String str083Deputy = ret083Table[e][7].trim();//¥»¤HÃº´Ú
-				String str083DeputyName=ret083Table[e][8].trim();//©m¦W
-				String str083DeputyId=ret083Table[e][9].trim();//¨­¤ÀÃÒ¸¹
-				String str083Rlatsh=ret083Table[e][10].trim();//Ãö«Y
-				String str083Bstatus=ret083Table[e][12].trim();//¶Â¦W³æ
-				String str083Cstatus=ret083Table[e][13].trim();//±±ºŞ¦W³æ
-				String str083Rstatus=ret083Table[e][14].trim();//§QÃö¤H
+				String str083Deputy = ret083Table[e][7].trim();//æœ¬äººç¹³æ¬¾
+				String str083DeputyName=ret083Table[e][8].trim();//å§“å
+				String str083DeputyId=ret083Table[e][9].trim();//èº«åˆ†è­‰è™Ÿ
+				String str083Rlatsh=ret083Table[e][10].trim();//é—œä¿‚
+				String str083Bstatus=ret083Table[e][12].trim();//é»‘åå–®
+				String str083Cstatus=ret083Table[e][13].trim();//æ§ç®¡åå–®
+				String str083Rstatus=ret083Table[e][14].trim();//åˆ©é—œäºº
 		System.out.println("str083Deputy=====>"+str083Deputy);
 		System.out.println("str083DeputyName=====>"+str083DeputyName);
 		System.out.println("str083DeputyId=====>"+str083DeputyId);
@@ -251,55 +253,55 @@ public class CheckAML2 extends bproc{
 		System.out.println("str083Bstatus=====>"+str083Bstatus);
 		System.out.println("str083Cstatus=====>"+str083Cstatus);
 		System.out.println("str083Rstatus=====>"+str083Rstatus);
-				//¤£¾A¥ÎLOG_2,3,4,6,7,9,10,11,12,15,16
+				//ä¸é©ç”¨LOG_2,3,4,6,7,9,10,11,12,15,16
 				//2
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A¦³2¤é¥H²{ª÷©Î¶×´Ú¹F450,000~499,999¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œæœ‰2æ—¥ä»¥ç¾é‡‘æˆ–åŒ¯æ¬¾é”450,000~499,999å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//3
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//4
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A²Ö­pÃº¥æ²{ª÷¶W¹L50¸U¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œç´¯è¨ˆç¹³äº¤ç¾é‡‘è¶…é50è¬å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//6
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','¦P¤@«È¤á¤£°Ê²£¶R½æ¡AÃ±¬ù«e°h­q¨ú®øÁÊ¶R¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','åŒä¸€å®¢æˆ¶ä¸å‹•ç”¢è²·è³£ï¼Œç°½ç´„å‰é€€è¨‚å–æ¶ˆè³¼è²·ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//7
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//9
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','«È¤á«Y¨Ó¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê®£¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡A¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','å®¢æˆ¶ä¿‚ä¾†è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡ææœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ï¼ŒåŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//10
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê§U®£©Æ¥÷¤l¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡B¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§¥æ©ö´Ú¶µ¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡åŠ©ææ€–ä»½å­æœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ã€åŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹äº¤æ˜“æ¬¾é …ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//11
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','¥æ©ö³Ì²×¨ü¯q¤H©Î¥æ©ö¤H¬°¥DºŞ¾÷Ãö¤½§i¤§®£©Æ¤À¤l©Î¹ÎÅé¡F©Î°ê»Ú»{©w©Î°l¬d¤§®£©Æ²ÕÂ´¡F©Î¥æ©ö¸êª÷ºÃ¦ü»P®£©Æ²ÕÂ´¦³ÃöÁpªÌ¡AÀ³¨Ì¸ê®£¨¾¨îªk¶i¦æ¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','äº¤æ˜“æœ€çµ‚å—ç›Šäººæˆ–äº¤æ˜“äººç‚ºä¸»ç®¡æ©Ÿé—œå…¬å‘Šä¹‹ææ€–åˆ†å­æˆ–åœ˜é«”ï¼›æˆ–åœ‹éš›èªå®šæˆ–è¿½æŸ¥ä¹‹ææ€–çµ„ç¹”ï¼›æˆ–äº¤æ˜“è³‡é‡‘ç–‘ä¼¼èˆ‡ææ€–çµ„ç¹”æœ‰é—œè¯è€…ï¼Œæ‡‰ä¾è³‡æé˜²åˆ¶æ³•é€²è¡Œç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//12
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','«È¤á­n¨D±N¤£°Ê²£Åv§Qµn°O¤©²Ä¤T¤H¡A¥¼¯à´£¥X¥ô¦óÃöÁp©Î©Úµ´»¡©ú¤§²§±`ª¬ªp¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','å®¢æˆ¶è¦æ±‚å°‡ä¸å‹•ç”¢æ¬Šåˆ©ç™»è¨˜äºˆç¬¬ä¸‰äººï¼Œæœªèƒ½æå‡ºä»»ä½•é—œè¯æˆ–æ‹’çµ•èªªæ˜ä¹‹ç•°å¸¸ç‹€æ³ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//15
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','­n¨D¤½¥q¶}¥ß¨ú®ø¸T¤î­I®ÑÂàÅı¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','è¦æ±‚å…¬å¸é–‹ç«‹å–æ¶ˆç¦æ­¢èƒŒæ›¸è½‰è®“æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//16
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','­n¨D¤½¥q¶}¥ßºM¾P¥­¦æ½u(¨ú®ø¹º½u)¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','è¦æ±‚å…¬å¸é–‹ç«‹æ’¤éŠ·å¹³è¡Œç·š(å–æ¶ˆåŠƒç·š)æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				
-				if("Y".equals(str083Deputy)){//¦³¥NÃº¤H
-					//18¨îµô¦W³æ
-					//Query_Log ®³¥Í¤é
+				if("Y".equals(str083Deputy)){//æœ‰ä»£ç¹³äºº
+					//18åˆ¶è£åå–®
+					//Query_Log æ‹¿ç”Ÿæ—¥
 					strPW0Dsql = "SELECT BIRTHDAY FROM QUERY_LOG WHERE PROJECT_ID = '"+strProjectID1+"' AND QUERY_ID = '"+str083DeputyId+"' AND NAME = '"+str083DeputyName+"'";
 					retQueryLog = dbPW0D.queryFromPool(strPW0Dsql);
 					if(retQueryLog.length > 0) {
@@ -314,23 +316,23 @@ public class CheckAML2 extends bproc{
 					retCList = db400CRM.queryFromPool(str400sql);
 					if(retCList.length > 0) {
 						//400 LOG
-						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '018', '¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '018', 'è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str083DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+str083DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
 						if("".equals(errMsg)){
-							errMsg ="«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+							errMsg ="ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 						}else{
-							errMsg =errMsg+"\n«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+							errMsg =errMsg+"\nä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 						}
 						*/
-						errMsg =errMsg+"«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C\n";
+						errMsg =errMsg+"ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+str083DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
@@ -339,141 +341,141 @@ public class CheckAML2 extends bproc{
 					retCList = db400CRM.queryFromPool(str400sql);
 					if(retCList.length > 0) {
 						//400 LOG
-						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '021', '¸Ó«È¤á©Î¨ä¨ü¯q¤H¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°²{¥ô¡B´¿¥ô°ê¤º¥~¬F©²©Î°ê»Ú²ÕÂ´­«­n¬Fªv©ÊÂ¾°È¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '021', 'è©²å®¢æˆ¶æˆ–å…¶å—ç›Šäººã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºç¾ä»»ã€æ›¾ä»»åœ‹å…§å¤–æ”¿åºœæˆ–åœ‹éš›çµ„ç¹”é‡è¦æ”¿æ²»æ€§è·å‹™ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str083DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+str083DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
 						if("".equals(errMsg)){
-							errMsg ="«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg ="ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\nä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+"«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+"ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+str083DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
-					//¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡C½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z
-					if("ªB¤Í".equals(str083Rlatsh) || "¨ä¥L".equals(str083Rlatsh)){
+					//ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªã€‚è«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†
+					if("æœ‹å‹".equals(str083Rlatsh) || "å…¶ä»–".equals(str083Rlatsh)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str083DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+str083DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '005', '¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '005', 'ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg ="ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\nä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+"«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+"ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+str083DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-					//¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C
+					//ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str083DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','008','¥NÃº´Ú¤H"+str083DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','008','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
-					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '008', '¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '008', 'ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(strJGENLIBSql);
 					/*
 					if("".equals(errMsg)){
-						errMsg ="«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg ="ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}else{
-						errMsg =errMsg+"\n«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg =errMsg+"\nä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}
 					*/
-					errMsg =errMsg+"«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
-					//«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C
-					//«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C
+					errMsg =errMsg+"ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
+					//å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚
+					//å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚
 					if("Y".equals(str083Bstatus) || "Y".equals(str083Cstatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName ,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str083DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+str083DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName ,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '020', '¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '020', 'è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+							errMsg ="ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 						}else{
-							errMsg =errMsg+"\n«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+							errMsg =errMsg+"\nä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 						}
 						*/
-						errMsg =errMsg+"«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C\n";
+						errMsg =errMsg+"ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+str083DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-					//«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C
+					//å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚
 					if("Y".equals(str083Rstatus)){
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str083DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+str083DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '019', '¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '019', 'è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+							errMsg ="ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 						}else{
-							errMsg =errMsg+"\n«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+							errMsg =errMsg+"\nä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 						}
 						*/
-						errMsg =errMsg+"«H¥Î¥d¥NÃº´Ú¤H"+str083DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C\n";
+						errMsg =errMsg+"ä¿¡ç”¨å¡ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+str083DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+str083DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 				}else{
-					//¥»¤HÃº´Ú(¤£¾A¥Î5,8,17,19,20)
+					//æœ¬äººç¹³æ¬¾(ä¸é©ç”¨5,8,17,19,20)
 					//5
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//8
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//19
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//20
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«H¥Î¥d¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ä¿¡ç”¨å¡è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}		
 			}
 		}
-		//²{ª÷(¥u¦³¤@µ§)
+		//ç¾é‡‘(åªæœ‰ä¸€ç­†)
 		System.out.println("strDeputy=====>"+strDeputy);
 		System.out.println("strDeputyName=====>"+strDeputyName);
 		System.out.println("strDeputyID=====>"+strDeputyID);
@@ -482,40 +484,40 @@ public class CheckAML2 extends bproc{
 		System.out.println("cStatus=====>"+cStatus);
 		System.out.println("rStatus=====>"+rStatus);
 		System.out.println("strCashMoney=====>"+strCashMoney);
-		//¤£¾A¥ÎLOG_6,9,10,11,12,15,16
+		//ä¸é©ç”¨LOG_6,9,10,11,12,15,16
 		//6
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','¦P¤@«È¤á¤£°Ê²£¶R½æ¡AÃ±¬ù«e°h­q¨ú®øÁÊ¶R¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','åŒä¸€å®¢æˆ¶ä¸å‹•ç”¢è²·è³£ï¼Œç°½ç´„å‰é€€è¨‚å–æ¶ˆè³¼è²·ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//9
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','«È¤á«Y¨Ó¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê®£¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡A¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','å®¢æˆ¶ä¿‚ä¾†è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡ææœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ï¼ŒåŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//10
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê§U®£©Æ¥÷¤l¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡B¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§¥æ©ö´Ú¶µ¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡åŠ©ææ€–ä»½å­æœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ã€åŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹äº¤æ˜“æ¬¾é …ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//11
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','¥æ©ö³Ì²×¨ü¯q¤H©Î¥æ©ö¤H¬°¥DºŞ¾÷Ãö¤½§i¤§®£©Æ¤À¤l©Î¹ÎÅé¡F©Î°ê»Ú»{©w©Î°l¬d¤§®£©Æ²ÕÂ´¡F©Î¥æ©ö¸êª÷ºÃ¦ü»P®£©Æ²ÕÂ´¦³ÃöÁpªÌ¡AÀ³¨Ì¸ê®£¨¾¨îªk¶i¦æ¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','äº¤æ˜“æœ€çµ‚å—ç›Šäººæˆ–äº¤æ˜“äººç‚ºä¸»ç®¡æ©Ÿé—œå…¬å‘Šä¹‹ææ€–åˆ†å­æˆ–åœ˜é«”ï¼›æˆ–åœ‹éš›èªå®šæˆ–è¿½æŸ¥ä¹‹ææ€–çµ„ç¹”ï¼›æˆ–äº¤æ˜“è³‡é‡‘ç–‘ä¼¼èˆ‡ææ€–çµ„ç¹”æœ‰é—œè¯è€…ï¼Œæ‡‰ä¾è³‡æé˜²åˆ¶æ³•é€²è¡Œç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//12
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','«È¤á­n¨D±N¤£°Ê²£Åv§Qµn°O¤©²Ä¤T¤H¡A¥¼¯à´£¥X¥ô¦óÃöÁp©Î©Úµ´»¡©ú¤§²§±`ª¬ªp¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','å®¢æˆ¶è¦æ±‚å°‡ä¸å‹•ç”¢æ¬Šåˆ©ç™»è¨˜äºˆç¬¬ä¸‰äººï¼Œæœªèƒ½æå‡ºä»»ä½•é—œè¯æˆ–æ‹’çµ•èªªæ˜ä¹‹ç•°å¸¸ç‹€æ³ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//15
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','­n¨D¤½¥q¶}¥ß¨ú®ø¸T¤î­I®ÑÂàÅı¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','è¦æ±‚å…¬å¸é–‹ç«‹å–æ¶ˆç¦æ­¢èƒŒæ›¸è½‰è®“æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//16
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','­n¨D¤½¥q¶}¥ßºM¾P¥­¦æ½u(¨ú®ø¹º½u)¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','è¦æ±‚å…¬å¸é–‹ç«‹æ’¤éŠ·å¹³è¡Œç·š(å–æ¶ˆåŠƒç·š)æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//5, 8, 17,18,19,20,21
-		if(Double.parseDouble(strCashMoney) != 0){//¦³²{ª÷Ãº¶O
-			if("Y".equals(strDeputy)){//¦³¥NÃº¤H
-				//18¨îµô¦W³æ
-				//Query_Log ®³¥Í¤é
+		if(Double.parseDouble(strCashMoney) != 0){//æœ‰ç¾é‡‘ç¹³è²»
+			if("Y".equals(strDeputy)){//æœ‰ä»£ç¹³äºº
+				//18åˆ¶è£åå–®
+				//Query_Log æ‹¿ç”Ÿæ—¥
 				strPW0DSql = "SELECT BIRTHDAY FROM QUERY_LOG WHERE PROJECT_ID = '"+strProjectID1+"' AND QUERY_ID = '"+strDeputyID+"' AND NAME = '"+strDeputyName+"'";
 				retQueryLog = dbPW0D.queryFromPool(strPW0DSql);
 				if(retQueryLog.length > 0) {
@@ -530,25 +532,25 @@ public class CheckAML2 extends bproc{
 				retCList = db400CRM.queryFromPool(str400sql);
 				if(retCList.length > 0) {
 					//400 LOG
-					stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '018', '¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '018', 'è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(stringSQL);	
 					//SALE LOG
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+strDeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+strDeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 					/*
 					if("".equals(errMsg)){
-						errMsg ="²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+						errMsg ="ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 					}else{
-						errMsg =errMsg+"\n²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+						errMsg =errMsg+"\nç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 					}
 					*/
-					errMsg =errMsg+"²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C\n";
+					errMsg =errMsg+"ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚\n";
 				}else{
-					//¤£²Å¦X
+					//ä¸ç¬¦åˆ
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+strDeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 				}
@@ -557,147 +559,147 @@ public class CheckAML2 extends bproc{
 				retCList = db400CRM.queryFromPool(str400sql);
 				if(retCList.length > 0) {
 					//400 LOG
-					stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '021', '«È¤á©Î¨ä¨ü¯q¤H¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°²{¥ô¡B´¿¥ô°ê¤º¥~¬F©²©Î°ê»Ú²ÕÂ´­«­n¬Fªv©ÊÂ¾°È¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '021', 'å®¢æˆ¶æˆ–å…¶å—ç›Šäººã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºç¾ä»»ã€æ›¾ä»»åœ‹å…§å¤–æ”¿åºœæˆ–åœ‹éš›çµ„ç¹”é‡è¦æ”¿æ²»æ€§è·å‹™ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(stringSQL);	
 					//SALE LOG
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+strDeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+strDeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+strDeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 					/*
 					if("".equals(errMsg)){
-						errMsg ="²{ª÷¥NÃº´Ú¤H"+strDeputyName+"®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg ="ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}else{
-						errMsg =errMsg+"\n²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg =errMsg+"\nç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}
 					*/
-					errMsg =errMsg+"²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+					errMsg =errMsg+"ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 				}else{
-					//¤£²Å¦X
+					//ä¸ç¬¦åˆ
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+strDeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 				}
-				//¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡C½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z
-				if("ªB¤Í".equals(strDeputyRelationship) || "¨ä¥L".equals(strDeputyRelationship)){
+				//ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªã€‚è«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†
+				if("æœ‹å‹".equals(strDeputyRelationship) || "å…¶ä»–".equals(strDeputyRelationship)){
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+strDeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+strDeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+strDeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+strDeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
-					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '005', '¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '005', 'ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(strJGENLIBSql);
 					/*
 					if("".equals(errMsg)){
-						errMsg ="²{ª÷¥NÃº´Ú¤H"+strDeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg ="ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}else{
-						errMsg =errMsg+"\n²{ª÷¥NÃº´Ú¤H"+strDeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg =errMsg+"\nç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}
 					*/
-					errMsg =errMsg+"²{ª÷¥NÃº´Ú¤H"+strDeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+					errMsg =errMsg+"ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 				}else{
-					//¤£²Å¦X
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+strDeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					//ä¸ç¬¦åˆ
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+strDeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}
-				//¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C
+				//ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚
 				//Sale05M070
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+strDeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','008','¥NÃº´Ú¤H"+strDeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','008','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//AS400
-				strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '008', '¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '008', 'ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbJGENLIB.execFromPool(strJGENLIBSql);
 				/*
 				if("".equals(errMsg)){
-					errMsg ="²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+					errMsg ="ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 				}else{
-					errMsg =errMsg+"\n²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+					errMsg =errMsg+"\nç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 				}
 				*/
-				errMsg =errMsg+"²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
-				//«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C
-				//«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C
+				errMsg =errMsg+"ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
+				//å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚
+				//å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚
 				if("Y".equals(bStatus) || "Y".equals(cStatus)){
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+strDeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+strDeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
-					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '020', '¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '020', 'è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(strJGENLIBSql);
 					/*
 					if("".equals(errMsg)){
-						errMsg ="²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+						errMsg ="ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 					}else{
-						errMsg =errMsg+"\n²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+						errMsg =errMsg+"\nç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 					}
 					*/
-					errMsg =errMsg+"²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C\n";
+					errMsg =errMsg+"ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚\n";
 				}else{
-					//¤£²Å¦X
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+strDeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					//ä¸ç¬¦åˆ
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}
-				//«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C
+				//å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚
 				if("Y".equals(rStatus)){
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+strDeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+strDeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
-					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '019', '¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '019', 'è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(strJGENLIBSql);
 					/*
 					if("".equals(errMsg)){
-						errMsg ="²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+						errMsg ="ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 					}else{
-						errMsg =errMsg+"\n²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+						errMsg =errMsg+"\nç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 					}
 					*/
-					errMsg =errMsg+"²{ª÷¥NÃº´Ú¤H"+strDeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C\n";
+					errMsg =errMsg+"ç¾é‡‘ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚\n";
 				}else{
-					//¤£²Å¦X
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+strDeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					//ä¸ç¬¦åˆ
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+strDeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}
-			}else{//²{ª÷¥»¤HÃº´Ú
-				//¤£¾A¥Î5,8,17,18,19,20
+			}else{//ç¾é‡‘æœ¬äººç¹³æ¬¾
+				//ä¸é©ç”¨5,8,17,18,19,20
 				//5
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//8
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//17
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//18
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//19
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//20
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²{ª÷¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¾é‡‘è³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 			}
 		}
-		//»È¦æ
+		//éŠ€è¡Œ
 		ret328Table  =  getTableData("table9");
 		if(ret328Table.length > 0) {
 			for(int f=0;f<ret328Table.length;f++){
-				String str328Deputy = ret328Table[f][5].trim();//¥»¤HÃº´Ú
-				String str328DeputyName=ret328Table[f][6].trim();//©m¦W
+				String str328Deputy = ret328Table[f][5].trim();//æœ¬äººç¹³æ¬¾
+				String str328DeputyName=ret328Table[f][6].trim();//å§“å
 				String str328DeputyId=ret328Table[f][7].trim();
 				String str328ExPlace=ret328Table[f][8].trim();
 				String str328Rlatsh=ret328Table[f][9].trim();
@@ -712,82 +714,82 @@ public class CheckAML2 extends bproc{
 		System.out.println("str328bStatus=====>"+str328bStatus);
 		System.out.println("str328cStatus=====>"+str328cStatus);
 		System.out.println("str328rStatus=====>"+str328rStatus);
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//9
-				//¤£¾A¥Î3,4,6,7,9,11,12,15,16
+				//ä¸é©ç”¨3,4,6,7,9,11,12,15,16
 				//3
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//4
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A²Ö­pÃº¥æ²{ª÷¶W¹L50¸U¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œç´¯è¨ˆç¹³äº¤ç¾é‡‘è¶…é50è¬å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//6
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','¦P¤@«È¤á¤£°Ê²£¶R½æ¡AÃ±¬ù«e°h­q¨ú®øÁÊ¶R¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','åŒä¸€å®¢æˆ¶ä¸å‹•ç”¢è²·è³£ï¼Œç°½ç´„å‰é€€è¨‚å–æ¶ˆè³¼è²·ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//7
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','«È¤á«Y¨Ó¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê®£¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡A¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','å®¢æˆ¶ä¿‚ä¾†è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡ææœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ï¼ŒåŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//11
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','¥æ©ö³Ì²×¨ü¯q¤H©Î¥æ©ö¤H¬°¥DºŞ¾÷Ãö¤½§i¤§®£©Æ¤À¤l©Î¹ÎÅé¡F©Î°ê»Ú»{©w©Î°l¬d¤§®£©Æ²ÕÂ´¡F©Î¥æ©ö¸êª÷ºÃ¦ü»P®£©Æ²ÕÂ´¦³ÃöÁpªÌ¡AÀ³¨Ì¸ê®£¨¾¨îªk¶i¦æ¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','äº¤æ˜“æœ€çµ‚å—ç›Šäººæˆ–äº¤æ˜“äººç‚ºä¸»ç®¡æ©Ÿé—œå…¬å‘Šä¹‹ææ€–åˆ†å­æˆ–åœ˜é«”ï¼›æˆ–åœ‹éš›èªå®šæˆ–è¿½æŸ¥ä¹‹ææ€–çµ„ç¹”ï¼›æˆ–äº¤æ˜“è³‡é‡‘ç–‘ä¼¼èˆ‡ææ€–çµ„ç¹”æœ‰é—œè¯è€…ï¼Œæ‡‰ä¾è³‡æé˜²åˆ¶æ³•é€²è¡Œç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//12
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','«È¤á­n¨D±N¤£°Ê²£Åv§Qµn°O¤©²Ä¤T¤H¡A¥¼¯à´£¥X¥ô¦óÃöÁp©Î©Úµ´»¡©ú¤§²§±`ª¬ªp¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','å®¢æˆ¶è¦æ±‚å°‡ä¸å‹•ç”¢æ¬Šåˆ©ç™»è¨˜äºˆç¬¬ä¸‰äººï¼Œæœªèƒ½æå‡ºä»»ä½•é—œè¯æˆ–æ‹’çµ•èªªæ˜ä¹‹ç•°å¸¸ç‹€æ³ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//15
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','­n¨D¤½¥q¶}¥ß¨ú®ø¸T¤î­I®ÑÂàÅı¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','è¦æ±‚å…¬å¸é–‹ç«‹å–æ¶ˆç¦æ­¢èƒŒæ›¸è½‰è®“æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//16
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','­n¨D¤½¥q¶}¥ßºM¾P¥­¦æ½u(¨ú®ø¹º½u)¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','è¦æ±‚å…¬å¸é–‹ç«‹æ’¤éŠ·å¹³è¡Œç·š(å–æ¶ˆåŠƒç·š)æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
-				//¦Ûª÷¿ÄºÊ·şºŞ²z©e­û·|¨çÂà°ê»Ú¨¾¨î¬~¿ú²ÕÂ´©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê§U®£©Æ¥÷¤l¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡B¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`°ê»Ú¨¾¨î¬~¿ú²ÕÂ´«ØÄ³¤§°ê®a©Î¦a°Ï¶×¤J¤§¥æ©ö´Ú¶µ¡C
+				//è‡ªé‡‘èç›£ç£ç®¡ç†å§”å“¡æœƒå‡½è½‰åœ‹éš›é˜²åˆ¶æ´—éŒ¢çµ„ç¹”æ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡åŠ©ææ€–ä»½å­æœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ã€åŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªåœ‹éš›é˜²åˆ¶æ´—éŒ¢çµ„ç¹”å»ºè­°ä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹äº¤æ˜“æ¬¾é …ã€‚
 				strJGENLIBSql =  "SELECT CZ07 FROM PDCZPF WHERE CZ01='NATIONCODE' AND CZ09 = '" + str328ExPlace + "'";
 				retPDCZPFTable = dbJGENLIB.queryFromPool(strJGENLIBSql);
 				if(retPDCZPFTable.length > 0){
 					String strCZ07 =retPDCZPFTable[0][0].trim();
-					if("Àu¥ıªk°ª".equals(strCZ07)){
+					if("å„ªå…ˆæ³•é«˜".equals(strCZ07)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+str328DeputyName+"«Y¨Ó¦Û¬~¿ú¤Î¸ê®£¨¾¨î¦³ÄY­«¯Ê¥¢¡B¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§´Ú¶µ¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','010','¥NÃº´Ú¤H"+str328DeputyName+"«Y¨Ó¦Û¬~¿ú¤Î¸ê®£¨¾¨î¦³ÄY­«¯Ê¥¢¡B¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§´Ú¶µ¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä¿‚ä¾†è‡ªæ´—éŒ¢åŠè³‡æé˜²åˆ¶æœ‰åš´é‡ç¼ºå¤±ã€æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹æ¬¾é …ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','010','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä¿‚ä¾†è‡ªæ´—éŒ¢åŠè³‡æé˜²åˆ¶æœ‰åš´é‡ç¼ºå¤±ã€æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹æ¬¾é …ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '010', '¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê§U®£©Æ¥÷¤l¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡B¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§¥æ©ö´Ú¶µ¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '010', 'è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡åŠ©ææ€–ä»½å­æœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ã€åŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹äº¤æ˜“æ¬¾é …ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						
 						String strTempMsg = "";
 						if("Y".equals(str328Deputy)){
-							strTempMsg = "»È¦æ¥NÃº´Ú¤H"+str328DeputyName;
+							strTempMsg = "éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName;
 						}else{
-							strTempMsg = "«È¤á"+allOrderName;
+							strTempMsg = "å®¢æˆ¶"+allOrderName;
 						}
 						/*			
 						if("".equals(errMsg)){
-							errMsg =strTempMsg+"«Y¨Ó¦Û¬~¿ú¤Î¸ê®£¨¾¨î¦³ÄY­«¯Ê¥¢¡B¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§´Ú¶µ¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =strTempMsg+"ä¿‚ä¾†è‡ªæ´—éŒ¢åŠè³‡æé˜²åˆ¶æœ‰åš´é‡ç¼ºå¤±ã€æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹æ¬¾é …ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n"+strTempMsg+"«Y¨Ó¦Û¬~¿ú¤Î¸ê®£¨¾¨î¦³ÄY­«¯Ê¥¢¡B¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§´Ú¶µ¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\n"+strTempMsg+"ä¿‚ä¾†è‡ªæ´—éŒ¢åŠè³‡æé˜²åˆ¶æœ‰åš´é‡ç¼ºå¤±ã€æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹æ¬¾é …ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+strTempMsg+"«Y¨Ó¦Û¬~¿ú¤Î¸ê®£¨¾¨î¦³ÄY­«¯Ê¥¢¡B¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§´Ú¶µ¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+strTempMsg+"ä¿‚ä¾†è‡ªæ´—éŒ¢åŠè³‡æé˜²åˆ¶æœ‰åš´é‡ç¼ºå¤±ã€æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹æ¬¾é …ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','¥NÃº´Ú¤H"+str328DeputyName+"«Y¨Ó¦Û¬~¿ú¤Î¸ê®£¨¾¨î¦³ÄY­«¯Ê¥¢¡B¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§´Ú¶µ¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä¿‚ä¾†è‡ªæ´—éŒ¢åŠè³‡æé˜²åˆ¶æœ‰åš´é‡ç¼ºå¤±ã€æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹æ¬¾é …ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 				}
-				if("Y".equals(str328Deputy)){//¦³¥NÃº¤H
-					//¨îµô¦W³æ
-					System.out.println("»È¦æ¨îµô¦W³æ====>") ;
-					//Query_Log ®³¥Í¤é
+				if("Y".equals(str328Deputy)){//æœ‰ä»£ç¹³äºº
+					//åˆ¶è£åå–®
+					System.out.println("éŠ€è¡Œåˆ¶è£åå–®====>") ;
+					//Query_Log æ‹¿ç”Ÿæ—¥
 					strPW0Dsql = "SELECT BIRTHDAY FROM QUERY_LOG WHERE PROJECT_ID = '"+strProjectID1+"' AND QUERY_ID = '"+str328DeputyId+"' AND NAME = '"+str328DeputyName+"'";
 					retQueryLog = dbPW0D.queryFromPool(strPW0Dsql);
 					if(retQueryLog.length > 0) {
@@ -802,23 +804,23 @@ public class CheckAML2 extends bproc{
 					retCList = db400CRM.queryFromPool(str400sql);
 					if(retCList.length > 0) {
 						//400 LOG
-						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '018', '¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '018', 'è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str328DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+str328DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
 						if("".equals(errMsg)){
-							errMsg ="»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+							errMsg ="éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 						}else{
-							errMsg =errMsg+"\n»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+							errMsg =errMsg+"\néŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 						}
 						*/
-						errMsg =errMsg+"»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C\n";
+						errMsg =errMsg+"éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+str328DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
@@ -827,159 +829,159 @@ public class CheckAML2 extends bproc{
 					retCList = db400CRM.queryFromPool(str400sql);
 					if(retCList.length > 0) {
 						//400 LOG
-						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '021', '«È¤á©Î¨ä¨ü¯q¤H¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°²{¥ô¡B´¿¥ô°ê¤º¥~¬F©²©Î°ê»Ú²ÕÂ´­«­n¬Fªv©ÊÂ¾°È¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '021', 'å®¢æˆ¶æˆ–å…¶å—ç›Šäººã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºç¾ä»»ã€æ›¾ä»»åœ‹å…§å¤–æ”¿åºœæˆ–åœ‹éš›çµ„ç¹”é‡è¦æ”¿æ²»æ€§è·å‹™ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str328DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+str328DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
 						if("".equals(errMsg)){
-							errMsg ="»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg ="éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\néŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+"»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+"éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+str328DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
-					//¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡C½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z
-					if("ªB¤Í".equals(str328Rlatsh) || "¨ä¥L".equals(str328Rlatsh)){
+					//ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªã€‚è«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†
+					if("æœ‹å‹".equals(str328Rlatsh) || "å…¶ä»–".equals(str328Rlatsh)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str328DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+str328DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '005', '¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '005', 'ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg ="éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\néŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+"»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+"éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+str328DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-					//¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C
+					//ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str328DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','008','¥NÃº´Ú¤H"+str328DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','008','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
-					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '008', '¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '008', 'ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(strJGENLIBSql);
 					/*
 					if("".equals(errMsg)){
-						errMsg ="»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg ="éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}else{
-						errMsg =errMsg+"\n»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg =errMsg+"\néŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}
 					*/
-					errMsg =errMsg+"»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
-					//«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C
-					//«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C
+					errMsg =errMsg+"éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
+					//å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚
+					//å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚
 					if("Y".equals(str328bStatus) || "Y".equals(str328cStatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str328DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+str328DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '020', '¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '020', 'è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+							errMsg ="éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 						}else{
-							errMsg =errMsg+"\n»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+							errMsg =errMsg+"\néŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 						}
 						*/
-						errMsg =errMsg+"»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C\n";
+						errMsg =errMsg+"éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+str328DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-					//«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C
+					//å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚
 					if("Y".equals(str328rStatus)){
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+str328DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+str328DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '019', '¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '019', 'è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+							errMsg ="éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 						}else{
-							errMsg =errMsg+"\n»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+							errMsg =errMsg+"\néŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 						}
 						*/
-						errMsg =errMsg+"»È¦æ¥NÃº´Ú¤H"+str328DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C\n";
+						errMsg =errMsg+"éŠ€è¡Œä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+str328DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+str328DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 				}else{
-					//¥»¤HÃº´Ú(¤£¾A¥Î)10,5,8,17,19,20
+					//æœ¬äººç¹³æ¬¾(ä¸é©ç”¨)10,5,8,17,19,20
 					//5
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//8
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//10
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê§U®£©Æ¥÷¤l¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡B¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§¥æ©ö´Ú¶µ¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡åŠ©ææ€–ä»½å­æœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ã€åŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹äº¤æ˜“æ¬¾é …ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//18
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//19
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"', '¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"', 'ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//20
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//21
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','»È¦æ¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','«È¤á©Î¨ä¨ü¯q¤H¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°²{¥ô¡B´¿¥ô°ê¤º¥~¬F©²©Î°ê»Ú²ÕÂ´­«­n¬Fªv©ÊÂ¾°È¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','éŠ€è¡Œè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','å®¢æˆ¶æˆ–å…¶å—ç›Šäººã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºç¾ä»»ã€æ›¾ä»»åœ‹å…§å¤–æ”¿åºœæˆ–åœ‹éš›çµ„ç¹”é‡è¦æ”¿æ²»æ€§è·å‹™ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}	
 			}
 		}
-		//²¼¾Ú
+		//ç¥¨æ“š
 		ret082Table  =  getTableData("table2");
 		if(ret082Table.length > 0) {
 			for(int g=0;g<ret082Table.length;g++){
-				String str082Deputy = ret082Table[g][8].trim();//¥»¤HÃº´Ú
-				String str082DeputyName=ret082Table[g][9].trim();//©m¦W
-				String str082DeputyId=ret082Table[g][10].trim();//¨­¤ÀÃÒ¸¹
-				String str082Rlatsh=ret082Table[g][11].trim();//Ãö«Y
-				String str082Bstatus=ret082Table[g][13].trim();//¶Â¦W³æ
-				String str082Cstatus=ret082Table[g][14].trim();//±±ºŞ¦W³æ
-				String str082Rstatus=ret082Table[g][15].trim();//§QÃö¤H
+				String str082Deputy = ret082Table[g][8].trim();//æœ¬äººç¹³æ¬¾
+				String str082DeputyName=ret082Table[g][9].trim();//å§“å
+				String str082DeputyId=ret082Table[g][10].trim();//èº«åˆ†è­‰è™Ÿ
+				String str082Rlatsh=ret082Table[g][11].trim();//é—œä¿‚
+				String str082Bstatus=ret082Table[g][13].trim();//é»‘åå–®
+				String str082Cstatus=ret082Table[g][14].trim();//æ§ç®¡åå–®
+				String str082Rstatus=ret082Table[g][15].trim();//åˆ©é—œäºº
 		System.out.println("str082Deputy=====>"+str082Deputy);
 		System.out.println("str082DeputyName=====>"+str082DeputyName);
 		System.out.println("str082DeputyId=====>"+str082DeputyId);
@@ -987,56 +989,56 @@ public class CheckAML2 extends bproc{
 		System.out.println("str082Bstatus=====>"+str082Bstatus);
 		System.out.println("str082Cstatus=====>"+str082Cstatus);
 		System.out.println("str082Rstatus=====>"+str082Rstatus);
-				//¤£¾A¥Î2,3,4,6,7,9,10,11,12,15,16
+				//ä¸é©ç”¨2,3,4,6,7,9,10,11,12,15,16
 				//2
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A¦³2¤é¥H²{ª÷©Î¶×´Ú¹F450,000~499,999¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œæœ‰2æ—¥ä»¥ç¾é‡‘æˆ–åŒ¯æ¬¾é”450,000~499,999å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//3
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//4
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','¦P¤@«È¤á3­ÓÀç·~¤é¤º¡A²Ö­pÃº¥æ²{ª÷¶W¹L50¸U¤¸, ¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','åŒä¸€å®¢æˆ¶3å€‹ç‡Ÿæ¥­æ—¥å…§ï¼Œç´¯è¨ˆç¹³äº¤ç¾é‡‘è¶…é50è¬å…ƒ, ç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//6
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','¦P¤@«È¤á¤£°Ê²£¶R½æ¡AÃ±¬ù«e°h­q¨ú®øÁÊ¶R¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','åŒä¸€å®¢æˆ¶ä¸å‹•ç”¢è²·è³£ï¼Œç°½ç´„å‰é€€è¨‚å–æ¶ˆè³¼è²·ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//7
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','¦P¤@«È¤á¦P¤@Àç·~¤é²{ª÷Ãº¯Ç²Ö­p¹F50¸U¤¸(§t)¥H¤W¡A¶·ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','åŒä¸€å®¢æˆ¶åŒä¸€ç‡Ÿæ¥­æ—¥ç¾é‡‘ç¹³ç´ç´¯è¨ˆé”50è¬å…ƒ(å«)ä»¥ä¸Šï¼Œé ˆæª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//9
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','«È¤á«Y¨Ó¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê®£¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡A¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','å®¢æˆ¶ä¿‚ä¾†è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡ææœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ï¼ŒåŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//10
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','¦Û¥DºŞ¾÷Ãö©Ò¤½§i¨¾¨î¬~¿ú»P¥´À»¸ê§U®£©Æ¥÷¤l¦³ÄY­«¯Ê¥¢¤§°ê®a©Î¦a°Ï¡B¤Î¨ä¥L¥¼¿í´`©Î¥¼¥R¤À¿í´`¤§°ê®a©Î¦a°Ï¶×¤J¤§¥æ©ö´Ú¶µ¡AÀ³ÀË®Ö¨ä¦X²z©Ê¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','è‡ªä¸»ç®¡æ©Ÿé—œæ‰€å…¬å‘Šé˜²åˆ¶æ´—éŒ¢èˆ‡æ‰“æ“Šè³‡åŠ©ææ€–ä»½å­æœ‰åš´é‡ç¼ºå¤±ä¹‹åœ‹å®¶æˆ–åœ°å€ã€åŠå…¶ä»–æœªéµå¾ªæˆ–æœªå……åˆ†éµå¾ªä¹‹åœ‹å®¶æˆ–åœ°å€åŒ¯å…¥ä¹‹äº¤æ˜“æ¬¾é …ï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//11
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','¥æ©ö³Ì²×¨ü¯q¤H©Î¥æ©ö¤H¬°¥DºŞ¾÷Ãö¤½§i¤§®£©Æ¤À¤l©Î¹ÎÅé¡F©Î°ê»Ú»{©w©Î°l¬d¤§®£©Æ²ÕÂ´¡F©Î¥æ©ö¸êª÷ºÃ¦ü»P®£©Æ²ÕÂ´¦³ÃöÁpªÌ¡AÀ³¨Ì¸ê®£¨¾¨îªk¶i¦æ¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','äº¤æ˜“æœ€çµ‚å—ç›Šäººæˆ–äº¤æ˜“äººç‚ºä¸»ç®¡æ©Ÿé—œå…¬å‘Šä¹‹ææ€–åˆ†å­æˆ–åœ˜é«”ï¼›æˆ–åœ‹éš›èªå®šæˆ–è¿½æŸ¥ä¹‹ææ€–çµ„ç¹”ï¼›æˆ–äº¤æ˜“è³‡é‡‘ç–‘ä¼¼èˆ‡ææ€–çµ„ç¹”æœ‰é—œè¯è€…ï¼Œæ‡‰ä¾è³‡æé˜²åˆ¶æ³•é€²è¡Œç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//12
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','«È¤á­n¨D±N¤£°Ê²£Åv§Qµn°O¤©²Ä¤T¤H¡A¥¼¯à´£¥X¥ô¦óÃöÁp©Î©Úµ´»¡©ú¤§²§±`ª¬ªp¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','å®¢æˆ¶è¦æ±‚å°‡ä¸å‹•ç”¢æ¬Šåˆ©ç™»è¨˜äºˆç¬¬ä¸‰äººï¼Œæœªèƒ½æå‡ºä»»ä½•é—œè¯æˆ–æ‹’çµ•èªªæ˜ä¹‹ç•°å¸¸ç‹€æ³ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//15
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','­n¨D¤½¥q¶}¥ß¨ú®ø¸T¤î­I®ÑÂàÅı¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','è¦æ±‚å…¬å¸é–‹ç«‹å–æ¶ˆç¦æ­¢èƒŒæ›¸è½‰è®“æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//16
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','­n¨D¤½¥q¶}¥ßºM¾P¥­¦æ½u(¨ú®ø¹º½u)¤ä²¼§@¬°µ¹¥I¤è¦¡¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','è¦æ±‚å…¬å¸é–‹ç«‹æ’¤éŠ·å¹³è¡Œç·š(å–æ¶ˆåŠƒç·š)æ”¯ç¥¨ä½œç‚ºçµ¦ä»˜æ–¹å¼ï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 			
-				if("Y".equals(str082Deputy)){//¦³¥NÃº¤H
-					System.out.println("²¼¾Ú¨îµô¦W³æ====>") ;
-					//¨îµô¦W³æ
-					//Query_Log ®³¥Í¤é
+				if("Y".equals(str082Deputy)){//æœ‰ä»£ç¹³äºº
+					System.out.println("ç¥¨æ“šåˆ¶è£åå–®====>") ;
+					//åˆ¶è£åå–®
+					//Query_Log æ‹¿ç”Ÿæ—¥
 					strPW0Dsql = "SELECT BIRTHDAY FROM QUERY_LOG WHERE PROJECT_ID = '"+strProjectID1+"' AND QUERY_ID = '"+str082DeputyId+"' AND NAME = '"+str082DeputyName+"'";
 					retQueryLog = dbPW0D.queryFromPool(strPW0Dsql);
 					if(retQueryLog.length > 0) {
@@ -1051,23 +1053,23 @@ public class CheckAML2 extends bproc{
 					retCList = db400CRM.queryFromPool(str400sql);
 					if(retCList.length > 0) {
 						//400 LOG
-						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '018', '¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¤§¨îµô¦W³æ¡A¸T¤î¥æ©ö¨Ã½Ğ¨Ì¨¾¨î¬~¿ú¤º³q³ø§@·~·|¿ìªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '018', 'è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ä¹‹åˆ¶è£åå–®ï¼Œç¦æ­¢äº¤æ˜“ä¸¦è«‹ä¾é˜²åˆ¶æ´—éŒ¢å…§é€šå ±ä½œæ¥­æœƒè¾¦æ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+str082DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+str082DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
 						if("".equals(errMsg)){
-							errMsg ="²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+							errMsg ="ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 						}else{
-							errMsg =errMsg+"\n²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C";
+							errMsg =errMsg+"\nç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚";
 						}
 						*/
-						errMsg =errMsg+"²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C\n";
+						errMsg =errMsg+"ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','¥NÃº´Ú¤H"+str082DeputyName+"¬°±±ºŞ¤§¨îµô¦W³æ¹ï¶H¡A½Ğ¸T¤î¥æ©ö¡A¨Ã¨Ì¬~¿ú¨¾¨î¤º³¡³q³ø§@·~°e§eªk¿í«Ç¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºæ§ç®¡ä¹‹åˆ¶è£åå–®å°è±¡ï¼Œè«‹ç¦æ­¢äº¤æ˜“ï¼Œä¸¦ä¾æ´—éŒ¢é˜²åˆ¶å…§éƒ¨é€šå ±ä½œæ¥­é€å‘ˆæ³•éµå®¤ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
@@ -1076,184 +1078,184 @@ public class CheckAML2 extends bproc{
 					retCList = db400CRM.queryFromPool(str400sql);
 					if(retCList.length > 0) {
 						//400 LOG
-						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '021', '«È¤á©Î¨ä¨ü¯q¤H¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°²{¥ô¡B´¿¥ô°ê¤º¥~¬F©²©Î°ê»Ú²ÕÂ´­«­n¬Fªv©ÊÂ¾°È¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '021', 'å®¢æˆ¶æˆ–å…¶å—ç›Šäººã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºç¾ä»»ã€æ›¾ä»»åœ‹å…§å¤–æ”¿åºœæˆ–åœ‹éš›çµ„ç¹”é‡è¦æ”¿æ²»æ€§è·å‹™ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"', '¥NÃº´Ú¤H"+str082DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+str082DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"', 'ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
 						if("".equals(errMsg)){
-							errMsg ="²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg ="ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\nç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+"²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+"ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"', '¤£²Å¦X','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','¥NÃº´Ú¤H"+str082DeputyName+"¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°­«­n¬Fªv©ÊÂ¾°È¤H¤h¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A¨Ã¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"', 'ä¸ç¬¦åˆ','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºé‡è¦æ”¿æ²»æ€§è·å‹™äººå£«ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œä¸¦ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
-					//¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡C½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z
-					if("ªB¤Í".equals(str082Rlatsh) || "¨ä¥L".equals(str082Rlatsh)){
+					//ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªã€‚è«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†
+					if("æœ‹å‹".equals(str082Rlatsh) || "å…¶ä»–".equals(str082Rlatsh)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str082DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+str082DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '005', '¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '005', 'ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg ="ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}else{
-							errMsg =errMsg+"\n²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+							errMsg =errMsg+"\nç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 						}
 						*/
-						errMsg =errMsg+"²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+						errMsg =errMsg+"ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H"+str082DeputyName+"»P«È¤á"+allOrderName+"«D¤G¿Ëµ¥¤º¿ËÄİÃö«Y¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"èˆ‡å®¢æˆ¶"+allOrderName+"éäºŒè¦ªç­‰å…§è¦ªå±¬é—œä¿‚ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-					//¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C
+					//ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str082DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','008','¥NÃº´Ú¤H"+str082DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','008','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
-					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '008', '¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '008', 'ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbJGENLIB.execFromPool(strJGENLIBSql);
 					/*
 					if("".equals(errMsg)){
-						errMsg ="²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg ="ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}else{
-						errMsg =errMsg+"\n²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+						errMsg =errMsg+"\nç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 					}
 					*/
-					errMsg =errMsg+"²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¥N¬°¿ì²z¤£°Ê²£¥æ©ö¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
-					//«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C
-					//«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C
+					errMsg =errMsg+"ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ä»£ç‚ºè¾¦ç†ä¸å‹•ç”¢äº¤æ˜“ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
+					//å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚
+					//å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚
 					if("Y".equals(str082Bstatus) || "Y".equals(str082Cstatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str082DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+str082DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '020', '¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '020', 'è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+							errMsg ="ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 						}else{
-							errMsg =errMsg+"\n²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C";
+							errMsg =errMsg+"\nç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚";
 						}
 						*/
-						errMsg =errMsg+"²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C\n";
+						errMsg =errMsg+"ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','¥NÃº´Ú¤H"+str082DeputyName+"¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¬ÛÃö§@·~¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ç›¸é—œä½œæ¥­ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-					//«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C
+					//å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚
 					if("Y".equals(str082Rstatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¥NÃº´Ú¤H"+str082DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+str082DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
-						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '019', '¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '019', 'è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(strJGENLIBSql);
 						/*
 						if("".equals(errMsg)){
-							errMsg ="²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+							errMsg ="ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 						}else{
-							errMsg =errMsg+"\n²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C";
+							errMsg =errMsg+"\nç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚";
 						}
 						*/
-						errMsg =errMsg+"²¼¾Ú¥NÃº´Ú¤H"+str082DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C\n";
+						errMsg =errMsg+"ç¥¨æ“šä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚\n";
 					}else{
-						//¤£²Å¦X
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','¥NÃº´Ú¤H"+str082DeputyName+"¬°¤½¥q§Q®`Ãö¨t¤H¡A½Ğ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						//ä¸ç¬¦åˆ
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','ä»£ç¹³æ¬¾äºº"+str082DeputyName+"ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œè«‹ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
-				}else{//¥»¤HÃº´Ú
-					//¤£¾A¥Î5,8,17,19,20
+				}else{//æœ¬äººç¹³æ¬¾
+					//ä¸é©ç”¨5,8,17,19,20
 					//5
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','¥NÃº´Ú¤H»PÁÊ¶R¤HÃö«Y¬°«D¤Gµ¥¿Ë¤º¦å/«Ã¿Ë¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','ä»£ç¹³æ¬¾äººèˆ‡è³¼è²·äººé—œä¿‚ç‚ºéäºŒç­‰è¦ªå…§è¡€/å§»è¦ªï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//8
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','¤£°Ê²£¾P°â¥Ñ²Ä¤T¤è¥N²z©ÎÃº´Ú¡A¨t²ÎÀË®Ö´£¥Ü³q³ø¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','ä¸å‹•ç”¢éŠ·å”®ç”±ç¬¬ä¸‰æ–¹ä»£ç†æˆ–ç¹³æ¬¾ï¼Œç³»çµ±æª¢æ ¸æç¤ºé€šå ±ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','¸Ó«È¤á¬°±±ºŞ¦W³æ¹ï¶H¡A½Ğ°õ¦æ¥[±j¦¡«È¤áºÉÂ¾¼f¬d¨Ã¨Ì¨¾¨î¬~¿ú¤º³¡³q³ø§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', 'æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','è©²å®¢æˆ¶ç‚ºæ§ç®¡åå–®å°è±¡ï¼Œè«‹åŸ·è¡ŒåŠ å¼·å¼å®¢æˆ¶ç›¡è·å¯©æŸ¥ä¸¦ä¾é˜²åˆ¶æ´—éŒ¢å…§éƒ¨é€šå ±ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//19
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','¸Ó«È¤á¬°¤½¥q§Q®`Ãö¨t¤H¡A»İ¨Ì«OÀI·~»P§Q®`Ãö«Y¤H±q¨Æ©ñ´Ú¥H¥~¤§¨ä¥L¥æ©öºŞ²z¿ìªk°õ¦æ¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','è©²å®¢æˆ¶ç‚ºå…¬å¸åˆ©å®³é—œç³»äººï¼Œéœ€ä¾ä¿éšªæ¥­èˆ‡åˆ©å®³é—œä¿‚äººå¾äº‹æ”¾æ¬¾ä»¥å¤–ä¹‹å…¶ä»–äº¤æ˜“ç®¡ç†è¾¦æ³•åŸ·è¡Œã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//20
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','¸Ó«È¤á¬°ºÃ¦ü¶Â¦W³æ¹ï¶H¡A½ĞÂĞ®Ö½T»{«á¡A¦A¶i¦æ«áÄò¥æ©ö¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','è©²å®¢æˆ¶ç‚ºç–‘ä¼¼é»‘åå–®å°è±¡ï¼Œè«‹è¦†æ ¸ç¢ºèªå¾Œï¼Œå†é€²è¡Œå¾ŒçºŒäº¤æ˜“ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//21
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','²¼¾Ú¸ê®Æ','"+strActionName+"','¤£¾A¥Î','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','«È¤á©Î¨ä¨ü¯q¤H¡B®a®x¦¨­û¤Î¦³±K¤ÁÃö«Y¤§¤H¡A¬°²{¥ô¡B´¿¥ô°ê¤º¥~¬F©²©Î°ê»Ú²ÕÂ´­«­n¬Fªv©ÊÂ¾°È¡A½Ğ¥[±j«È¤áºÉÂ¾½Õ¬d¡A½Ğ¨Ì¬~¿ú¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','ç¥¨æ“šè³‡æ–™','"+strActionName+"','ä¸é©ç”¨','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','å®¢æˆ¶æˆ–å…¶å—ç›Šäººã€å®¶åº­æˆå“¡åŠæœ‰å¯†åˆ‡é—œä¿‚ä¹‹äººï¼Œç‚ºç¾ä»»ã€æ›¾ä»»åœ‹å…§å¤–æ”¿åºœæˆ–åœ‹éš›çµ„ç¹”é‡è¦æ”¿æ²»æ€§è·å‹™ï¼Œè«‹åŠ å¼·å®¢æˆ¶ç›¡è·èª¿æŸ¥ï¼Œè«‹ä¾æ´—éŒ¢é˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}		
 			}
 		}
-		//13.«È¤á¤ä¥I¤£°Ê²£¥æ©ö¤§´Ú¶µ¡A¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á»ù´Ú¡A¥BµL¦X²z»¡©ú¸êª÷¨Ó·½¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C
+		//13.å®¢æˆ¶æ”¯ä»˜ä¸å‹•ç”¢äº¤æ˜“ä¹‹æ¬¾é …ï¼Œä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸåƒ¹æ¬¾ï¼Œä¸”ç„¡åˆç†èªªæ˜è³‡é‡‘ä¾†æºï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚
 		if("Y".equals(rule13)){
 			//Sale05M070
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«È¤á¸ê®Æ','"+strActionName+"','«È¤á"+allCustomName+"¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á¤£°Ê²£¥æ©ö»ù´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','«È¤á"+allCustomName+"¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á¤£°Ê²£¥æ©ö»ù´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','å®¢æˆ¶è³‡æ–™','"+strActionName+"','å®¢æˆ¶"+allCustomName+"ä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸä¸å‹•ç”¢äº¤æ˜“åƒ¹æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','å®¢æˆ¶"+allCustomName+"ä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸä¸å‹•ç”¢äº¤æ˜“åƒ¹æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 			//AS400
-			strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '013', '«È¤á¤ä¥I¤£°Ê²£¥æ©ö¤§´Ú¶µ¡A¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á»ù´Ú¡A¥BµL¦X²z»¡©ú¸êª÷¨Ó·½¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '013', 'å®¢æˆ¶æ”¯ä»˜ä¸å‹•ç”¢äº¤æ˜“ä¹‹æ¬¾é …ï¼Œä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸåƒ¹æ¬¾ï¼Œä¸”ç„¡åˆç†èªªæ˜è³‡é‡‘ä¾†æºï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbJGENLIB.execFromPool(strJGENLIBSql);
 			/*
 			if("".equals(errMsg)){
-				errMsg ="«È¤á"+allCustomName+"¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á¤£°Ê²£¥æ©ö»ù´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+				errMsg ="å®¢æˆ¶"+allCustomName+"ä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸä¸å‹•ç”¢äº¤æ˜“åƒ¹æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 			}else{
-				errMsg =errMsg+"\n«È¤á"+allCustomName+"¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á¤£°Ê²£¥æ©ö»ù´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+				errMsg =errMsg+"\nå®¢æˆ¶"+allCustomName+"ä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸä¸å‹•ç”¢äº¤æ˜“åƒ¹æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 			}
 			*/
-			errMsg =errMsg+"«È¤á"+allCustomName+"¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á¤£°Ê²£¥æ©ö»ù´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+			errMsg =errMsg+"å®¢æˆ¶"+allCustomName+"ä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸä¸å‹•ç”¢äº¤æ˜“åƒ¹æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 		}else{
-			//¤£²Å¦X
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«È¤á¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','«È¤á"+allCustomName+"¥H²{¶r¤ä¥I­qª÷¥H¥~¦U´Á¤£°Ê²£¥æ©ö»ù´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			//ä¸ç¬¦åˆ
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','å®¢æˆ¶è³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','å®¢æˆ¶"+allCustomName+"ä»¥ç¾éˆ”æ”¯ä»˜è¨‚é‡‘ä»¥å¤–å„æœŸä¸å‹•ç”¢äº¤æ˜“åƒ¹æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 		}
-		//14.«È¤á©óÃ±¬ù«e´£«e¥I²M¦Û³Æ´Ú¡A¥BµL¦X²z»¡©ú¸êª÷¨Ó·½¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C
+		//14.å®¢æˆ¶æ–¼ç°½ç´„å‰æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œä¸”ç„¡åˆç†èªªæ˜è³‡é‡‘ä¾†æºï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚
 		if("Y".equals(rule14)){
 			//Sale05M070
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«È¤á¸ê®Æ','"+strActionName+"','«È¤á"+allCustomName+"Ã±¬ù«e(§t·í¤é)´£«e¥I²M¦Û³Æ´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','«È¤á"+allCustomName+"Ã±¬ù«e(§t·í¤é)´£«e¥I²M¦Û³Æ´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','å®¢æˆ¶è³‡æ–™','"+strActionName+"','å®¢æˆ¶"+allCustomName+"ç°½ç´„å‰(å«ç•¶æ—¥)æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','å®¢æˆ¶"+allCustomName+"ç°½ç´„å‰(å«ç•¶æ—¥)æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 			//AS400
-			strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '014', '«È¤á©óÃ±¬ù«e´£«e¥I²M¦Û³Æ´Ú¡A¥BµL¦X²z»¡©ú¸êª÷¨Ó·½¡AÀ³ÀË®Ö¬O§_²Å¦XºÃ¦ü¬~¿ú¥æ©öªí¼x¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strJGENLIBSql = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+strDeputyID+"', '"+strDeputyName+"', '773', '014', 'å®¢æˆ¶æ–¼ç°½ç´„å‰æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œä¸”ç„¡åˆç†èªªæ˜è³‡é‡‘ä¾†æºï¼Œæ‡‰æª¢æ ¸æ˜¯å¦ç¬¦åˆç–‘ä¼¼æ´—éŒ¢äº¤æ˜“è¡¨å¾µã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbJGENLIB.execFromPool(strJGENLIBSql);
 			/*
 			if("".equals(errMsg)){
-				errMsg ="«È¤á"+allCustomName+"Ã±¬ù«e(§t·í¤é)´£«e¥I²M¦Û³Æ´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+				errMsg ="å®¢æˆ¶"+allCustomName+"ç°½ç´„å‰(å«ç•¶æ—¥)æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 			}else{
-				errMsg =errMsg+"\n«È¤á"+allCustomName+"Ã±¬ù«e(§t·í¤é)´£«e¥I²M¦Û³Æ´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C";
+				errMsg =errMsg+"\nå®¢æˆ¶"+allCustomName+"ç°½ç´„å‰(å«ç•¶æ—¥)æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚";
 			}
 			*/
-			errMsg =errMsg+"«È¤á"+allCustomName+"Ã±¬ù«e(§t·í¤é)´£«e¥I²M¦Û³Æ´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C\n";
+			errMsg =errMsg+"å®¢æˆ¶"+allCustomName+"ç°½ç´„å‰(å«ç•¶æ—¥)æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚\n";
 		}else{
-			//¤£²Å¦X
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','¦¬´Ú³æ','«È¤á¸ê®Æ','"+strActionName+"','¤£²Å¦X','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','«È¤á"+allCustomName+"Ã±¬ù«e(§t·í¤é)´£«e¥I²M¦Û³Æ´Ú¡A½Ğ¨Ì¬~¿ú¤Î¸ê®£¨¾¨î§@·~¿ì²z¡C','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			//ä¸ç¬¦åˆ
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','æ”¶æ¬¾å–®','å®¢æˆ¶è³‡æ–™','"+strActionName+"','ä¸ç¬¦åˆ','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','å®¢æˆ¶"+allCustomName+"ç°½ç´„å‰(å«ç•¶æ—¥)æå‰ä»˜æ¸…è‡ªå‚™æ¬¾ï¼Œè«‹ä¾æ´—éŒ¢åŠè³‡æé˜²åˆ¶ä½œæ¥­è¾¦ç†ã€‚','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 		}

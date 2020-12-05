@@ -60,6 +60,7 @@ public class AMLTools extends bvalidate {
 
   // param 傳入值
   StringBuilder sbRsMsg = new StringBuilder();
+  String strDocNo = "";
   String strOrderNo = ""; // 購屋證明單編號
   String strProjectID1 = ""; // 案別代碼
   String strOrderDate = ""; // 購屋證明單日期
@@ -93,7 +94,8 @@ public class AMLTools extends bvalidate {
     dbPW0D = getTalk("pw0d");
 
     this.aml = aml;
-    strOrderNo = aml.getOrderNo();
+//    strDocNo = aml.getDocNo();
+//    strOrderNo = aml.getOrderNo();
     strProjectID1 = aml.getProjectID1();
     strOrderDate = aml.getTrxDate();
     strActionName = aml.getActionName();
@@ -107,18 +109,13 @@ public class AMLTools extends bvalidate {
     this.getEmpNo();
 
     // 序號
-    this.getRecordNo070();
+    this.getRecordNo070ByType(aml);
 
     // actionNo
     this.getActionNo();
 
     // 取得AML態樣中文說明
     this.getAML();
-
-    // 收款時
-//    if ("收款".equals(aml.getFuncName())) {
-//
-//    }
   }
 
   public AMLTools(Map cons) throws Throwable {
@@ -171,6 +168,22 @@ public class AMLTools extends bvalidate {
     }
     strActionNo = strNowDate + strNowTime + ram;
     System.out.println("strActionNo=====>" + strActionNo);
+  }
+  
+  //能依照功能切換版本
+  public void getRecordNo070ByType(AMLBean aml) throws Throwable {
+    String stringSQL = "";
+    if ("收款".equals(aml.getFuncName()) && !"".equals(aml.getDocNo()) ) {
+      stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE DocNo ='" + aml.getDocNo() + "' ";
+    }else {
+      stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='" + aml.getOrderNo() + "' ";
+    }
+    
+    String[][] ret05M070 = dbSale.queryFromPool(stringSQL);
+    if ( ret05M070.length > 0 && !"".equals(ret05M070[0][0].trim()) ) {
+      intRecordNo = Integer.parseInt(ret05M070[0][0].trim()) + 1;
+    }
+    System.out.println("intRecordNo=====>" + intRecordNo);
   }
 
   public void getRecordNo070() throws Throwable {
@@ -245,6 +258,8 @@ public class AMLTools extends bvalidate {
     
     System.out.println("AML01 start>>>");
     // 訂單
+    aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
+    aml.setCustomNames(aml.getCustomNames());
     String shareCondition = "and a.EDate = '" + aml.getTrxDate() + "' and c.OrderNo in (" + aml.getOrderNos() + ") ";
     sbSQL.append("select distinct c.OrderNo ,a.DocNo ,a.EDate ");
     sbSQL.append(", 'cash' , 'cash no' as prrofNo , STUFF((SELECT ',' + aa.CustomName FROM Sale05M084 aa WHERE aa.docNo = a.docNo FOR XML PATH('')), 1, 1, '') ");
@@ -295,6 +310,7 @@ public class AMLTools extends bvalidate {
         count1++;
         
         //寫符合紀錄
+        aml.setOrderNo(thisKey1);
         this.insSale070(aml);
         this.insCR400(aml);
         
@@ -308,11 +324,13 @@ public class AMLTools extends bvalidate {
     
     //寫不符合紀錄
     for (int i = 0; i < orderList.size(); i++) {
+      aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
       aml.setErrMsg("不符合");
       this.insSale070(aml);
     }
 
     // 客戶部分
+    aml.setOrderNo("");
     shareCondition = "and a.EDate = '" + aml.getTrxDate() + "' and c.CustomNo in (" + aml.getCustomNos() + ") ";
     String sql = "select distinct c.CustomNo , c.CustomName ,a.EDate "
         + ", 'cash' " + ", ISNULL(a.CashMoney , 0) as money "
@@ -361,12 +379,13 @@ public class AMLTools extends bvalidate {
         count2++;
         
         //寫符合紀錄
+        aml.setCustomId(thisKey2);
+        aml.setCustomName(retAML0012[i][1].trim());
         this.insSale070(aml);
         this.insCR400(aml);
         
         //從清單中移除符合的編號
         customNoList.remove("'" + thisKey2 + "'");
-        
       }else {
         count2 = 0;
       }
@@ -376,6 +395,8 @@ public class AMLTools extends bvalidate {
     
     //寫不符合紀錄
     for (int i = 0; i < customNoList.size(); i++) {
+      aml.setCustomId(customNoList.get(i).toString().replaceAll("'", ""));
+      aml.setCustomName("");
       aml.setErrMsg("不符合");
       this.insSale070(aml);
     }
@@ -419,6 +440,8 @@ public class AMLTools extends bvalidate {
 
     System.out.println("AML02 start>>>");
     //訂單
+    aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
+    aml.setCustomNames(aml.getCustomNames());
     if("order".equals(type)) {
       sbSQL.append("SELECT c.OrderNo ,a.EDate ");
       sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
@@ -442,6 +465,7 @@ public class AMLTools extends bvalidate {
         aml.setErrMsg(msg);
         
         //寫符合紀錄
+        aml.setOrderNo(thisKey1);
         this.insSale070(aml);
         this.insCR400(aml);
         
@@ -452,12 +476,12 @@ public class AMLTools extends bvalidate {
       }
     }
     
-    //寫不符合紀錄(移除符合，剩下的即為不符合)
+    //寫不符合紀錄
     for (int i = 0; i < orderList.size(); i++) {
+      aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
       aml.setErrMsg("不符合");
       this.insSale070(aml);
     }
-    
     
     //客戶
     if("custom".equals(type)) {
@@ -530,7 +554,9 @@ public class AMLTools extends bvalidate {
     }
 
     System.out.println("AML03 start>>>");
-    // 訂單    
+    // 訂單
+    aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
+    aml.setCustomNames(aml.getCustomNames());
     sbSQL.append("select c.OrderNo ");
     sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
     sbSQL.append("from Sale05M080 a , sale05m086 c ");
@@ -551,6 +577,7 @@ public class AMLTools extends bvalidate {
       aml.setErrMsg(msg);
       
       //寫符合紀錄
+      aml.setOrderNo(thisKey1);
       this.insSale070(aml);
       this.insCR400(aml);
       
@@ -562,6 +589,7 @@ public class AMLTools extends bvalidate {
     
     //寫不符合紀錄
     for (int i = 0; i < orderList.size(); i++) {
+      aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
       aml.setErrMsg("不符合");
       this.insSale070(aml);
     }
@@ -638,6 +666,8 @@ public class AMLTools extends bvalidate {
 
     System.out.println("AML04 start>>>");
     // 訂單
+    aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
+    aml.setCustomNames(aml.getCustomNames());
     sbSQL.append("select c.OrderNo ,a.DocNo ,a.EDate "); 
     sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
     sbSQL.append("from Sale05M080 a , sale05m086 c ");
@@ -674,6 +704,7 @@ public class AMLTools extends bvalidate {
         aml.setErrMsg(msg);
         
         //寫符合紀錄
+        aml.setOrderNo(thisKey1);
         this.insSale070(aml);
         this.insCR400(aml);
         
@@ -688,6 +719,7 @@ public class AMLTools extends bvalidate {
     
     //寫不符合紀錄
     for (int i = 0; i < orderList.size(); i++) {
+      aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
       aml.setErrMsg("不符合");
       this.insSale070(aml);
     }
@@ -833,6 +865,7 @@ public class AMLTools extends bvalidate {
   
   
   /**
+   * 寫Sale log  Bean版
    * funcName(Func) : 功能項 EX 換名、購屋證明單 
    * funcName2(RecordType) : 功能項細項 EX 客戶資料、代理人資料
    * ActionName(ActionName) : 新增、修改、刪除 
@@ -842,9 +875,9 @@ public class AMLTools extends bvalidate {
   public String insSale070(AMLBean aml) throws Throwable {
     String rsMsg = "";
     String sql = "INSERT INTO Sale05M070 "
-        + "(OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) " 
+        + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) " 
         + "VALUES "
-        + "('" + strOrderNo + "','" + strProjectID1 + "','" + intRecordNo + "','" + strActionNo + "', " + "'" + aml.getFuncName() + "','" + aml.getFuncName2() + "','"
+        + "('" + aml.getDocNo() + "','" + aml.getOrderNo() + "','" + strProjectID1 + "','" + intRecordNo + "','" + strActionNo + "', " + "'" + aml.getFuncName() + "','" + aml.getFuncName2() + "','"
         + strActionName + "','" +  aml.getErrMsg() + "', " + "'" +  aml.getCustomId() + "','" + aml.getCustomName() + "','" + strOrderDate + "','RY','773','"
         + aml.getAMLNo() + "','" + aml.getErrMsg() + "', " + "'" + empNo + "', '" + rocNowDate + "', '" + strNowTime + "') ";
     try {
@@ -854,15 +887,26 @@ public class AMLTools extends bvalidate {
       System.out.println(">>>ins070 Error : " + aml);
       ex.printStackTrace();
     }
-
+    
+    intRecordNo++;
+    
     return rsMsg;
   }
 
   public String insCR400(AMLBean aml) throws Throwable {
+    String pKey = "";
+    String amlNo = aml.getAMLNo();  //不同功能下放的欄位有所不同
+    if( "001".equals(amlNo) || "002".equals(amlNo) || "003".equals(amlNo) || "004".equals(amlNo) ) {
+      pKey = aml.getDocNo();
+    } else if("018".equals(amlNo) || "021".equals(amlNo)) {
+      pKey = aml.getOrderNo();
+    }
+    
     String rsMsg = "";
-    String sql = "INSERT INTO PSHBPF " + "(SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) " 
+    String sql = "INSERT INTO PSHBPF " 
+               + "(SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) " 
                + "VALUES "
-               + "('RY', '" + strOrderNo + "', '" + rocNowDate + "', '" + aml.getCustomId() + "', '" + aml.getCustomName() + "'"
+               + "('RY', '" + pKey + "', '" + rocNowDate + "', '" + aml.getCustomId() + "', '" + aml.getCustomName() + "'"
                + ", '773', '" + aml.getAMLNo() + "', " + "'" + aml.getErrMsg() + "','" + empNo + "','"
                + rocNowDate + "','" + strNowTime + "') ";
     try {
