@@ -300,7 +300,6 @@ public class InvoM030New_2020 extends bTransaction{
       sbSQL.append("'").append("").append("', ");          //發票處理方式
       sbSQL.append("'").append("收款").append("' ");       //收款/客服
       sbSQL.append(") ");
-      vectorSql.add(sbSQL.toString());
       as400.execFromPool(sbSQL.toString());
       
       //D : 客戶檔
@@ -316,7 +315,6 @@ public class InvoM030New_2020 extends bTransaction{
         sbSQL.append("'").append(getValue("CustomNo").trim()).append("', ");
         sbSQL.append("'").append(customName).append("' ");
         sbSQL.append(") ");
-        vectorSql.add(sbSQL.toString());
         as400.execFromPool(sbSQL.toString());
       }
 //      as400.execFromPool( (String[]) vectorSql.toArray(new String[0]) );

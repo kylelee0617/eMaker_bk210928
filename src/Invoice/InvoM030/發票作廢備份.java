@@ -1,21 +1,30 @@
-package Invoice.InvoM030.func;
+package Invoice.InvoM030;
 
 import java.util.Calendar;
-
 import javax.swing.JOptionPane;
-
+import Invoice.utils.AS400SQL;
+import Invoice.vo.GLEAPFUFBean;
 import jcx.db.talk;
 import jcx.jform.bproc;
 
+/**
+ * 紀祇布...
+ * 
+ * JAVA : PL1607052531611
+ * 2020/12/07 Kyle : 糤紀祇布糶AS400
+ * 
+ * @author B04391
+ *
+ */
 
-public class InvoiceCancel extends bproc{
-  public String getDefaultValue(String value)throws Throwable{
-    //
+public class 祇布紀称 extends bproc {
+  public String getDefaultValue(String value) throws Throwable {
+    /*
     if(getValue("PrintYes").trim().equals("N")){
       message("ゼ祇布 ぃ紀");
       return value;
     }
-    //
+    */
     if(getValue("DELYes").trim().equals("Y")){
       message("紀祇布 ぃ紀");
       return value;
@@ -25,13 +34,16 @@ public class InvoiceCancel extends bproc{
       message("犁穨场祇布 ぃ紀");
       return value;
     }
-    //
+    /*
+    // i dont know why~~~
     if(getValue("Transfer").trim().equals("Μ蹿")){
       message("Μ蹿祇布 ぃ紀");
       return value;
     }
+    */
     //紀ぃ 矗眶
     String stringCreateUserNo = getValue("CreateUserNo");
+
     if(!stringCreateUserNo.equalsIgnoreCase (getUser())){
       int  ans  =  JOptionPane.showConfirmDialog(null,  
                                       "紀籔ミぃ 琌膥尿?",
@@ -40,6 +52,8 @@ public class InvoiceCancel extends bproc{
                                       JOptionPane.WARNING_MESSAGE) ;
       if(ans  ==  JOptionPane.NO_OPTION)  return value;
     }
+
+
     talk dbInvoice = getTalk(""+get("put_dbInvoice"));
     //矪瞶场
     String stringSQL = " SELECT TOP 1 DepartNo " +
@@ -108,6 +122,7 @@ public class InvoiceCancel extends bproc{
                "'" + stringUserkey + "'";
     dbInvoice.execFromPool(stringSQL);
     JOptionPane.showMessageDialog(null,  "紀Θ",  "癟",  JOptionPane.INFORMATION_MESSAGE) ;
+
     return value;
   }
 }
