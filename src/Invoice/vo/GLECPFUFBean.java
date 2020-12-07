@@ -14,11 +14,11 @@ public class GLECPFUFBean {
   private String EC03U = ""; //つ匡    
   private String EC04U = ""; //祇布腹絏      
   private String EC05U = ""; //篕璶絏      
-  private String EC06U = ""; //祇布ゼ祙肂        
-  private String EC07U = ""; //祇布祙肂      
-  private String EC08U = ""; //祇布羆肂       
-  private String EC09U = ""; //ч琵肂       
-  private String EC10U = ""; //ч琵肂
+  private String EC06U = "0"; //祇布ゼ祙肂        
+  private String EC07U = "0"; //祇布祙肂      
+  private String EC08U = "0"; //祇布羆肂       
+  private String EC09U = "0"; //ч琵肂       
+  private String EC10U = "0"; //ч琵肂
   
   public String getEC01U() {
     return EC01U;

@@ -65,6 +65,36 @@ public class DisCountCancel extends bproc{
                    "'D'," +
                "'" + stringUserkey + "'" ;
     dbInvoice.execFromPool(stringSQL);
+    
+    //寫入AS400折讓主檔(作廢)
+    talk as400 = getTalk("AS400");
+    StringBuilder sbSQL = new StringBuilder();
+    sbSQL.append("INSERT INTO GLEBPFUF ");
+    sbSQL.append("(EB01U, EB02U, EB03U, EB04U, EB05U, EB06U, EB07U, EB08U, EB09U, EB10U, EB11U, EB12U, EB13U, EB14U, EB15U, EB16U, EB17U, EB18U, EB19U) ");
+    sbSQL.append("values ");
+    sbSQL.append("(");
+    sbSQL.append("'").append(getValue("DiscountNo").trim()).append("', ");       //折讓號碼
+    sbSQL.append("'").append(getValue("DiscountDate").trim()).append("', ");     //折讓日期
+    sbSQL.append("'").append(getValue("CompanyNo").trim()).append("', ");       //公司代碼
+    sbSQL.append("'").append(getValue("DepartNo").trim()).append("', ");        //部門代碼
+    sbSQL.append("'").append(getValue("ProjectNo").trim()).append("', ");       //案別代碼
+    sbSQL.append("'").append(getValue("HuBei").trim()).append("', ");           //戶別代號
+    sbSQL.append("'").append(getValue("CustomNo").trim()).append("', ");        //客戶代號
+    sbSQL.append("'").append(getValue("DiscountWay").trim()).append("', ");      //Invoice Way
+    sbSQL.append("'").append("").append("', ");                                  //新戶別
+    sbSQL.append("").append(getValue("DiscountMoney").trim()).append(", ");      //未稅
+    sbSQL.append("").append(getValue("DiscountTax").trim()).append(", ");        //稅額
+    sbSQL.append("").append(getValue("DiscountTotalMoney").trim()).append(", "); //含稅
+    sbSQL.append("'").append("N").append("', ");                                //已列印YN
+    sbSQL.append("").append(0).append(", ");                                    //補印次數
+    sbSQL.append("'").append("Y").append("', ");                                //作廢YN
+    sbSQL.append("'").append("N").append("', ");                                //入帳YN
+    sbSQL.append("'").append(getUser()).append("', ");                          //修改人
+    sbSQL.append("'").append(stringSystemDateTime).append("', ");                //收款時間
+    sbSQL.append("'").append("2").append("' ");                                 //PROCESS DISCOUNT
+    sbSQL.append(") ");
+    as400.execFromPool(sbSQL.toString());
+    
     setValue("DELYes","Y");
     message("已作廢折讓單 = " + getValue("DiscountNo"));          
     return value;

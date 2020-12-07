@@ -87,19 +87,6 @@ public class DisCount_New extends bTransaction{
                       "'" +  A_table[i][16]+  "'" +                                               
                       ")";
         dbInvoice.execFromPool(stringSQL);
-        
-        //寫入AS400
-        //C : 折讓明細
-        talk as400 = getTalk("AS400");
-        StringBuilder sbSQL = new StringBuilder();
-        sbSQL.append("INSERT INTO GLECPFUF ");
-        sbSQL.append("(EC01U, EC02U, EC03U, EC04U, EC05U, EC06U, EC07U, EC08U, EC09U, EC10U) ");
-        sbSQL.append("values ");
-        sbSQL.append("(");
-        sbSQL.append("'").append("").append("', ");                 //發票號碼
-        sbSQL.append(") ");
-        as400.execFromPool(sbSQL.toString());
-        
         intBodyCount++;
       }
     }
@@ -179,7 +166,7 @@ public class DisCount_New extends bTransaction{
       sbSQL.append("'").append("N").append("', ");                                //作廢YN
       sbSQL.append("'").append("N").append("', ");                                //入帳YN
       sbSQL.append("'").append(getUser()).append("', ");                          //修改人
-      sbSQL.append("'").append(stringSystemDateTime).append("' ");                //收款時間
+      sbSQL.append("'").append(stringSystemDateTime).append("', ");                //收款時間
       sbSQL.append("'").append("1").append("' ");                                 //PROCESS DISCOUNT
       sbSQL.append(") ");
       as400.execFromPool(sbSQL.toString());
@@ -200,12 +187,12 @@ public class DisCount_New extends bTransaction{
         sbSQL.append("").append( A_table[i][10].trim() ).append(", ");               //未稅
         sbSQL.append("").append( A_table[i][11].trim() ).append(", ");               //稅額
         sbSQL.append("").append( A_table[i][6].trim() ).append(", ");               //總金額
-        sbSQL.append("'").append( A_table[i][7].trim() ).append("', ");              //已折讓金額
-        sbSQL.append("").append( A_table[i][8].trim() ).append(", ");                //欲折讓金額
+        sbSQL.append("").append( A_table[i][7].trim() ).append(", ");              //已折讓金額
+        sbSQL.append("").append( A_table[i][8].trim() ).append(" ");                //欲折讓金額
         sbSQL.append(") ");
         as400.execFromPool(sbSQL.toString());
         GLECPFUFCount++;
-      }  
+      }
       
     }
     action(9);
