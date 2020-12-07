@@ -139,7 +139,8 @@ public class CheckAML2 extends bproc{
     }
 		//洗錢追蹤流水號
 		int intRecordNo =1;
-		strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='"+strOrderNo+"'";
+//		strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='"+strOrderNo+"'";
+		strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE DocNo ='"+strDocNo+"'";
 		ret070Table = dbSale.queryFromPool(strSaleSql);
 		if(!"".equals(ret070Table[0][0].trim())){
 			intRecordNo = Integer.parseInt(ret070Table[0][0].trim())+1;
@@ -189,7 +190,7 @@ public class CheckAML2 extends bproc{
     aml.setOrderNo(strOrderNo);
     aml.setProjectID1(strProjectID1);
     aml.setFuncName("收款");
-    aml.setActionName(strActionName);
+    aml.setActionName("存檔");
     aml.setCustomTitle("客戶");
     aml.setTrxDate(strEDate);
     aml.setOrderNos(kutil.genQueryInString(orderNoss));
