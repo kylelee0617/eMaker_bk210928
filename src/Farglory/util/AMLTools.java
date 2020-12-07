@@ -165,6 +165,17 @@ public class AMLTools extends bvalidate {
     }
   }
   
+  public Map getAMLReTurn() throws Throwable {
+    Map rsMap = new HashMap();
+    String sql = "select * from saleRY773 where AMLType = 'AML' order by AMLNo asc";
+    String[][] retAML = dbSale.queryFromPool(sql);
+    for (int i = 0; i < retAML.length; i++) {
+      String[] retAML1 = retAML[i];
+      rsMap.put(retAML1[1].trim(), retAML1[2].trim());
+    }
+    return rsMap;
+  }
+  
   public String getAML() throws Throwable {
     String rs = "getAML Error";
     String sql = "select * from saleRY773 where AMLType = 'AML' order by AMLNo asc";

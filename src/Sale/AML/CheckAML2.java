@@ -137,14 +137,7 @@ public class CheckAML2 extends bproc{
         orderNos += "、"+ orderNoTable[g][2].trim();
       }
     }
-		//洗錢追蹤流水號
-		int intRecordNo =1;
-//		strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='"+strOrderNo+"'";
-		strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE DocNo ='"+strDocNo+"'";
-		ret070Table = dbSale.queryFromPool(strSaleSql);
-		if(!"".equals(ret070Table[0][0].trim())){
-			intRecordNo = Integer.parseInt(ret070Table[0][0].trim())+1;
-		}
+		
 		//actionNo
 		String ram = "";
 		Random random = new Random();
@@ -234,6 +227,15 @@ public class CheckAML2 extends bproc{
 		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 		//End of 態樣1~4 Kyle
 		
+    //洗錢追蹤流水號
+    //20201207 Kyle : 因為態樣1~4另外獨立處理，避免影響原流水號運行，故稍微下移
+    int intRecordNo =1;
+    //strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='"+strOrderNo+"'";
+    strSaleSql = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE DocNo ='"+strDocNo+"'";
+    ret070Table = dbSale.queryFromPool(strSaleSql);
+    if(!"".equals(ret070Table[0][0].trim())){
+      intRecordNo = Integer.parseInt(ret070Table[0][0].trim())+1;
+    }
 		
 		//Pattern5,8,9,10,11,17~20
 		//信用卡
@@ -247,14 +249,37 @@ public class CheckAML2 extends bproc{
 				String str083Bstatus=ret083Table[e][12].trim();//黑名單
 				String str083Cstatus=ret083Table[e][13].trim();//控管名單
 				String str083Rstatus=ret083Table[e][14].trim();//利關人
-		System.out.println("str083Deputy=====>"+str083Deputy);
-		System.out.println("str083DeputyName=====>"+str083DeputyName);
-		System.out.println("str083DeputyId=====>"+str083DeputyId);
-		System.out.println("str083Rlatsh=====>"+str083Rlatsh);
-		System.out.println("str083Bstatus=====>"+str083Bstatus);
-		System.out.println("str083Cstatus=====>"+str083Cstatus);
-		System.out.println("str083Rstatus=====>"+str083Rstatus);
-				//不適用LOG_2,3,4,6,7,9,10,11,12,15,16
+    		System.out.println("str083Deputy=====>"+str083Deputy);
+    		System.out.println("str083DeputyName=====>"+str083DeputyName);
+    		System.out.println("str083DeputyId=====>"+str083DeputyId);
+    		System.out.println("str083Rlatsh=====>"+str083Rlatsh);
+    		System.out.println("str083Bstatus=====>"+str083Bstatus);
+    		System.out.println("str083Cstatus=====>"+str083Cstatus);
+    		System.out.println("str083Rstatus=====>"+str083Rstatus);
+				
+		    //不適用LOG_2,3,4,6,7,9,10,11,12,15,16 (請告訴我不用迴圈寫的理由)
+    		int[] noUseAML = {2 , 3 , 4 , 6 , 7, 9, 10, 11, 12, 15, 16};
+		    Map mapAMLMsg = amlTool.getAMLReTurn();
+		    for(int ii=0 ; ii<noUseAML.length ; ii++) {
+		      String amlNo = "";
+		      if( noUseAML[ii]<10 ) {
+		        amlNo = "00" + noUseAML[ii];
+		      }else {
+		        amlNo = "0" + noUseAML[ii];
+		      }
+		      String amlDesc = mapAMLMsg.get(amlNo).toString().replaceAll("<customName>", "").replaceAll("<customTitle>", "");
+		      strSaleSql = 
+		          "INSERT INTO Sale05M070 "
+		          + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
+		          + "VALUES "
+		          + "('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"'"
+		              + ",'"+allCustomName+"','"+strEDate+"','RY','773','" + amlNo + "','" + amlDesc + "'"
+		              + ",'"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+	        dbSale.execFromPool(strSaleSql);
+	        intRecordNo++;
+		    }
+		
+		    /*
 				//2
 				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
@@ -299,6 +324,7 @@ public class CheckAML2 extends bproc{
 				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
+				*/
 				
 				if("Y".equals(str083Deputy)){//有代繳人
 					//18制裁名單
@@ -476,6 +502,7 @@ public class CheckAML2 extends bproc{
 				}		
 			}
 		}
+		
 		//現金(只有一筆)
 		System.out.println("strDeputy=====>"+strDeputy);
 		System.out.println("strDeputyName=====>"+strDeputyName);
@@ -695,7 +722,8 @@ public class CheckAML2 extends bproc{
 				intRecordNo++;
 			}
 		}
-		//銀行
+		
+		//銀行匯款
 		ret328Table  =  getTableData("table9");
 		if(ret328Table.length > 0) {
 			for(int f=0;f<ret328Table.length;f++){
