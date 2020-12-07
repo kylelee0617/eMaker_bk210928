@@ -26,6 +26,29 @@ public class KUtils extends bvalidate {
   public boolean check(String value) throws Throwable {
     return false;
   }
+  
+  /**
+   * 數字前後補0
+   * 
+   * @param intSrc 原數字
+   * @param count 最終位數
+   * @return
+   * @throws Throwable
+   */
+  public String add0(int intSrc , int count , String FB) throws Throwable {
+    String strSrc = Integer.toString(intSrc);
+    String strPlus = "";
+    for(int ii=0 ; ii<count-(strSrc.length()) ; ii++) {
+      strPlus += "0";
+    }
+    
+    if( "F".equals(FB) ) {
+      return strPlus + strSrc; 
+    }else {
+      return strSrc + strPlus;
+    }
+    
+  }
 
   public String formatACDate(String day) throws Throwable {
     if (day == null || "".equals(day)) {

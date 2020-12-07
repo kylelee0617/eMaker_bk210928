@@ -1,11 +1,11 @@
 package Invoice.InvoM030.func;
+import java.util.Calendar;
+import java.util.Random;
+import java.util.Vector;
+
+import Farglory.util.KUtils;
+import jcx.db.talk;
 import jcx.jform.bTransaction;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
-import javax.swing.*;
 
 /**
  * Tip:
@@ -26,6 +26,7 @@ public class InvoM030New_2020 extends bTransaction{
     talk as400 = getTalk("AS400");
     talk sale = getTalk("Sale");
     dbInvoice = getTalk("Invoice");
+    KUtils kUtil = new KUtils();
     
     //處理部門
     String stringSQL = " SELECT TOP 1 DepartNo " +
@@ -247,7 +248,7 @@ public class InvoM030New_2020 extends bTransaction{
       sbSQL.append("'").append(stringSystemDateTime).append("', ");               //CreateDateTime
       sbSQL.append("'").append(getUser().trim()).append("', ");                   //LastUserNo
       sbSQL.append("'").append(stringSystemDateTime).append("', ");                //LastDateTime
-      sbSQL.append("'").append(r1.nextInt(9999)).append("', ");                    //RandomCode
+      sbSQL.append("'").append(kUtil.add0(r1.nextInt(9999), 4, "F")).append("', ");  //RandomCode
       sbSQL.append("'").append(customName).append("' ");                         //客戶姓名
       sbSQL.append(") ");
       dbInvoice.execFromPool(sbSQL.toString());

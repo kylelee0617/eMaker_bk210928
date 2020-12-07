@@ -30,7 +30,7 @@ public class InvoicePrint_Elec extends sproc{
       }
     }
     if(cv==0){
-      messagebox("½Ğ¦Ü¤Ö¤Ä¿ï¤@µ§¸ê®Æ");
+      messagebox("è«‹è‡³å°‘å‹¾é¸ä¸€ç­†è³‡æ–™");
       return value;
     }
     
@@ -57,28 +57,29 @@ public class InvoicePrint_Elec extends sproc{
     StringBuffer vM030 = new StringBuffer();
     for(int x = 0 ; x<table.length ; x++){
       if(hM030. containsKey(table[x][2].trim()) && table[x][0].trim().equals("Y")){
-        if(vM030.length()==0) vM030.append("µo²¼¸¹½X§@¼o¡A½ĞÂI¿ï¿Oªw¡AÀËµø§@¼oµo²¼²M³æ\r\n");
-        vM030.append("µo²¼¸¹½X : "+table[x][2].trim()+"\r\n");
+        if(vM030.length()==0) vM030.append("ç™¼ç¥¨è™Ÿç¢¼ä½œå»¢ï¼Œè«‹é»é¸ç‡ˆæ³¡ï¼Œæª¢è¦–ä½œå»¢ç™¼ç¥¨æ¸…å–®\r\n");
+        vM030.append("ç™¼ç¥¨è™Ÿç¢¼ : "+table[x][2].trim()+"\r\n");
       }
     }
     
-    String PrintDateTime = datetime.getToday("YYYY/mm/dd") + " " + datetime.getTime("h:m:s");
+//    String PrintDateTime = datetime.getToday("YYYY/mm/dd") + " " + datetime.getTime("h:m:s");
+    String PrintDateTime = datetime.getToday("YYYYmmdd") + datetime.getTime("hms");
     setValue("PrintDateTime",PrintDateTime);
-    String PrintStatus = "²£¥Íµo²¼";
+    String PrintStatus = "ç”¢ç”Ÿç™¼ç¥¨";
     
-    //¥DÀÉ
+    //ä¸»æª”
     HashMap hM030_1 = new HashMap();
-    // 0.µo²¼¸¹½X 1.µo²¼¤é´Á 2.¶R¨ü¤H¦WºÙ 3.Àç·~µ|ºØÃş
+    // 0.ç™¼ç¥¨è™Ÿç¢¼ 1.ç™¼ç¥¨æ—¥æœŸ 2.è²·å—äººåç¨± 3.ç‡Ÿæ¥­ç¨…ç¨®é¡
     sql = new StringBuffer(" select a.InvoiceNo, a.InvoiceDate, a.CustomName, a.TaxKind ");
-    // 4.®×§O 5.¤á§O6.¨®¦ì 7.µo²¼¥¼µ|ª÷ÃB 8.µo²¼µ|ÃB 9.µo²¼Á`ª÷ÃB
+    // 4.æ¡ˆåˆ¥ 5.æˆ¶åˆ¥6.è»Šä½ 7.ç™¼ç¥¨æœªç¨…é‡‘é¡ 8.ç™¼ç¥¨ç¨…é¡ 9.ç™¼ç¥¨ç¸½é‡‘é¡
     sql.append(",'', a.HuBei, a.HuBei, isnull(a.InvoiceMoney,'0'), isnull(a.InvoiceTax,'0'), isnull(a.InvoiceTotalMoney, '0') ");
-    // 10.¦C¦L¦¸¼Æ 11.µo²¼Áp¦¡(2/3) 12.«~¦W¥N¸¹ 13.¶R¨ü¤H²Î½s 14.¬O§_§R°£ 15 µo²¼ºØÃş 16 «ÈªA¤á§O
+    // 10.åˆ—å°æ¬¡æ•¸ 11.ç™¼ç¥¨è¯å¼(2/3) 12.å“åä»£è™Ÿ 13.è²·å—äººçµ±ç·¨ 14.æ˜¯å¦åˆªé™¤ 15 ç™¼ç¥¨ç¨®é¡ 16 å®¢æœæˆ¶åˆ¥
     sql.append(",isnull(a.PrintTimes,'0'), InvoiceKind, PointNo,CustomNo, isnull(DELYes,''), ProcessInvoiceNo, isnull(OBJECT_CD, '' )");
-    // 17. ÀH¾÷½X
+    // 17. éš¨æ©Ÿç¢¼ , 18. å…¬å¸ä»£ç¢¼
     sql.append(",a.RandomCode ,a.CompanyNo ");
     sql.append("from InvoM030 a ");
     sql.append("where 1=1 ");
-    // sql.append("and isnull(a.RandomCode,'') != '' "); //¥u§ä¹q¤lµo²¼
+    // sql.append("and isnull(a.RandomCode,'') != '' "); //åªæ‰¾é›»å­ç™¼ç¥¨
     if (choose.length() != 0) sql.append(" and InvoiceNo in (" + choose.toString() + ")");
     String[][] InvoM030 = t.queryFromPool(sql.toString());
     for (int x = 0; x < InvoM030.length; x++) {
@@ -90,7 +91,7 @@ public class InvoicePrint_Elec extends sproc{
       System.out.println("InvoM030>>>" + tmpsb.toString());
     }
     
-    //®×§O¥N¸¹ - ¦WºÙ
+    //æ¡ˆåˆ¥ä»£è™Ÿ - åç¨±
     HashMap hM0D0 = new HashMap();
     sql = new StringBuffer(" select ProjectNo,ProjectName from InvoM0D0 ");
     String[][] InvoM0D0 = t.queryFromPool(sql.toString());
@@ -98,7 +99,7 @@ public class InvoicePrint_Elec extends sproc{
       hM0D0.put(InvoM0D0[x][0].trim(), InvoM0D0[x][1].trim());
     }
 
-    //¦æ¾P«È¤á©m¦W¦a§}
+    //è¡ŒéŠ·å®¢æˆ¶å§“ååœ°å€
     HashMap hCustom = new HashMap();
     sql = new StringBuffer(" select DISTINCT "
         + "RTRIM(ISNULL(a.City,'')) + RTRIM(ISNULL(a.Town,'')) + RTRIM(a.Address)"  //0
@@ -113,7 +114,7 @@ public class InvoicePrint_Elec extends sproc{
       hCustom.put(Custom[x][2].trim(), Custom[x]);
     }
 
-    //«~¶µ¥N¸¹ - ¦WºÙ
+    //å“é …ä»£è™Ÿ - åç¨±
     HashMap hM010 = new HashMap();
     sql = new StringBuffer("select PointNo,PointName from InvoM010");
     String[][] InvoM010 = t.queryFromPool(sql.toString());
@@ -121,9 +122,9 @@ public class InvoicePrint_Elec extends sproc{
       hM010.put(InvoM010[x][0].trim(), InvoM010[x][1].trim());
     }
 
-    //´Á´Ú
+    //æœŸæ¬¾
     HashMap hM031 = new HashMap();
-    sql = new StringBuffer("select UPPER(InvoiceNo),RTRIM(Detailitem)+RTRIM(Remark)+'¡F' from InvoM031");
+    sql = new StringBuffer("select UPPER(InvoiceNo),RTRIM(Detailitem)+RTRIM(Remark)+'ï¼›' from InvoM031");
     if (choose.length() != 0) sql.append(" WHERE InvoiceNo in (" + choose.toString() + ")");
     String[][] InvoM031 = t.queryFromPool(sql.toString());
     for (int x = 0; x < InvoM031.length; x++) {
@@ -138,42 +139,42 @@ public class InvoicePrint_Elec extends sproc{
       }
     }
 
-    // ¶}©l²Õ¸ê®Æ
+    // é–‹å§‹çµ„è³‡æ–™
     Hashtable result = new Hashtable();
     for (int x = 0; x < table.length; x++) {
       if (table[x][0].trim().equals("Y")) {
         String[] Invo_temp = (String[]) hM030_1.get( table[x][2].trim() );
-        String InvoiceNo = Invo_temp[0].trim();        // µo²¼¸¹½X
+        String InvoiceNo = Invo_temp[0].trim();        // ç™¼ç¥¨è™Ÿç¢¼
         
-        //¹LÂo
-        if (Invo_temp == null) continue;        //¨S¥DÀÉ
-        if (!PrintStatus.equals("²£¥Í§@¼oÁp") && Invo_temp[14].trim().equals("Y")) continue; //¤w§@¼o(§R°£)¤£³B²z
+        //éæ¿¾
+        if (Invo_temp == null) continue;        //æ²’ä¸»æª”
+        if (!PrintStatus.equals("ç”¢ç”Ÿä½œå»¢è¯") && Invo_temp[14].trim().equals("Y")) continue; //å·²ä½œå»¢(åˆªé™¤)ä¸è™•ç†
         
-        InvoiceDate = Invo_temp[1].trim();             // µo²¼¤é´Á
-        String CustomName = Invo_temp[2].trim();       // «È¤á¦WºÙ
-        String ProjectNo = table[x][4].trim();  // ®×§O
-        String HuBei = Invo_temp[5].trim();            // ¤á§O
-        String Detailltem = hM031.get( table[x][2].trim() )!=null? (String)hM031.get( table[x][2].trim() ):""  ; // ´Á´Ú¦WºÙ
-        String InvoiceMoney = Invo_temp[7].trim();     // µo²¼¥¼µ|ª÷ÃB
-        String InvoiceTax = Invo_temp[8].trim();       // µo²¼µ|ÃB
-        String InvoiceTotalMoney = Invo_temp[9].trim();// µo²¼Á`ª÷ÃB
-        int PrintTime = Integer.parseInt(Invo_temp[10].trim());       //¦C¦L®É¶¡
-        String PointNo = Invo_temp[12].trim();         //«~¶µ¥N¸¹
+        InvoiceDate = Invo_temp[1].trim();             // ç™¼ç¥¨æ—¥æœŸ
+        String CustomName = Invo_temp[2].trim();       // å®¢æˆ¶åç¨±
+        String ProjectNo = table[x][4].trim();  // æ¡ˆåˆ¥
+        String HuBei = Invo_temp[5].trim();            // æˆ¶åˆ¥
+        String Detailltem = hM031.get( table[x][2].trim() )!=null? (String)hM031.get( table[x][2].trim() ):""  ; // æœŸæ¬¾åç¨±
+        String InvoiceMoney = Invo_temp[7].trim();     // ç™¼ç¥¨æœªç¨…é‡‘é¡
+        String InvoiceTax = Invo_temp[8].trim();       // ç™¼ç¥¨ç¨…é¡
+        String InvoiceTotalMoney = Invo_temp[9].trim();// ç™¼ç¥¨ç¸½é‡‘é¡
+        int PrintTime = Integer.parseInt(Invo_temp[10].trim());       //åˆ—å°æ™‚é–“
+        String PointNo = Invo_temp[12].trim();         //å“é …ä»£è™Ÿ
         String PointName = (String) hM010.get(PointNo);
-        String randomCode = Invo_temp[17].trim();      //ÀH¾÷½X
+        String randomCode = Invo_temp[17].trim();      //éš¨æ©Ÿç¢¼
         CompanyNo = Invo_temp[18].trim();
-        String CustomNo = Invo_temp[13].trim();        //«È¤áID
+        String CustomNo = Invo_temp[13].trim();        //å®¢æˆ¶ID
         String ProcessInvoiceNo = Invo_temp[15].trim();
         String OBJECT_CD = Invo_temp[16].trim();
         String buyerZip = "";
         String address = "";
-        String[] CustomInfo = (String[]) hCustom.get(table[x][2].trim() + CustomNo.trim()); //«È¤á¸ê®Æ (µo²¼¸¹½X+«È¤áID)
+        String[] CustomInfo = (String[]) hCustom.get(table[x][2].trim() + CustomNo.trim()); //å®¢æˆ¶è³‡æ–™ (ç™¼ç¥¨è™Ÿç¢¼+å®¢æˆ¶ID)
         if (CustomInfo != null) {
           buyerZip = CustomInfo[3].trim();
           address += CustomInfo[0].trim();
         }
         
-        // 2012-06-18 ¤½¥q¦WºÙ... ­×¥¿
+        // 2012-06-18 å…¬å¸åç¨±... ä¿®æ­£
         String companyInvoNo = "";
         String Company_Name = "";
         String[][] FED1023A = t.queryFromPool("SELECT "
@@ -189,7 +190,7 @@ public class InvoicePrint_Elec extends sproc{
           companyInvoNo = FED1023A[0][2].trim();
         }
         
-        // «ÈªA«È¤á¸ê®Æ
+        // å®¢æœå®¢æˆ¶è³‡æ–™
         if (ProcessInvoiceNo.equals("2")) {
           if (ProjectNo.trim().equals("H38")) ProjectNo = "H38A";
           String stringSQL = "SELECT OBJECT_FULL_NAME, MAIL_ADDR FROM FE5D05 " 
@@ -213,7 +214,7 @@ public class InvoicePrint_Elec extends sproc{
           CustomInfo = new String[3];
         }
         
-        //¥H¤W¨S¦³«È¤á¸ê®Æ «h±qµo²¼¨t²Î§ä
+        //ä»¥ä¸Šæ²’æœ‰å®¢æˆ¶è³‡æ–™ å‰‡å¾ç™¼ç¥¨ç³»çµ±æ‰¾
         if(CustomInfo==null){
           String stringSQL = " SELECT "
               + "ZIPCode "
@@ -233,39 +234,40 @@ public class InvoicePrint_Elec extends sproc{
              }
           }
         }
-        System.out.println("²£¥Íµo²¼=" + InvoiceNo);
+        System.out.println("ç”¢ç”Ÿç™¼ç¥¨=" + InvoiceNo);
         
 //        System.out.println(">>>buyerZip:" + buyerZip);
 //        System.out.println(">>>address:" + address);
         
-        //©ú²Ó¤º®e
+        //æ˜ç´°å…§å®¹
         StringBuilder sbDetail = new StringBuilder();
-        sbDetail.append("Àç·~¤H²Î½s:").append(companyInvoNo).append(";");
+        sbDetail.append("ç‡Ÿæ¥­äººçµ±ç·¨:").append(companyInvoNo).append(";");
         if(Company_Name.length() > 0) {
-//          Company_Name = Company_Name.replaceAll("ªÑ¥÷¦³­­", "(ªÑ)").replaceAll("¿ì¨Æ³B", "¿ì");
-          sbDetail.append("¦WºÙ:").append( Company_Name.replaceAll("ªÑ¥÷¦³­­", "(ªÑ)").replaceAll("¥«¿ì¨Æ³B", "¿ì") ).append(";");
+//          Company_Name = Company_Name.replaceAll("è‚¡ä»½æœ‰é™", "(è‚¡)").replaceAll("è¾¦äº‹è™•", "è¾¦");
+          sbDetail.append("åç¨±:").append( Company_Name.replaceAll("è‚¡ä»½æœ‰é™", "(è‚¡)").replaceAll("å¸‚è¾¦äº‹è™•", "è¾¦") ).append(";");
         }
-        sbDetail.append("¤é´Á:").append(PrintDateTime).append(";");
-        sbDetail.append("µo²¼¸¹½X:").append(InvoiceNo).append(";");
-        sbDetail.append("¶R¨ü¤H:").append(CustomName).append(";");
-        sbDetail.append("®×¦W:").append(ProjectNo).append(";");
-        sbDetail.append("´É¼Ó§O:").append(HuBei).append(";");
-        sbDetail.append("ºK­n:").append(PointName + "  " + Detailltem).append(";");
+        sbDetail.append("æ—¥æœŸ:").append(PrintDateTime).append(";");
+        sbDetail.append("ç™¼ç¥¨è™Ÿç¢¼:").append(InvoiceNo).append(";");
+        sbDetail.append("è²·å—äºº:").append(CustomName).append(";");
+        sbDetail.append("æ¡ˆå:").append(ProjectNo).append(";");
+        sbDetail.append("æ£Ÿæ¨“åˆ¥:").append(HuBei).append(";");
+        sbDetail.append("æ‘˜è¦:").append(PointName + "  " + Detailltem).append(";");
         
         InvoicePrintVo vo = new InvoicePrintVo();
-        //---¦¬¥ó¤H
+        //---æ”¶ä»¶äºº
         vo.setRecipientPost(buyerZip);
         vo.setRecipientAddr(address);
         vo.setRecipientCompany("");
         vo.setRecipientName(CustomName);
-        //----µo²¼¤º®e
+        //----ç™¼ç¥¨å…§å®¹
         vo.setInvoiceDate( Integer.toString(Integer.parseInt(InvoiceDate.replaceAll("/", "")) - 19110000) );
         vo.setInvoiceNumber(InvoiceNo);
-        vo.setPrintDate(datetime.getToday("YYYYmmdd") + datetime.getTime("hms"));
+//        vo.setPrintDate(datetime.getToday("YYYYmmdd") + datetime.getTime("hms"));
+        vo.setPrintDate(PrintDateTime);
         vo.setRandomCode(randomCode);
         vo.setSaleAmount(InvoiceMoney);
         vo.setTotal(InvoiceTotalMoney);
-        if(CustomNo.length() == 8) {  //ªk¤H¤~­n¶Ç°e²Î½s
+        if(CustomNo.length() == 8) {  //æ³•äººæ‰è¦å‚³é€çµ±ç·¨
           vo.setBuyerId(CustomNo);
         }else {
           vo.setBuyerId("");
@@ -273,7 +275,7 @@ public class InvoicePrint_Elec extends sproc{
         vo.setSellerId(companyInvoNo);
         vo.setDetail(sbDetail.toString());
         vo.setPrintCount("" + (PrintTime + 1) );
-        vo.setDeptId(PrintUserNo.equals("flife")? "25000":"¥h¦L25F°Õ");
+        vo.setDeptId(PrintUserNo.equals("flife")? "25000":"å»å°25Få•¦");
         vo.setBuyerName(CustomName);
         vo.setTax(InvoiceTax);
         
@@ -287,21 +289,20 @@ public class InvoicePrint_Elec extends sproc{
           sql2.append(", printTimes='").append(PrintTime + 1).append("' ");
           sql2.append("where InvoiceNo='").append(InvoiceNo).append("' ");
           t.execFromPool(sql2.toString());
-          result.put( InvoiceNo, "¦C¦L¦¨¥\©ó:" + rs.replace("SUCCESS:", "") );
+          result.put( InvoiceNo, "åˆ—å°æˆåŠŸæ–¼:" + rs.replace("SUCCESS:", "") );
         }else {
-          result.put( InvoiceNo, "µo¥Í°İÃD:" + rs.replace("ERROR:", "") );
+          result.put( InvoiceNo, "ç™¼ç”Ÿå•é¡Œ:" + rs.replace("ERROR:", "") );
         }
         
       } //if end
     } //for end
     
-//    System.out.println(">>>result:" + result);
-//    messagebox( "¦C¦Lµ²ªG:\n" + result.toString().replaceAll("{" , "").replaceAll(",", "").replaceAll("}", "\n") );
-    messagebox( "¦C¦Lµ²ªG:\n" + result );
+    System.out.println(">>>result:" + result);
+    message("åˆ—å°å®Œæˆã€‚ã€‚ã€‚ãƒ½(âœ¿ï¾Ÿâ–½ï¾Ÿ)ãƒ");
     
     return value;
   }
   public String getInformation(){
-    return "---------------button1(µo²¼®M¦L).defaultValue()----------------";
+    return "---------------button1(ç™¼ç¥¨å¥—å°).defaultValue()----------------";
   }
 }

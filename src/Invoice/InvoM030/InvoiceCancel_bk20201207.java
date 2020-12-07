@@ -17,7 +17,7 @@ import jcx.jform.bproc;
  *
  */
 
-public class 發票作廢備份 extends bproc {
+public class InvoiceCancel_bk20201207 extends bproc {
   public String getDefaultValue(String value) throws Throwable {
     /*
     if(getValue("PrintYes").trim().equals("N")){
