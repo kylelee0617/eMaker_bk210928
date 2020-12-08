@@ -8,7 +8,7 @@ import      jcx.html.*;
 import      jcx.db.*;
 import      cLabel;
 
-public  class  SignSave_2020  extends  bproc {
+public  class  SignSave_bk  extends  bproc {
     talk  dbSale    =  getTalk(""+get("put_dbSale"));
     talk dbInvoice = getTalk(""+get("put_dbInvoice"));
     talk dbTestAs400 = getTalk("test400CRM");

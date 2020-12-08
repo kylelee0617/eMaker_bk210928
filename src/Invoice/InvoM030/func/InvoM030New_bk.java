@@ -6,7 +6,7 @@ import jcx.util.*;
 import jcx.html.*;
 import jcx.db.*;
 import javax.swing.*;
-public class InvoM030New extends bTransaction{
+public class InvoM030New_bk extends bTransaction{
   public boolean action(String value)throws Throwable{
     // 回傳值為 true 表示執行接下來的資料庫異動或查詢
     // 回傳值為 false 表示接下來不執行任何指令

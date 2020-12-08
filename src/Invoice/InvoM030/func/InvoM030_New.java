@@ -15,7 +15,7 @@ import jcx.jform.bTransaction;
  *
  */
 
-public class InvoM030New_2020 extends bTransaction{
+public class InvoM030_New extends bTransaction{
   public boolean action(String value)throws Throwable{
     // 回傳值為 true 表示執行接下來的資料庫異動或查詢
     // 回傳值為 false 表示接下來不執行任何指令
@@ -243,7 +243,7 @@ public class InvoM030New_2020 extends bTransaction{
       sbSQL.append("'").append("N").append("', ");                                //作廢YN
       sbSQL.append("'").append("N").append("', ");                                //入帳YN
       sbSQL.append("'").append("1").append("', ");                                //ProcessInvoiceNo
-      sbSQL.append(null + ", ");                                                  //Transfer
+      sbSQL.append("發票系統").append(", ");                                      //Transfer
       sbSQL.append("'").append(getUser().trim()).append("', ");                   //CreateUserNo
       sbSQL.append("'").append(stringSystemDateTime).append("', ");               //CreateDateTime
       sbSQL.append("'").append(getUser().trim()).append("', ");                   //LastUserNo
