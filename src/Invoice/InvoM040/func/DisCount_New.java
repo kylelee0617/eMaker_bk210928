@@ -172,7 +172,7 @@ public class DisCount_New extends bTransaction{
       as400.execFromPool(sbSQL.toString());
       
       //¼g¤JAS400§éÅý©ú²Ó
-      int GLECPFUFCount = 0;
+      int GLECPFUFCount = 1;
       for(int i=0;i<A_table.length;i++){
         sbSQL = new StringBuilder();
         sbSQL.append("INSERT INTO GLECPFUF ");
