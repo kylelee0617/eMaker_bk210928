@@ -333,11 +333,73 @@ public class Sale05M094 extends bproc{
                                              " AND InvoiceNo='" + stringInvoiceNoOld + "'"  ;                           
         dbInvoice.execFromPool(stringSQL);
         //System.out.println(intSale05M081+"INSERT INTO Invom041--------------------------"+stringSQL) ;
+        
+        //20201208 Kyle : 寫入AS400 GLECPFUF 折讓明細
+        talk as400 = getTalk("AS400");
+        StringBuilder sbSQL = new StringBuilder();
+        stringSQL = "select * FROM Invom041 WHERE DiscountNo = '"+stringNo+"'" ;
+        String[][] retM041 = dbInvoice.queryFromPool(stringSQL);
+        for(int ii=0 ; ii<retM041.length ; ii++) {
+          String[] m041 = retM041[ii];
+          sbSQL.append("INSERT INTO GLECPFUF ");
+          sbSQL.append("(EC01U, EC02U, EC03U, EC04U, EC05U, EC06U, EC07U, EC08U, EC09U, EC10U) ");
+          sbSQL.append("values ");
+          sbSQL.append("(");
+          sbSQL.append("'").append( m041[0].trim() ).append("', ");                         //折讓號碼
+          sbSQL.append("").append( m041[1].trim() ).append(", ");                        //筆數
+          sbSQL.append("'").append( m041[2].trim() ).append("', ");                                //勾選
+          sbSQL.append("'").append( m041[3].trim() ).append("', ");             //發票號碼
+          sbSQL.append("'").append( m041[4].trim() ).append("', ");            //摘要代碼
+          sbSQL.append("").append( m041[5].trim() ).append(", ");               //未稅
+          sbSQL.append("").append( m041[6].trim() ).append(", ");               //稅額
+          sbSQL.append("").append( m041[7].trim() ).append(", ");               //總金額
+          sbSQL.append("").append( m041[8].trim() ).append(", ");              //已折讓金額
+          sbSQL.append("").append( m041[9].trim() ).append(" ");                //欲折讓金額
+          sbSQL.append(") ");
+          as400.execFromPool(sbSQL.toString());
+          intNo++;
+        }
+        
+        
         stringSQL="update Invom040 set DiscountMoney= DiscountMoney+ " + intInvoiceMoney + " ,"+
                                                                 " DiscountTax= DiscountTax+ " + intInvoiceTax + ", "  +
                                     " DiscountTotalMoney=DiscountTotalMoney + " + (intInvoiceTotalMoney -  integerYiDiscountMoney ) +" "+
                            " where DiscountNo ='" + stringNo +"'"   ;             
         dbInvoice.execFromPool(stringSQL);
+        
+        //20201208 Kyle : 寫入AS400 GLEBPFUF 折讓主檔
+        stringSQL = "select * FROM Invom040 WHERE DiscountNo = '"+stringNo+"'" ;
+        String[][] retM040 = dbInvoice.queryFromPool(stringSQL);
+        for(int ii=0 ; ii<retM040.length ; ii++) {
+          String[] m040 = retM040[ii];
+          sbSQL = new StringBuilder();
+          sbSQL.append("INSERT INTO GLEBPFUF ");
+          sbSQL.append("(EB01U, EB02U, EB03U, EB04U, EB05U, EB06U, EB07U, EB08U, EB09U, EB10U, EB11U, EB12U, EB13U, EB14U, EB15U, EB16U, EB17U, EB18U, EB19U) ");
+          sbSQL.append("values ");
+          sbSQL.append("(");
+          sbSQL.append("'").append(m040[0].trim()).append("', ");             //折讓號碼
+          sbSQL.append("'").append(m040[1].trim()).append("', ");             //折讓日期
+          sbSQL.append("'").append(m040[2].trim()).append("', ");             //公司代碼
+          sbSQL.append("'").append(m040[3].trim()).append("', ");             //部門代碼
+          sbSQL.append("'").append( m040[4].trim() ).append("', ");           //案別代碼
+          sbSQL.append("'").append( m040[5].trim() ).append("', ");           //戶別代號
+          sbSQL.append("'").append( m040[6].trim() ).append("', ");           //客戶代號
+          sbSQL.append("'").append( m040[7].trim() ).append("', ");           //Invoice Way
+          sbSQL.append("'").append( m040[8].trim() ).append("', ");           //新戶別
+          sbSQL.append("").append(m040[9].trim()).append(", ");               //未稅
+          sbSQL.append("").append(m040[10].trim()).append(", ");              //稅額
+          sbSQL.append("").append(m040[11].trim()).append(", ");              //含稅
+          sbSQL.append("'").append(m040[12].trim()).append("', ");            //已列印YN
+          sbSQL.append("").append(m040[13].trim()).append(", ");              //補印次數
+          sbSQL.append("'").append(m040[14].trim()).append("', ");            //作廢YN
+          sbSQL.append("'").append(m040[15].trim()).append("', ");            //入帳YN
+          sbSQL.append("'").append(m040[16].trim()).append("', ");           //修改人
+          sbSQL.append("'").append(m040[17].trim()).append("', ");            //收款時間
+          sbSQL.append("'").append(m040[18].trim()).append("' ");             //PROCESS DISCOUNT
+          sbSQL.append(") ");
+          as400.execFromPool(sbSQL.toString());
+        }
+        
         //System.out.println(intSale05M081+"update Invom040--------------------------"+stringSQL) ;
         stringSQL="update Invom030 set DisCountMoney=DisCountMoney+ " + (intInvoiceTotalMoney -  integerYiDiscountMoney ) +" , "  +
                                                                " DisCountTimes=DisCountTimes+1, "+

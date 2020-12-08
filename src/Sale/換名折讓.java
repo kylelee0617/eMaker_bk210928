@@ -299,7 +299,6 @@ public class ´«¦W§éÅý extends bproc{
                 as400.execFromPool(sbSQL.toString());
               }
               
-              
               stringSQL="update Invom030 set DisCountMoney=DisCountMoney+ " + (intInvoiceTotalMoney -  integerYiDiscountMoney ) +" ,DisCountTimes=DisCountTimes+1, "+
                                                           " UpdateUserNo =  '"     +  stringUserID      +  "', "  +
                                           " UpdateDateTime =  '"  +  stringDateTime +  "', "  +
