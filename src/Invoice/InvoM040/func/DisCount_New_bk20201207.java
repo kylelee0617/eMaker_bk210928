@@ -6,7 +6,7 @@ import jcx.util.*;
 import jcx.html.*;
 import jcx.db.*;
 
-public class DisCount_New_BK20201207 extends bTransaction{
+public class DisCount_New_bk20201207 extends bTransaction{
 	public boolean action(String value)throws Throwable{
 		// 回傳值為 true 表示執行接下來的資料庫異動或查詢
 		// 回傳值為 false 表示接下來不執行任何指令

@@ -75,8 +75,8 @@ public class InvoicePrint_Elec extends sproc{
     sql.append(",'', a.HuBei, a.HuBei, isnull(a.InvoiceMoney,'0'), isnull(a.InvoiceTax,'0'), isnull(a.InvoiceTotalMoney, '0') ");
     // 10.列印次數 11.發票聯式(2/3) 12.品名代號 13.買受人統編 14.是否刪除 15 發票種類 16 客服戶別
     sql.append(",isnull(a.PrintTimes,'0'), InvoiceKind, PointNo,CustomNo, isnull(DELYes,''), ProcessInvoiceNo, isnull(OBJECT_CD, '' )");
-    // 17. 隨機碼 , 18. 公司代碼
-    sql.append(",a.RandomCode ,a.CompanyNo ");
+    // 17. 隨機碼 , 18. 公司代碼 , 19. 發票開立日期
+    sql.append(",a.RandomCode ,a.CompanyNo , a.CreateDate ");
     sql.append("from InvoM030 a ");
     sql.append("where 1=1 ");
     // sql.append("and isnull(a.RandomCode,'') != '' "); //只找電子發票
@@ -152,7 +152,7 @@ public class InvoicePrint_Elec extends sproc{
         
         InvoiceDate = Invo_temp[1].trim();             // 發票日期
         String CustomName = Invo_temp[2].trim();       // 客戶名稱
-        String ProjectNo = table[x][4].trim();  // 案別
+        String ProjectNo = table[x][4].trim();         // 案別
         String HuBei = Invo_temp[5].trim();            // 戶別
         String Detailltem = hM031.get( table[x][2].trim() )!=null? (String)hM031.get( table[x][2].trim() ):""  ; // 期款名稱
         String InvoiceMoney = Invo_temp[7].trim();     // 發票未稅金額
@@ -163,6 +163,7 @@ public class InvoicePrint_Elec extends sproc{
         String PointName = (String) hM010.get(PointNo);
         String randomCode = Invo_temp[17].trim();      //隨機碼
         CompanyNo = Invo_temp[18].trim();
+        String createDate = Invo_temp[19].trim();      //發票開立日期
         String CustomNo = Invo_temp[13].trim();        //客戶ID
         String ProcessInvoiceNo = Invo_temp[15].trim();
         String OBJECT_CD = Invo_temp[16].trim();
@@ -236,9 +237,6 @@ public class InvoicePrint_Elec extends sproc{
         }
         System.out.println("產生發票=" + InvoiceNo);
         
-//        System.out.println(">>>buyerZip:" + buyerZip);
-//        System.out.println(">>>address:" + address);
-        
         //明細內容
         StringBuilder sbDetail = new StringBuilder();
         sbDetail.append("營業人統編:").append(companyInvoNo).append(";");
@@ -246,7 +244,7 @@ public class InvoicePrint_Elec extends sproc{
 //          Company_Name = Company_Name.replaceAll("股份有限", "(股)").replaceAll("辦事處", "辦");
           sbDetail.append("名稱:").append( Company_Name.replaceAll("股份有限", "(股)").replaceAll("市辦事處", "辦") ).append(";");
         }
-        sbDetail.append("日期:").append(PrintDateTime).append(";");
+        sbDetail.append("日期:").append(createDate).append(";");
         sbDetail.append("發票號碼:").append(InvoiceNo).append(";");
         sbDetail.append("買受人:").append(CustomName).append(";");
         sbDetail.append("案名:").append(ProjectNo).append(";");
@@ -263,7 +261,7 @@ public class InvoicePrint_Elec extends sproc{
         vo.setInvoiceDate( Integer.toString(Integer.parseInt(InvoiceDate.replaceAll("/", "")) - 19110000) );
         vo.setInvoiceNumber(InvoiceNo);
 //        vo.setPrintDate(datetime.getToday("YYYYmmdd") + datetime.getTime("hms"));
-        vo.setPrintDate(PrintDateTime);
+        vo.setPrintDate(createDate);
         vo.setRandomCode(randomCode);
         vo.setSaleAmount(InvoiceMoney);
         vo.setTotal(InvoiceTotalMoney);
