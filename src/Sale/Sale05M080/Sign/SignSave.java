@@ -188,6 +188,7 @@ public  class  SignSave  extends  bproc {
                         } else {
                             intAvailableInvoice  =  intAvailableInvoice + doParseInteger(stringEndNo.substring(2,10)) - doParseInteger(stringMaxNo.substring(2,10));
                         } 
+                        System.out.println("test0>>>" + intAvailableInvoice);
                     }//End of for int intInvoM022
                     hashtableAvailableInvoice.put((stringCompanyCd +  stringInvoiceKind),  ""+intAvailableInvoice) ;
                     //玂臔祇布北恨郎
@@ -769,7 +770,7 @@ public  class  SignSave  extends  bproc {
                                         doubleInvoiceMoney  =  doubleInvoiceTotalMoney ;
                                         doubleInvoiceTax       =  0 ;
                                     }
-                                    //  2101-3-5 э End
+                                    //  2101-3-5 э End     <--ゼㄓ
                                     doInvertInvoM030(stringInvoiceNo,                                                 stringInvoiceKind,                                                          stringPosition,  
                                                    stringCustomNo,                                                 stringPointNo,                                                               convert.FourToFive(""+doubleInvoiceMoney,  0),
                                                    convert.FourToFive(""+doubleInvoiceTax,  0),  convert.FourToFive(""+doubleInvoiceTotalMoney,0),  stringTaxKind,
@@ -840,6 +841,7 @@ public  class  SignSave  extends  bproc {
                                 }
                             }//
                         }
+                        
                         // 禣
                         //System.out.println("禣--------------------S") ;
                         for(int  intNo=4  ;  intNo<8  ;  intNo++) {
@@ -1987,6 +1989,7 @@ public  class  SignSave  extends  bproc {
         String  stringUserID           =  getUser() ;
         String  customName = mapCustomers.get(stringCustomNo) !=null? mapCustomers.get(stringCustomNo).toString():"";
         Random r1 = new Random();
+        System.out.println("test1>>>" + stringCustomNo);
         
         StringBuilder sbSQL = new StringBuilder();
         sbSQL.append("select top 1 a.CustomName ");
@@ -2041,8 +2044,8 @@ public  class  SignSave  extends  bproc {
         sbSQL.append("(EA01U, EA02U, EA03U, EA04U, EA05U, EA06U, EA07U, EA08U, EA09U, EA10U, EA11U, EA12U, EA13U, EA14U, EA15U, EA16U, EA17U, EA18U, EA19U, EA20U, EA21U, EA22U) ");
         sbSQL.append("values ");
         sbSQL.append("(");
-        sbSQL.append("'").append(stringInvoiceNo).append("', ");                 //祇布腹絏
-        sbSQL.append("'").append( stringEDate ).append("', ");     //祇布ら戳
+        sbSQL.append("'").append(stringInvoiceNo).append("', ");         //祇布腹絏
+        sbSQL.append("'").append( stringEDate ).append("', ");           //祇布ら戳
         sbSQL.append("'").append( stringInvoiceKind ).append("', ");     //祇布羛Α
         sbSQL.append("'").append( stringCompanyCd ).append("', ");       //そ絏
         sbSQL.append("'").append( stringDepartNo ).append("', ");        //场絏
@@ -2088,8 +2091,9 @@ public  class  SignSave  extends  bproc {
     }
     
     public  void  doInvertInvoM0C0(String  stringCustomNo,  String  stringORDER_NO) throws  Throwable {
+      System.out.println("test11>>>" + stringCustomNo);
       String  stringSql =  "" ;
-      String  stringCustomName = mapCustomers.get(stringCustomNo) !=null? mapCustomers.get(stringCustomNo).toString():"";
+      String  stringCustomName = mapCustomers.get(stringCustomNo) !=null? mapCustomers.get(stringCustomNo).toString().trim():"";
       String  stringNationality = getSale05M091ForNationality(stringORDER_NO,  stringCustomNo) ;     
       String[][] retInvoM0C0 = null;
       stringSql = " SELECT  CustomName from InvoM0C0 where CustomNo='" + stringCustomNo+ "' " ;

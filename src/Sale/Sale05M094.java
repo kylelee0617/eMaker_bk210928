@@ -13,6 +13,13 @@ import  com.jacob.activeX.*;
 import  com.jacob.com.*;
 import  Farglory.util.FargloryUtil ;
 import java.text.SimpleDateFormat;
+
+/**
+ * °h¤á§éÅý
+ * @author B04391
+ *
+ */
+
 public class Sale05M094 extends bproc{
   public String getDefaultValue(String value)throws Throwable{
     //201808check BEGIN
