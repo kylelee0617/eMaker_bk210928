@@ -188,7 +188,7 @@ public  class  SignSave  extends  bproc {
                         } else {
                             intAvailableInvoice  =  intAvailableInvoice + doParseInteger(stringEndNo.substring(2,10)) - doParseInteger(stringMaxNo.substring(2,10));
                         } 
-                        System.out.println("test0>>>" + intAvailableInvoice);
+						System.out.println("test0>>>" + intAvailableInvoice);
                     }//End of for int intInvoM022
                     hashtableAvailableInvoice.put((stringCompanyCd +  stringInvoiceKind),  ""+intAvailableInvoice) ;
                     //玂臔祇布北恨郎
@@ -770,7 +770,7 @@ public  class  SignSave  extends  bproc {
                                         doubleInvoiceMoney  =  doubleInvoiceTotalMoney ;
                                         doubleInvoiceTax       =  0 ;
                                     }
-                                    //  2101-3-5 э End     <--ゼㄓ
+                                    //  2101-3-5 э End
                                     doInvertInvoM030(stringInvoiceNo,                                                 stringInvoiceKind,                                                          stringPosition,  
                                                    stringCustomNo,                                                 stringPointNo,                                                               convert.FourToFive(""+doubleInvoiceMoney,  0),
                                                    convert.FourToFive(""+doubleInvoiceTax,  0),  convert.FourToFive(""+doubleInvoiceTotalMoney,0),  stringTaxKind,
@@ -1991,14 +1991,9 @@ public  class  SignSave  extends  bproc {
         Random r1 = new Random();
         System.out.println("test1>>>" + stringCustomNo);
         
-        StringBuilder sbSQL = new StringBuilder();
-        sbSQL.append("select top 1 a.CustomName ");
-        sbSQL.append("from Sale05M091 a,Sale05M086 b ");
-        sbSQL.append("where a.OrderNo=b.OrderNo ");
-        sbSQL.append("and b.");
-        
         //
-        String  stringSql       =  " INSERT  INTO  InvoM030 (InvoiceNo,                InvoiceDate,  InvoiceKind,              CompanyNo,  DepartNo, "  +
+        String invoiceTime = datetime.getTime("h:m:s") ;
+        String  stringSql       =  " INSERT  INTO  InvoM030 (InvoiceNo,                InvoiceDate, InvoiceTime,  InvoiceKind,              CompanyNo,  DepartNo, "  +
                                                             " ProjectNo,                InvoiceWay,   Hubei,                         CustomNo,     PointNo, "  +
                                                             " InvoiceMoney,         InvoiceTax,    InvoiceTotalMoney,  TaxKind,         DisCountMoney,  "  +
                                                             " DisCountTimes,        PrintYes,       PrintTimes,                 DELYes,          LuChangYes ," +
@@ -2006,6 +2001,7 @@ public  class  SignSave  extends  bproc {
                                                             " LastDateTime, RandomCode, CustomName) " +
                                 " VALUES ( '"  +  stringInvoiceNo                +  "', "  +
                                        " '"  +  stringEDate                     +  "', "  +
+                                       " '"  +  invoiceTime                    +  "', "  +
                                        " '"  +  stringInvoiceKind             +  "', "  +
                                        " '"  +  stringCompanyCd            +  "', "  +
                                        " '"  +  stringDepartNo                +  "', "  +  // 04
@@ -2039,13 +2035,13 @@ public  class  SignSave  extends  bproc {
         //------------------2020/11/06 Kyle Add support 筿祇布
         //糶AS400
         //A : 郎
-        sbSQL = new StringBuilder();
+        StringBuilder sbSQL = new StringBuilder();
         sbSQL.append("insert into XAPGENLIB.GLEAPFUF ");
         sbSQL.append("(EA01U, EA02U, EA03U, EA04U, EA05U, EA06U, EA07U, EA08U, EA09U, EA10U, EA11U, EA12U, EA13U, EA14U, EA15U, EA16U, EA17U, EA18U, EA19U, EA20U, EA21U, EA22U) ");
         sbSQL.append("values ");
         sbSQL.append("(");
-        sbSQL.append("'").append(stringInvoiceNo).append("', ");         //祇布腹絏
-        sbSQL.append("'").append( stringEDate ).append("', ");           //祇布ら戳
+        sbSQL.append("'").append(stringInvoiceNo).append("', ");                 //祇布腹絏
+        sbSQL.append("'").append( stringEDate ).append("', ");     //祇布ら戳
         sbSQL.append("'").append( stringInvoiceKind ).append("', ");     //祇布羛Α
         sbSQL.append("'").append( stringCompanyCd ).append("', ");       //そ絏
         sbSQL.append("'").append( stringDepartNo ).append("', ");        //场絏
@@ -2091,7 +2087,7 @@ public  class  SignSave  extends  bproc {
     }
     
     public  void  doInvertInvoM0C0(String  stringCustomNo,  String  stringORDER_NO) throws  Throwable {
-      System.out.println("test11>>>" + stringCustomNo);
+	  System.out.println("test11>>>" + stringCustomNo);
       String  stringSql =  "" ;
       String  stringCustomName = mapCustomers.get(stringCustomNo) !=null? mapCustomers.get(stringCustomNo).toString().trim():"";
       String  stringNationality = getSale05M091ForNationality(stringORDER_NO,  stringCustomNo) ;     

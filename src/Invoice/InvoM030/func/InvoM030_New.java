@@ -17,9 +17,6 @@ import jcx.jform.bTransaction;
 
 public class InvoM030_New extends bTransaction{
   public boolean action(String value)throws Throwable{
-    // 回傳值為 true 表示執行接下來的資料庫異動或查詢
-    // 回傳值為 false 表示接下來不執行任何指令
-    // 傳入值 value 為 "新增","查詢","修改","刪除","列印","PRINT" (列印預覽的列印按鈕),"PRINTALL" (列印預覽的全部列印按鈕) 其中之一
     message("");
     
     talk dbInvoice = getTalk(""+get("put_dbInvoice"));
@@ -214,16 +211,18 @@ public class InvoM030_New extends bTransaction{
       Random r1 = new Random();
       StringBuilder sbSQL = new StringBuilder();
       
+      String invoiceTime = stringSystemDateTime.split(" ")[1].trim();
       //insert InvoM030
       sbSQL = new StringBuilder();
       sbSQL.append("INSERT  INTO  InvoM030 ");
-      sbSQL.append("(InvoiceNo, InvoiceDate, InvoiceKind, CompanyNo, DepartNo, ProjectNo, InvoiceWay, Hubei, CustomNo, PointNo, ");
-      sbSQL.append("InvoiceMoney, InvoiceTax, InvoiceTotalMoney, TaxKind, DisCountMoney,DisCountTimes, PrintYes, PrintTimes, DELYes, LuChangYes, ");
+      sbSQL.append("(InvoiceNo, InvoiceDate, InvoiceTime , InvoiceKind, CompanyNo, DepartNo, ProjectNo, InvoiceWay, Hubei, CustomNo, PointNo, "); //11
+      sbSQL.append("InvoiceMoney, InvoiceTax, InvoiceTotalMoney, TaxKind, DisCountMoney,DisCountTimes, PrintYes, PrintTimes, DELYes, LuChangYes, ");  //21
       sbSQL.append("ProcessInvoiceNo, Transfer, CreateUserNo, CreateDateTime, LastUserNo, LastDateTime, RandomCode, CustomName ) ");
       sbSQL.append("values ");
       sbSQL.append("( ");
       sbSQL.append("'").append(stringNowInvoiceNo).append("', ");
       sbSQL.append("'").append(getValue("InvoiceDate").trim()).append("', ");
+      sbSQL.append("'").append(invoiceTime).append("', ");                        //20201210 Kyle 增加發票時間
       sbSQL.append("'").append(getValue("InvoiceKind").trim()).append("', ");
       sbSQL.append("'").append(getValue("CompanyNo").trim()).append("', ");
       sbSQL.append("'").append(getValue("DepartNo").trim()).append("', ");
@@ -243,7 +242,7 @@ public class InvoM030_New extends bTransaction{
       sbSQL.append("'").append("N").append("', ");                                //作廢YN
       sbSQL.append("'").append("N").append("', ");                                //入帳YN
       sbSQL.append("'").append("1").append("', ");                                //ProcessInvoiceNo
-      sbSQL.append("發票系統").append(", ");                                      //Transfer
+      sbSQL.append("'").append("發票系統").append("', ");                                      //Transfer
       sbSQL.append("'").append(getUser().trim()).append("', ");                   //CreateUserNo
       sbSQL.append("'").append(stringSystemDateTime).append("', ");               //CreateDateTime
       sbSQL.append("'").append(getUser().trim()).append("', ");                   //LastUserNo
