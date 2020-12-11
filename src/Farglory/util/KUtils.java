@@ -3,22 +3,11 @@
  */
 package Farglory.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import jcx.jform.bvalidate;
-import java.io.*;
-import java.util.*;
-import java.math.BigDecimal;
-import javax.swing.*;
-import javax.swing.table.*;
-import jcx.util.*;
-import jcx.net.smtp;
-import jcx.db.talk;
-import javax.mail.MessagingException;
-import javax.print.*;
-// 剪貼簿
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.*;
 
 public class KUtils extends bvalidate {
 
@@ -49,6 +38,52 @@ public class KUtils extends bvalidate {
     }
     
   }
+  
+  
+  /**
+   * 兩日期相減，負號為後面日期較大
+   * 格式 yyyy/MM/dd
+   * 
+   * @param day1
+   * @param day2
+   * @return (day1 - day2)
+   * @throws Throwable
+   */
+  public long subACDaysRDay(String day1 , String day2) throws Throwable {
+    if ( "".equals(day1) || "".equals(day2)) {
+      return 0;
+    }
+    if ( day1.length() != 10 || day2.length() != 10) {
+      return 0;
+    }
+    
+    Date date1 = new SimpleDateFormat("yyyy/mm/dd").parse(day1);
+    Date date2 = new SimpleDateFormat("yyyy/mm/dd").parse(day2);
+	
+    //日期相減得到相差的日期
+    long day = (date1.getTime()-date2.getTime())/(24*60*60*1000);
+    
+    return day;
+  }
+  
+  
+  /**
+   * format 日期格式  yyyyMMdd to yyyy(dash)MM(dash)dd
+   * 
+   * @param day
+   * @param dash
+   * @return
+   * @throws Throwable
+   */
+  public String formatACDate(String day , String dash) throws Throwable {
+    if (day == null || "".equals(day)) {
+      return "傳入日期為空";
+    }
+    if (day.length() != 8) {
+      return "不為AC格式";
+    }
+    return day.substring(0, 4) + dash + day.substring(4, 6) + dash + day.substring(6, 8);
+  }
 
   public String formatACDate(String day) throws Throwable {
     if (day == null || "".equals(day)) {
@@ -75,7 +110,7 @@ public class KUtils extends bvalidate {
     int day = Integer.parseInt(dateTimeArray[2]);
     calendar.set(year, month - 1, day);
     long time = calendar.getTimeInMillis();
-    calendar.setTimeInMillis(time + days * 1000 * 60 * 60 * 24);// 用给定的 long值设置此Calendar的当前时间值
+    calendar.setTimeInMillis(time + days * 1000 * 60 * 60 * 24);// 用\u7ed9定的 long值\u8bbe置此Calendar的\u5f53前\u65f6\u95f4值
     String newYear = Integer.toString(calendar.get(Calendar.YEAR)); 
     String newMonth = (calendar.get(Calendar.MONTH) + 1) < 10? "0"+(calendar.get(Calendar.MONTH) + 1) : Integer.toString((calendar.get(Calendar.MONTH) + 1));
     String newDay = calendar.get(Calendar.DAY_OF_MONTH) < 10? "0" + calendar.get(Calendar.DAY_OF_MONTH) : Integer.toString(calendar.get(Calendar.DAY_OF_MONTH));
@@ -86,7 +121,7 @@ public class KUtils extends bvalidate {
   /**
    * String[]中 gen出符合SQL IN ()  的語法
    * @param srcStr
-   * @return
+   * @return '' , '' , '' , '' ....
    * @throws Throwable
    */
   public String genQueryInString(String[] srcStr) throws Throwable {

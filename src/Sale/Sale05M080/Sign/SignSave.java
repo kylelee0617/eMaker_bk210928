@@ -8,12 +8,19 @@ import      jcx.html.*;
 import      jcx.db.*;
 import Farglory.util.KUtils;
 
+/**
+ * 行銷發票在這開
+ * 
+ * @author B04391
+ *
+ */
+
 public  class  SignSave  extends  bproc {
     talk  dbSale    =  getTalk(""+get("put_dbSale"));
     talk dbInvoice = getTalk(""+get("put_dbInvoice"));
     talk dbTestAs400 = getTalk("test400CRM");
     talk dbAs400 = getTalk("400CRM");
-	KUtils kUtil = new KUtils();
+    KUtils kUtil = new KUtils();
     
     //全域mapCustomers
     Map mapCustomers = new HashMap();
@@ -21,7 +28,6 @@ public  class  SignSave  extends  bproc {
     public  String  getDefaultValue(String  value) throws  Throwable {
         
         //檢查環境
-        
         String serverIP = get("serverIP").toString().trim();
         String serverKind = serverIP.contains("172.16.14.4")? "prod":"test";
       
@@ -123,13 +129,22 @@ public  class  SignSave  extends  bproc {
             for(int  intSale05M080=0  ;  intSale05M080<retSale05M080.length  ;  intSale05M080++) {
                 stringCompanyNo  =  retSale05M080[intSale05M080][0].trim( ) ;
                 stringDepartNo      =  retSale05M080[intSale05M080][1].trim( ) ;
-                stringProjectID1     =  retSale05M080[intSale05M080][2].trim( ) ;  //
-                stringEDate            =  retSale05M080[intSale05M080][3].trim( ) ;   
+                stringProjectID1     =  retSale05M080[intSale05M080][2].trim( ) ;
+                stringEDate            =  retSale05M080[intSale05M080][3].trim( ) ; //改用發票日期唷   
             }
-            /*System.out.println(stringCompanyNo  +  "-----------------------"+
+            System.out.println(stringCompanyNo  +  "-----------------------"+
                              stringDepartNo      +  "-----------------------"+
                              stringProjectID1    +  "-----------------------"+
-                             stringEDate) ;*/
+                             stringEDate) ;
+            
+            //檢核發票日期不可小於兩天前 : by Kyle
+            String today = datetime.getToday("YYYY/mm/dd");
+            long subDays = kUtil.subACDaysRDay(today, stringEDate);
+            if(subDays > 2) {
+              messagebox("發票日期不可小於兩天前。。。 崩╰(〒皿〒)╯潰 ");
+              return value;
+            }
+            
             // 取得公司
             vectorRet                    =  getCompanys(stringDocNo,  stringProjectID1) ;
             vectorCompanyCd      =  (Vector)    vectorRet.get(0) ;
@@ -1612,7 +1627,8 @@ public  class  SignSave  extends  bproc {
         String      stringSql            =  "" ;
         String[][]  retSale05M080  =  null ;
         //
-        stringSql   = " SELECT  CompanyNo,  DepartNo,  ProjectID1,  EDate "  + 
+//        stringSql   = " SELECT  CompanyNo,  DepartNo,  ProjectID1,  EDate "  +
+          stringSql   = " SELECT  CompanyNo,  DepartNo,  ProjectID1,  PaperEDate "  +   //20201211 kyle : 主要使用發票日期 
                               " FROM  Sale05M080 "  +
                   " WHERE  DocNo  =  '"  +  getValue("DocNo").trim( )  +  "' " ;
         retSale05M080  =  dbSale.queryFromPool(stringSql) ;
@@ -1984,15 +2000,22 @@ public  class  SignSave  extends  bproc {
         //String  stringCompanyNo  =  retSale05M080.length!=0 ?  retSale05M080[retSale05M080.length-1][0].trim( ) :  "" ;
         String  stringDepartNo      =  retSale05M080.length!=0 ?  retSale05M080[retSale05M080.length-1][1].trim( ) :  "" ;
         String  stringProjectID1     =  retSale05M080.length!=0 ?  retSale05M080[retSale05M080.length-1][2].trim( ) :  "" ;
-        String  stringEDate           =  retSale05M080.length!=0 ?  retSale05M080[retSale05M080.length-1][3].trim( ) :  "" ;
-        String  stringDateTime      =  datetime.getTime("YYYY/mm/dd h:m:s") ;
+        String  stringEDate    =  retSale05M080.length!=0 ?  retSale05M080[retSale05M080.length-1][3].trim( ) :  "" ;      //發票日
+        String  strInvoiceTime = datetime.getTime("h:m:s") ;                                                               //發票時間
+        String  stringDateTime = datetime.getTime("YYYY/mm/dd h:m:s") ;                                                    //發票開立時 系統時間
         String  stringUserID           =  getUser() ;
         String  customName = mapCustomers.get(stringCustomNo) !=null? mapCustomers.get(stringCustomNo).toString():"";
         Random r1 = new Random();
-        System.out.println("test1>>>" + stringCustomNo);
         
-        //
-        String invoiceTime = datetime.getTime("h:m:s") ;
+        //依照2020/12/11電子發票會議紀錄:
+        //1.若發票日非開立當日，則開立時間加一小時
+        //2.若加一小時後大於等於24點，則以23點計
+        if( !stringDateTime.split(" ")[0].trim().equals(stringEDate) ) {
+          String[] arrTmpTime = strInvoiceTime.split(":");
+          int tmpTimeH = (Integer.parseInt(arrTmpTime[0].trim()) + 1) >=24 ? 23:(Integer.parseInt(arrTmpTime[0].trim()) + 1);
+          strInvoiceTime = "" + tmpTimeH + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim();
+        }
+        
         String  stringSql       =  " INSERT  INTO  InvoM030 (InvoiceNo,                InvoiceDate, InvoiceTime,  InvoiceKind,              CompanyNo,  DepartNo, "  +
                                                             " ProjectNo,                InvoiceWay,   Hubei,                         CustomNo,     PointNo, "  +
                                                             " InvoiceMoney,         InvoiceTax,    InvoiceTotalMoney,  TaxKind,         DisCountMoney,  "  +
@@ -2001,7 +2024,7 @@ public  class  SignSave  extends  bproc {
                                                             " LastDateTime, RandomCode, CustomName) " +
                                 " VALUES ( '"  +  stringInvoiceNo                +  "', "  +
                                        " '"  +  stringEDate                     +  "', "  +
-                                       " '"  +  invoiceTime                    +  "', "  +
+                                       " '"  +  strInvoiceTime                    +  "', "  +
                                        " '"  +  stringInvoiceKind             +  "', "  +
                                        " '"  +  stringCompanyCd            +  "', "  +
                                        " '"  +  stringDepartNo                +  "', "  +  // 04
@@ -2086,8 +2109,15 @@ public  class  SignSave  extends  bproc {
         dbInvoice.execFromPool(stringSql);
     }
     
+    /**
+     * 寫入客戶，一次一筆
+     * 
+     * @param stringCustomNo 
+     * @param stringORDER_NO
+     * @throws Throwable
+     */
     public  void  doInvertInvoM0C0(String  stringCustomNo,  String  stringORDER_NO) throws  Throwable {
-	  System.out.println("test11>>>" + stringCustomNo);
+      System.out.println("寫入客戶>>>" + stringCustomNo);
       String  stringSql =  "" ;
       String  stringCustomName = mapCustomers.get(stringCustomNo) !=null? mapCustomers.get(stringCustomNo).toString().trim():"";
       String  stringNationality = getSale05M091ForNationality(stringORDER_NO,  stringCustomNo) ;     
@@ -2098,26 +2128,26 @@ public  class  SignSave  extends  bproc {
         stringSql  = " INSERT  INTO  InvoM0C0 (CustomNo,  CustomName,  Transfer,  Nationality) "
                    + " values ('" + stringCustomNo+ "',N'" + stringCustomName+ "','Y',  '"+stringNationality+"')";
         String ret = dbInvoice.execFromPool(stringSql);
-        System.out.println("ret>>>" + ret);
-        
-        //------------------2020/11/06 Kyle Add support 電子發票
-        //400 D : 客戶檔
-        StringBuilder sbSQL = new StringBuilder();
-        sbSQL.append("select ED01U from XAPGENLIB.GLEDPFUF where ED01U = '" + stringCustomNo + "' ");
-        String[][] arrGLEDPFUF = dbAs400.queryFromPool(sbSQL.toString());
-        if(arrGLEDPFUF.length == 0 && !"".equals(stringCustomName)) {
-          sbSQL = new StringBuilder();
-          sbSQL.append("insert into XAPGENLIB.GLEDPFUF ");
-          sbSQL.append("(ED01U, ED02U) ");
-          sbSQL.append("values ");
-          sbSQL.append("(");
-          sbSQL.append("'").append( stringCustomNo ).append("', ");
-          sbSQL.append("'").append( stringCustomName ).append("' ");
-          sbSQL.append(") ");
-          dbAs400.execFromPool(sbSQL.toString());
-        }
-        //------------------2020/11/06 Kyle Add support 電子發票
       }
+      
+      //------------------2020/11/06 Kyle Add support 電子發票
+      //400一定寫
+      //400 D : 客戶檔
+      StringBuilder sbSQL = new StringBuilder();
+      sbSQL.append("select ED01U from XAPGENLIB.GLEDPFUF where ED01U = '" + stringCustomNo + "' ");
+      String[][] arrGLEDPFUF = dbAs400.queryFromPool(sbSQL.toString());
+      if(arrGLEDPFUF.length == 0 && !"".equals(stringCustomName)) {
+        sbSQL = new StringBuilder();
+        sbSQL.append("insert into XAPGENLIB.GLEDPFUF ");
+        sbSQL.append("(ED01U, ED02U) ");
+        sbSQL.append("values ");
+        sbSQL.append("(");
+        sbSQL.append("'").append( stringCustomNo ).append("', ");
+        sbSQL.append("'").append( stringCustomName ).append("' ");
+        sbSQL.append(") ");
+        dbAs400.execFromPool(sbSQL.toString());
+      }
+      //------------------2020/11/06 Kyle Add support 電子發票
     }
     
     //取得訂單客戶(較準)

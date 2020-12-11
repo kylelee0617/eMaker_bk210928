@@ -124,7 +124,7 @@ public class SendMailAction extends bproc{
    }
 
    public void getSendUser() throws Throwable {
-       //©Ó¿ìID
+    //©Ó¿ìID
     stringSQL="SELECT EMPNO FROM FGEMPMAP where FGEMPNO ='" + userNo + "'" ;
     retEip = dbEIP.queryFromPool(stringSQL);
     if(retEip.length>0){
