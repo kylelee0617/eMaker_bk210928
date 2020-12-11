@@ -1,42 +1,43 @@
 /**
- * µo²¼ - PROD - ¼g¦b«ö¶s
+ * ç™¼ç¥¨ - PROD - å¯«åœ¨æŒ‰éˆ•
  * @author B04391
  *
  */
 
-public class µo²¼_µo²¼§@¼o {
+public class ç™¼ç¥¨_ç™¼ç¥¨ä½œå»¢ {
   
   public String getDefaultValue(String value) throws Throwable {
     //
     if(getValue("PrintYes").trim().equals("N")){
-      message("¥¼¦C¦Lµo²¼ ¤£¥i§@¼o");
+      message("æœªåˆ—å°ç™¼ç¥¨ ä¸å¯ä½œå»¢");
       return value;
     }
     //
     if(getValue("DELYes").trim().equals("Y")){
-      message("¤w§@¼oµo²¼ ¤£¥i§@¼o");
+      message("å·²ä½œå»¢ç™¼ç¥¨ ä¸å¯ä½œå»¢");
       return value;
     }
     //
     if(getValue("ProcessInvoiceNo").trim().equals("2")){
-      message("Àç·~³¡µo²¼ ¤£¥i§@¼o");
+      message("ç‡Ÿæ¥­éƒ¨ç™¼ç¥¨ ä¸å¯ä½œå»¢");
       return value;
     }
+    
     /*
-    //20200709 Kyle : ¤£©ú§@¥ÎªºÄæ¦ì¡A·|¾×¦í§@¼o¡A¥ı®³±¼¸Õ¸Õ
-    if(getValue("Transfer").trim().equals("¦¬´Ú")){
-      message("¦¬´Úµo²¼ ¤£¥i§@¼o");
+    //20200709 Kyle : ä¸æ˜ä½œç”¨çš„æ¬„ä½ï¼Œæœƒæ“‹ä½ä½œå»¢ï¼Œå…ˆæ‹¿æ‰è©¦è©¦
+    if(getValue("Transfer").trim().equals("æ”¶æ¬¾")){
+      message("æ”¶æ¬¾ç™¼ç¥¨ ä¸å¯ä½œå»¢");
       return value;
     }
     */
 
-    //§@¼o¤£¦P¤H ´£¿ô
+    //ä½œå»¢ä¸åŒäºº æé†’
     String stringCreateUserNo = getValue("CreateUserNo");
 
     if(!stringCreateUserNo.equalsIgnoreCase (getUser())){
       int  ans  =  JOptionPane.showConfirmDialog(null,  
-                                      "§@¼o¤H»P«Ø¥ß¤H¤£¦P ¬O§_Ä~Äò?",
-                                      "°T®§",  
+                                      "ä½œå»¢äººèˆ‡å»ºç«‹äººä¸åŒ æ˜¯å¦ç¹¼çºŒ?",
+                                      "è¨Šæ¯",  
                                       JOptionPane.YES_NO_OPTION,
                                       JOptionPane.WARNING_MESSAGE) ;
       if(ans  ==  JOptionPane.NO_OPTION)  return value;
@@ -44,14 +45,14 @@ public class µo²¼_µo²¼§@¼o {
 
 
     talk dbInvoice = getTalk(""+get("put_dbInvoice"));
-    //³B²z³¡ªù
+    //è™•ç†éƒ¨é–€
     String stringSQL = " SELECT TOP 1 DepartNo " +
                       " FROM InvoProcessDepartNo " +
                     " WHERE DepartNo = '" + getValue("DepartNo").trim() + "'" +
                           " AND EmployeeNo = '" + getUser() + "'" ;
     String retInvoProcessDepartNo[][] = dbInvoice.queryFromPool(stringSQL);
     if(retInvoProcessDepartNo.length == 0){
-      message("¤£¥i³B²z ¦¹³¡ªùµo²¼");
+      message("ä¸å¯è™•ç† æ­¤éƒ¨é–€ç™¼ç¥¨");
       //return false;
     }
     dbInvoice = getTalk("Invoice");
@@ -67,7 +68,7 @@ public class µo²¼_µo²¼§@¼o {
       stringCloseYES = retInvoM022[i][1];
     }
     if (stringCloseYES.equals("Y")){
-      message("¦¹µo²¼¤wÃö±b ¤£¥i§@¼o");
+      message("æ­¤ç™¼ç¥¨å·²é—œå¸³ ä¸å¯ä½œå»¢");
       return value; 
     }
     stringSQL = " SELECT InvoM040.DiscountNo " +
@@ -77,7 +78,7 @@ public class µo²¼_µo²¼§@¼o {
                               " AND DELYES = 'N' ";
     String retInvoM040[][] = dbInvoice.queryFromPool(stringSQL);  
     if (retInvoM040.length > 0){
-      message(  "§éÅı³æ:" + retInvoM040[0][0] + " ¤w§éÅı¦¹µo²¼ ¤£¥i§@¼o");
+      message(  "æŠ˜è®“å–®:" + retInvoM040[0][0] + " å·²æŠ˜è®“æ­¤ç™¼ç¥¨ ä¸å¯ä½œå»¢");
       return value;   
     }
     //
@@ -110,7 +111,7 @@ public class µo²¼_µo²¼§@¼o {
                    "'U'," +
                "'" + stringUserkey + "'";
     dbInvoice.execFromPool(stringSQL);
-    JOptionPane.showMessageDialog(null,  "§@¼o¦¨¥\¡C",  "°T®§",  JOptionPane.INFORMATION_MESSAGE) ;
+    JOptionPane.showMessageDialog(null,  "ä½œå»¢æˆåŠŸã€‚",  "è¨Šæ¯",  JOptionPane.INFORMATION_MESSAGE) ;
 
     return value;
   }

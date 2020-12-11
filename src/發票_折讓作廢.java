@@ -1,10 +1,10 @@
 /**
- * µo²¼ - PROD - ¼g¦b«ö¶s
+ * ç™¼ç¥¨ - PROD - å¯«åœ¨æŒ‰éˆ•
  * @author B04391
  *
  */
 
-public class µo²¼_§éÅý§@¼o {
+public class ç™¼ç¥¨_æŠ˜è®“ä½œå»¢ {
   
   public String getDefaultValue(String value) throws Throwable {
     talk dbInvoice = getTalk("Invoice");
@@ -12,7 +12,7 @@ public class µo²¼_§éÅý§@¼o {
     String stringSQL = "";
     String stringUserkey = "";
     if (getValue("DELYes").equals("Y")){
-      message("§éÅý³æ¤w§@¼o!µLªk§@¼o ");
+      message("æŠ˜è®“å–®å·²ä½œå»¢!ç„¡æ³•ä½œå»¢ ");
       return value; 
     }
     stringSQL = " SELECT DiscountNo " +
@@ -21,7 +21,7 @@ public class µo²¼_§éÅý§@¼o {
                     " AND DELYes ='Y'";
     String retInvoM040[][] = dbInvoice.queryFromPool(stringSQL);
     if (retInvoM040.length >0){
-      message("§éÅý³æ¤w§@¼o!µLªk§@¼o ");
+      message("æŠ˜è®“å–®å·²ä½œå»¢!ç„¡æ³•ä½œå»¢ ");
       return value; 
     }
     if (!getUser().equals("B1085")){
@@ -30,7 +30,7 @@ public class µo²¼_§éÅý§@¼o {
                         " WHERE DiscountNo = '" + getValue("DiscountNo") + "'";
     String retSale05M194[][] = dbSale.queryFromPool(stringSQL);
     if (retSale05M194.length >0){
-      message("¦¬´Ú¨t²Î ¤w¦³§éÅý!µLªk§@¼o ");
+      message("æ”¶æ¬¾ç³»çµ± å·²æœ‰æŠ˜è®“!ç„¡æ³•ä½œå»¢ ");
       return value; 
     }
     }
@@ -64,7 +64,7 @@ public class µo²¼_§éÅý§@¼o {
                "'" + stringUserkey + "'" ;
     dbInvoice.execFromPool(stringSQL);
     setValue("DELYes","Y");
-    message("¤w§@¼o§éÅý³æ = " + getValue("DiscountNo"));          
+    message("å·²ä½œå»¢æŠ˜è®“å–® = " + getValue("DiscountNo"));          
     return value;
   }
   

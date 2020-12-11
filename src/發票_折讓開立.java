@@ -1,31 +1,28 @@
 /**
- * µo²¼ - PROD - ·s¼W«ö¶sµ{¦¡
+ * ç™¼ç¥¨ - PROD - æ–°å¢æŒ‰éˆ•ç¨‹å¼
  * @author B04391
  *
  */
 
-public class µo²¼_§éÅı¶}¥ß {
+public class ç™¼ç¥¨_æŠ˜è®“é–‹ç«‹ {
   
   public String getDefaultValue(String value) throws Throwable {
- // ¦^¶Ç­È¬° true ªí¥Ü°õ¦æ±µ¤U¨Óªº¸ê®Æ®w²§°Ê©Î¬d¸ß
- // ¦^¶Ç­È¬° false ªí¥Ü±µ¤U¨Ó¤£°õ¦æ¥ô¦ó«ü¥O
- // ¶Ç¤J­È value ¬° "·s¼W","¬d¸ß","­×§ï","§R°£","¦C¦L","PRINT" (¦C¦L¹wÄıªº¦C¦L«ö¶s),"PRINTALL" (¦C¦L¹wÄıªº¥ş³¡¦C¦L«ö¶s) ¨ä¤¤¤§¤@
- // ¦^¶Ç­È¬° true ªí¥Ü°õ¦æ±µ¤U¨Óªº¸ê®Æ®w²§°Ê©Î¬d¸ß
- // ¦^¶Ç­È¬° false ªí¥Ü±µ¤U¨Ó¤£°õ¦æ¥ô¦ó«ü¥O
- // ¶Ç¤J­È value ¬° "·s¼W","¬d¸ß","­×§ï","§R°£","¦C¦L","PRINT" (¦C¦L¹wÄıªº¦C¦L«ö¶s),"PRINTALL" (¦C¦L¹wÄıªº¥ş³¡¦C¦L«ö¶s) ¨ä¤¤¤§¤@
+ // å›å‚³å€¼ç‚º true è¡¨ç¤ºåŸ·è¡Œæ¥ä¸‹ä¾†çš„è³‡æ–™åº«ç•°å‹•æˆ–æŸ¥è©¢
+ // å›å‚³å€¼ç‚º false è¡¨ç¤ºæ¥ä¸‹ä¾†ä¸åŸ·è¡Œä»»ä½•æŒ‡ä»¤
+ // å‚³å…¥å€¼ value ç‚º "æ–°å¢","æŸ¥è©¢","ä¿®æ”¹","åˆªé™¤","åˆ—å°","PRINT" (åˆ—å°é è¦½çš„åˆ—å°æŒ‰éˆ•),"PRINTALL" (åˆ—å°é è¦½çš„å…¨éƒ¨åˆ—å°æŒ‰éˆ•) å…¶ä¸­ä¹‹ä¸€
  message("");
  String stringDiscountDate = getValue("DiscountDate");
  if(!check.isACDay(stringDiscountDate.replace("/",""))) {
-     message("§éÅı³æ¤é´Á¿ù»~(YYYY/MM/DD)");
+     message("æŠ˜è®“å–®æ—¥æœŸéŒ¯èª¤(YYYY/MM/DD)");
      return false;
  }
  talk dbInvoice = getTalk("Invoice");
  String stringSQL = "";
  String stringUserkey = "";
- //©ú²Ó
+ //æ˜ç´°
  String [][] A_table = getTableData("table1");
  if (A_table.length ==0){
-    message("©ú²Ó¥²¶·¦Ü¤Ö¦³¤@µ§");
+    message("æ˜ç´°å¿…é ˆè‡³å°‘æœ‰ä¸€ç­†");
     return false;
  }
  Calendar cal= Calendar.getInstance();//Current time
@@ -43,7 +40,7 @@ public class µo²¼_§éÅı¶}¥ß {
     if(!A_table[i][8].equals("0")){
         if (!stringCustomNo.equals(A_table[i][18])){
           stringCustomNo = A_table[i][18];
-        stringMessage += stringCustomNo+ "¡B";
+        stringMessage += stringCustomNo+ "ã€";
           intCustomNo ++;     
       }
      stringSQL =  " INSERT " +
@@ -90,7 +87,7 @@ public class µo²¼_§éÅı¶}¥ß {
  }
  if(intCustomNo >1){ 
    stringMessage = stringMessage.substring(0,stringMessage.length()-1);
-   message("¦P¤@±i§éÅı¤£¥i¦³¦hµ§«È¤áªºµo²¼!¡A½Ğ¶}¤£¦Pªº§éÅı³æ¡F" + stringMessage);     
+   message("åŒä¸€å¼µæŠ˜è®“ä¸å¯æœ‰å¤šç­†å®¢æˆ¶çš„ç™¼ç¥¨!ï¼Œè«‹é–‹ä¸åŒçš„æŠ˜è®“å–®ï¼›" + stringMessage);     
      return false; 
  } 
  /*
@@ -98,12 +95,12 @@ public class µo²¼_§éÅı¶}¥ß {
 
  } 
  */
- // ­pºâ²£¥Í´Xµ§§éÅı³æ(¹J¨ì¨C{n=N_RecordNo%}µ§§@´`Àô®É¨Ï¥Î)
+ // è¨ˆç®—ç”¢ç”Ÿå¹¾ç­†æŠ˜è®“å–®(é‡åˆ°æ¯{n=N_RecordNo%}ç­†ä½œå¾ªç’°æ™‚ä½¿ç”¨)
  int intDiscountNoCount = intBodyCount  / 8;
  intDiscountNoCount ++;
  if (intBodyCount % 8 == 0) intDiscountNoCount = intDiscountNoCount -1;
  if(intDiscountNoCount == 0){
-   message("µo²¼©ú²Ó ¤£¥iªÅ¥Õ!");
+   message("ç™¼ç¥¨æ˜ç´° ä¸å¯ç©ºç™½!");
    return false;
  }
  getButton("button3").doClick();
@@ -210,8 +207,8 @@ public class µo²¼_§éÅı¶}¥ß {
  System.out.println("DPeMail2===>"+DPeMail2);
  /////////////////////////////////////////////////////////
  //send email
- String msg ="®×§O:" + getValue("ProjectNo").trim() + "¡B¤á§O:" + getValue("HuBei").trim() + "¡B«È¤á:" + customerName + "¡B«È¤á¨­¤ÀÃÒ©Î²Î½s:" + getValue("CustomNo").trim() + "¡B§éÅı¤é´Á:" + getValue("DiscountDate").trim() + "¡B§éÅıª÷ÃB:" + getValue("DiscountTotalMoney").trim() + "¡A½Ğ½T»{¬O§_À³¶i¦æºÃ¦ü¬~¿ú³q³ø";
- String subject = "³q³øºÃ¦ü¬~¿ú§@·~";
+ String msg ="æ¡ˆåˆ¥:" + getValue("ProjectNo").trim() + "ã€æˆ¶åˆ¥:" + getValue("HuBei").trim() + "ã€å®¢æˆ¶:" + customerName + "ã€å®¢æˆ¶èº«åˆ†è­‰æˆ–çµ±ç·¨:" + getValue("CustomNo").trim() + "ã€æŠ˜è®“æ—¥æœŸ:" + getValue("DiscountDate").trim() + "ã€æŠ˜è®“é‡‘é¡:" + getValue("DiscountTotalMoney").trim() + "ï¼Œè«‹ç¢ºèªæ˜¯å¦æ‡‰é€²è¡Œç–‘ä¼¼æ´—éŒ¢é€šå ±";
+ String subject = "é€šå ±ç–‘ä¼¼æ´—éŒ¢ä½œæ¥­";
  String[] arrayUser = {"Justin_Lin@fglife.com.tw",userEmail, DPeMail};
  String  sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, msg, null,  "", "text/html");
 
@@ -219,27 +216,27 @@ public class µo²¼_§éÅı¶}¥ß {
 
  //Email email = new SimpleEmail();
  //email.setHostName("ex.fglife.com.tw");
- //email.setSubject("³q³øºÃ¦ü¬~¿ú§@·~");
- //email.setMsg("®×§O:" + getValue("ProjectNo").trim() + "¡B¤á§O:" + getValue("HuBei").trim() + "¡B«È¤á:" + customerName + "¡B«È¤á¨­¤ÀÃÒ©Î²Î½s:" + getValue("CustomNo").trim() + "¡B§éÅı¤é´Á:" + getValue("DiscountDate").trim() + "¡B§éÅıª÷ÃB:" + getValue("DiscountTotalMoney").trim() + "¡A½Ğ½T»{¬O§_À³¶i¦æºÃ¦ü¬~¿ú³q³ø");
+ //email.setSubject("é€šå ±ç–‘ä¼¼æ´—éŒ¢ä½œæ¥­");
+ //email.setMsg("æ¡ˆåˆ¥:" + getValue("ProjectNo").trim() + "ã€æˆ¶åˆ¥:" + getValue("HuBei").trim() + "ã€å®¢æˆ¶:" + customerName + "ã€å®¢æˆ¶èº«åˆ†è­‰æˆ–çµ±ç·¨:" + getValue("CustomNo").trim() + "ã€æŠ˜è®“æ—¥æœŸ:" + getValue("DiscountDate").trim() + "ã€æŠ˜è®“é‡‘é¡:" + getValue("DiscountTotalMoney").trim() + "ï¼Œè«‹ç¢ºèªæ˜¯å¦æ‡‰é€²è¡Œç–‘ä¼¼æ´—éŒ¢é€šå ±");
  //email.setFrom("Emaker-Invoice@fglife.com.tw");
  //if(userEmail!=null && !userEmail.equals("")){
 //   email.addTo(userEmail);
  //}else if(userEmail2!=null && !userEmail2.equals("")){
 //   email.addTo(userEmail2);
  //}else {
-//   message("¬dµL¸g¿ì¤H­û("+empNo+")«H½c" ); 
+//   message("æŸ¥ç„¡ç¶“è¾¦äººå“¡("+empNo+")ä¿¡ç®±" ); 
  //}
  //if(DPeMail!=null && !DPeMail.equals("")){
 //   email.addTo(DPeMail);
  //}else if(DPeMail2!=null && !DPeMail2.equals("")){
 //   email.addTo(DPeMail2);
  //}else {
-//   message("¬dµL¸g¿ì¤H­û¬ì¥DºŞ("+DPManageemNo+")«H½c" ); 
+//   message("æŸ¥ç„¡ç¶“è¾¦äººå“¡ç§‘ä¸»ç®¡("+DPManageemNo+")ä¿¡ç®±" ); 
  //}
  //email.send();
  ////////////////////////////////////////////
  /////////////////////////////////////////////////////////
- //¶W¹L¤­¤Q¸Usend email
+ //è¶…éäº”åè¬send email
  String discountTotalMoney  = getValue("DiscountTotalMoney").trim();
  double dNumber = Double.parseDouble(discountTotalMoney);
  /////////////////////////////////////////////////////////
@@ -247,8 +244,8 @@ public class µo²¼_§éÅı¶}¥ß {
  /////////////////////////////////////////////////////////
  String over50 = "";
  if(dNumber>=500000){
-   String msg2 = "®×§O:" + getValue("ProjectNo").trim() + "¡B¤á§O:" + getValue("HuBei").trim() + "¡B«È¤á:" + customerName + "¡B«È¤á¨­¤ÀÃÒ©Î²Î½s:" + getValue("CustomNo").trim() + "¡B§éÅı¤é´Á:" + getValue("DiscountDate").trim() + "¡B§éÅıª÷ÃB:" + getValue("DiscountTotalMoney").trim() + "¡A²Å¦X¦P¤@«È¤á¤£°Ê²£¶R½æ«´¬ù°_©l¤é7¤Ñ¤º¡A°hÁÙª÷ÃB¹F50¸U¤¸¥H¤W¡AÀ³ÀË®Ö¨ä¦X²z©Ê";
-   String subject2 = "³q³øºÃ¦ü¬~¿ú§@·~";
+   String msg2 = "æ¡ˆåˆ¥:" + getValue("ProjectNo").trim() + "ã€æˆ¶åˆ¥:" + getValue("HuBei").trim() + "ã€å®¢æˆ¶:" + customerName + "ã€å®¢æˆ¶èº«åˆ†è­‰æˆ–çµ±ç·¨:" + getValue("CustomNo").trim() + "ã€æŠ˜è®“æ—¥æœŸ:" + getValue("DiscountDate").trim() + "ã€æŠ˜è®“é‡‘é¡:" + getValue("DiscountTotalMoney").trim() + "ï¼Œç¬¦åˆåŒä¸€å®¢æˆ¶ä¸å‹•ç”¢è²·è³£å¥‘ç´„èµ·å§‹æ—¥7å¤©å…§ï¼Œé€€é‚„é‡‘é¡é”50è¬å…ƒä»¥ä¸Šï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§";
+   String subject2 = "é€šå ±ç–‘ä¼¼æ´—éŒ¢ä½œæ¥­";
    String[] arrayUser2 = {"Justin_Lin@fglife.com.tw",userEmail, DPeMail};
    String  sendRS2 = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser2, subject2, msg2, null,  "", "text/html");
    
@@ -256,36 +253,36 @@ public class µo²¼_§éÅı¶}¥ß {
    /*
    Email email2 = new SimpleEmail();
    email2.setHostName("ex.fglife.com.tw");
-   email2.setSubject("³q³øºÃ¦ü¬~¿ú§@·~");
-   email2.setMsg("®×§O:" + getValue("ProjectNo").trim() + "¡B¤á§O:" + getValue("HuBei").trim() + "¡B«È¤á:" + customerName + "¡B«È¤á¨­¤ÀÃÒ©Î²Î½s:" + getValue("CustomNo").trim() + "¡B§éÅı¤é´Á:" + getValue("DiscountDate").trim() + "¡B§éÅıª÷ÃB:" + getValue("DiscountTotalMoney").trim() + "¡A²Å¦X¦P¤@«È¤á¤£°Ê²£¶R½æ«´¬ù°_©l¤é7¤Ñ¤º¡A°hÁÙª÷ÃB¹F50¸U¤¸¥H¤W¡AÀ³ÀË®Ö¨ä¦X²z©Ê");
+   email2.setSubject("é€šå ±ç–‘ä¼¼æ´—éŒ¢ä½œæ¥­");
+   email2.setMsg("æ¡ˆåˆ¥:" + getValue("ProjectNo").trim() + "ã€æˆ¶åˆ¥:" + getValue("HuBei").trim() + "ã€å®¢æˆ¶:" + customerName + "ã€å®¢æˆ¶èº«åˆ†è­‰æˆ–çµ±ç·¨:" + getValue("CustomNo").trim() + "ã€æŠ˜è®“æ—¥æœŸ:" + getValue("DiscountDate").trim() + "ã€æŠ˜è®“é‡‘é¡:" + getValue("DiscountTotalMoney").trim() + "ï¼Œç¬¦åˆåŒä¸€å®¢æˆ¶ä¸å‹•ç”¢è²·è³£å¥‘ç´„èµ·å§‹æ—¥7å¤©å…§ï¼Œé€€é‚„é‡‘é¡é”50è¬å…ƒä»¥ä¸Šï¼Œæ‡‰æª¢æ ¸å…¶åˆç†æ€§");
    email2.setFrom("Emaker-Invoice@fglife.com.tw");
    if(userEmail!=null && !userEmail.equals("")){
      email2.addTo(userEmail);
    }else if(userEmail2!=null && !userEmail2.equals("")){
      email2.addTo(userEmail2);
    }else {
-     message("¬dµL¸g¿ì¤H­û("+empNo+")«H½c" ); 
+     message("æŸ¥ç„¡ç¶“è¾¦äººå“¡("+empNo+")ä¿¡ç®±" ); 
    }
    if(DPeMail!=null && !DPeMail.equals("")){
      email2.addTo(DPeMail);
    }else if(DPeMail2!=null && !DPeMail2.equals("")){
      email2.addTo(DPeMail2);
    }else {
-     message("¬dµL¸g¿ì¤H­û¬ì¥DºŞ("+DPManageemNo+")«H½c" ); 
+     message("æŸ¥ç„¡ç¶“è¾¦äººå“¡ç§‘ä¸»ç®¡("+DPManageemNo+")ä¿¡ç®±" ); 
    }
    
    email2.send();
    */
-   //message("½Ğ¶ñ¼gºÃ¦ü¬~¿úªí¼xºA¼ËÀË®Öªí¤Î¶i¦æ³q³øºÃ¦ü¬~¿ú§@·~!!");    
-   over50= "½Ğ¶ñ¼gºÃ¦ü¬~¿úªí¼xºA¼ËÀË®Öªí¤Î¶i¦æ³q³øºÃ¦ü¬~¿ú§@·~!!";
+   //message("è«‹å¡«å¯«ç–‘ä¼¼æ´—éŒ¢è¡¨å¾µæ…‹æ¨£æª¢æ ¸è¡¨åŠé€²è¡Œé€šå ±ç–‘ä¼¼æ´—éŒ¢ä½œæ¥­!!");    
+   over50= "è«‹å¡«å¯«ç–‘ä¼¼æ´—éŒ¢è¡¨å¾µæ…‹æ¨£æª¢æ ¸è¡¨åŠé€²è¡Œé€šå ±ç–‘ä¼¼æ´—éŒ¢ä½œæ¥­!!";
  } 
  ////////////////////////////////////////////
  action(9);
  if(!over50.equals("")){
    over50 = over50 + "  ";
  }
- messagebox(over50+ "¤w²£¥Í§éÅı³æ = " + stringDiscountNo);     
- // 2013-12-25 ½Æ»s¨ì°Å¶KÃ¯      
+ messagebox(over50+ "å·²ç”¢ç”ŸæŠ˜è®“å–® = " + stringDiscountNo);     
+ // 2013-12-25 è¤‡è£½åˆ°å‰ªè²¼ç°¿      
  Farglory.util.FargloryUtil  exeUtil  =  new  Farglory.util.FargloryUtil() ;
  exeUtil.ClipCopy (exeUtil.doSubstring(stringDiscountNo,  0,  stringDiscountNo.length()-1)) ;
  return false;

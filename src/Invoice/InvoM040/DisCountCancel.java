@@ -18,6 +18,12 @@ public class DisCountCancel extends bproc{
       message("折讓單已作廢!無法作廢 ");
       return value; 
     }
+    
+    if (getValue("PrintYes").equals("N")){
+      message("折讓單未列印!無法作廢 ");
+      return value; 
+    }
+    
     stringSQL = " SELECT DiscountNo " +
                         " FROM InvoM040" +
                         " WHERE DiscountNo = '" + getValue("DiscountNo") + "'" +

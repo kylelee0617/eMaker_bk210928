@@ -19,10 +19,12 @@ import jcx.jform.bproc;
 
 public class InvoiceCancel extends bproc {
   public String getDefaultValue(String value) throws Throwable {
-    /*
-     * if(getValue("PrintYes").trim().equals("N")){ message("未列印發票 不可作廢"); return
-     * value; }
-     */
+    
+   if(getValue("PrintYes").trim().equals("N")){ 
+     message("未列印發票 不可作廢"); 
+     return value; 
+   }
+    
     
     if (getValue("DELYes").trim().equals("Y")) {
       message("已作廢發票 不可作廢");

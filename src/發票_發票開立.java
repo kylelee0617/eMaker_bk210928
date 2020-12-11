@@ -1,28 +1,28 @@
 /**
- * µo²¼ - PROD - ·s¼W«ö¶sµ{¦¡
+ * ç™¼ç¥¨ - PROD - æ–°å¢æŒ‰éˆ•ç¨‹å¼
  * @author B04391
  *
  */
 
-public class µo²¼_µo²¼¶}¥ß {
+public class ç™¼ç¥¨_ç™¼ç¥¨é–‹ç«‹ {
   
   public String getDefaultValue(String value) throws Throwable {
- // ¦^¶Ç­È¬° true ªí¥Ü°õ¦æ±µ¤U¨Óªº¸ê®Æ®w²§°Ê©Î¬d¸ß
- // ¦^¶Ç­È¬° false ªí¥Ü±µ¤U¨Ó¤£°õ¦æ¥ô¦ó«ü¥O
- // ¶Ç¤J­È value ¬° "·s¼W","¬d¸ß","­×§ï","§R°£","¦C¦L","PRINT" (¦C¦L¹wÄıªº¦C¦L«ö¶s),"PRINTALL" (¦C¦L¹wÄıªº¥ş³¡¦C¦L«ö¶s) ¨ä¤¤¤§¤@
+ // å›å‚³å€¼ç‚º true è¡¨ç¤ºåŸ·è¡Œæ¥ä¸‹ä¾†çš„è³‡æ–™åº«ç•°å‹•æˆ–æŸ¥è©¢
+ // å›å‚³å€¼ç‚º false è¡¨ç¤ºæ¥ä¸‹ä¾†ä¸åŸ·è¡Œä»»ä½•æŒ‡ä»¤
+ // å‚³å…¥å€¼ value ç‚º "æ–°å¢","æŸ¥è©¢","ä¿®æ”¹","åˆªé™¤","åˆ—å°","PRINT" (åˆ—å°é è¦½çš„åˆ—å°æŒ‰éˆ•),"PRINTALL" (åˆ—å°é è¦½çš„å…¨éƒ¨åˆ—å°æŒ‰éˆ•) å…¶ä¸­ä¹‹ä¸€
  message("");
  talk dbInvoice = getTalk(""+get("put_dbInvoice"));
- //³B²z³¡ªù
+ //è™•ç†éƒ¨é–€
  String stringSQL = " SELECT TOP 1 DepartNo " +
                    " FROM InvoProcessDepartNo " +
                  " WHERE DepartNo = '" + getValue("DepartNo").trim() + "'" +
                        " AND EmployeeNo = '" + getUser() + "'" ;
  String retInvoProcessDepartNo[][] = dbInvoice.queryFromPool(stringSQL);
  if(retInvoProcessDepartNo.length == 0){
-   //message("¤£¥i³B²z ¦¹³¡ªùµo²¼");
+   //message("ä¸å¯è™•ç† æ­¤éƒ¨é–€ç™¼ç¥¨");
    //return false;
  }
- //µo²¼Áp¦¡
+ //ç™¼ç¥¨è¯å¼
  dbInvoice = getTalk("Invoice");
  //
  stringSQL = " SELECT Nationality " +
@@ -34,26 +34,26 @@ public class µo²¼_µo²¼¶}¥ß {
    if (stringNationality.equals("1")){
      if (getValue("CustomNo").length() == 8 && getValue("InvoiceKind").equals("2")){
        setValue("InvoiceKind","3");
-       message("µo²¼¤w±j¨î§ï¬° ¤TÁp !");
+       message("ç™¼ç¥¨å·²å¼·åˆ¶æ”¹ç‚º ä¸‰è¯ !");
        //return false;
      }
      if (getValue("CustomNo").length() == 10 && getValue("InvoiceKind").equals("3")){
        setValue("InvoiceKind","2");
-       message("µo²¼¤w±j¨î§ï¬° ¤GÁp !");
+       message("ç™¼ç¥¨å·²å¼·åˆ¶æ”¹ç‚º äºŒè¯ !");
        //return false;
      }     
    }
    if (stringNationality.equals("2")){
      if (getValue("CustomNo").length() == 10 && getValue("InvoiceKind").equals("3")){
        setValue("InvoiceKind","2");    
-       message("µo²¼¤w±j¨î§ï¬° ¤GÁp !");
+       message("ç™¼ç¥¨å·²å¼·åˆ¶æ”¹ç‚º äºŒè¯ !");
        return false;
      }     
    }   
  } 
  dbInvoice = getTalk("Invoice");
  /*
- //µo²¼Áp¦¡
+ //ç™¼ç¥¨è¯å¼
  Farglory.util.FargloryUtil  exeUtil  =  new  Farglory.util.FargloryUtil() ;
  if (getValue("CustomNo").length()==8 && exeUtil.isDigitNum (getValue("CustomNo")))
    setValue("InvoiceKind","3");
@@ -62,7 +62,7 @@ public class µo²¼_µo²¼¶}¥ß {
  */  
 
    
- //µo²¼¸¹½X
+ //ç™¼ç¥¨è™Ÿç¢¼
  String stringInvoiceDate = getValue("InvoiceDate").trim();
  stringInvoiceDate = stringInvoiceDate.substring(0,7);
  stringSQL = "SELECT TOP 1 InvoiceYYYYMM," +
@@ -147,15 +147,15 @@ public class µo²¼_µo²¼¶}¥ß {
  }
  System.out.println(stringNowInvoiceNo);
  if (stringNowInvoiceNo.length() < 10){
-   message("¹q¸£µo²¼¤w¥Î§¹ ½Ğ¬¢°]°È«Ç»â¨ú!");
+   message("é›»è…¦ç™¼ç¥¨å·²ç”¨å®Œ è«‹æ´½è²¡å‹™å®¤é ˜å–!");
    return false;
  }
  message(stringNowInvoiceNo);
 
- //©ú²Ó
+ //æ˜ç´°
  String [][] A_table = getTableData("table1");
  if (A_table.length ==0){
-    message("©ú²Ó¥²¶·¦Ü¤Ö¦³¤@µ§");
+    message("æ˜ç´°å¿…é ˆè‡³å°‘æœ‰ä¸€ç­†");
     return false;
  }
  String stringUserkey = "";
@@ -219,7 +219,7 @@ public class µo²¼_µo²¼¶}¥ß {
             "'" + stringUserkey + "'";
  dbInvoice.execFromPool(stringSQL);
  setValue("InvoiceNo",stringNowInvoiceNo);
- message("¤w²£¥Íµo²¼ = " +  stringNowInvoiceNo);         
+ message("å·²ç”¢ç”Ÿç™¼ç¥¨ = " +  stringNowInvoiceNo);         
  return false;
 
   }
