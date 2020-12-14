@@ -235,19 +235,20 @@ public class 換名折讓 extends bproc{
               System.out.println("stringSQL"+stringSQL);
               
               //AS400 GLECPFUF 折讓明細
-              talk as400 = getTalk("AS400");
+              talk as400 = getTalk("400CRM");
               StringBuilder sbSQL = new StringBuilder();
               stringSQL = "select * FROM Invom041 WHERE DiscountNo = '"+stringNo+"'" ;
               String[][] retM041 = dbInvoice.queryFromPool(stringSQL);
               for(int ii=0 ; ii<retM041.length ; ii++) {
                 String[] m041 = retM041[ii];
+                sbSQL = new StringBuilder();
                 sbSQL.append("INSERT INTO GLECPFUF ");
                 sbSQL.append("(EC01U, EC02U, EC03U, EC04U, EC05U, EC06U, EC07U, EC08U, EC09U, EC10U) ");
                 sbSQL.append("values ");
                 sbSQL.append("(");
-                sbSQL.append("'").append( m041[0].trim() ).append("', ");                         //折讓號碼
-                sbSQL.append("").append( m041[1].trim() ).append(", ");                        //筆數
-                sbSQL.append("'").append( m041[2].trim() ).append("', ");                                //勾選
+                sbSQL.append("'").append( m041[0].trim() ).append("', ");             //折讓號碼
+                sbSQL.append("").append( m041[1].trim() ).append(", ");               //筆數
+                sbSQL.append("'").append( m041[2].trim() ).append("', ");             //勾選
                 sbSQL.append("'").append( m041[3].trim() ).append("', ");             //發票號碼
                 sbSQL.append("'").append( m041[4].trim() ).append("', ");            //摘要代碼
                 sbSQL.append("").append( m041[5].trim() ).append(", ");               //未稅
