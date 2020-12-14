@@ -56,7 +56,7 @@ public class InvoiceCancel extends bproc {
         + "'";
     String retInvoProcessDepartNo[][] = dbInvoice.queryFromPool(stringSQL);
     if (retInvoProcessDepartNo.length == 0) {
-      message("ぃ矪瞶 场祇布");
+      //message("ぃ矪瞶 场祇布");
       // return false;
     }
     
