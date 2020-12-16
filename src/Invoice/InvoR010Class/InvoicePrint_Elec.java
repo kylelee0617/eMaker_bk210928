@@ -5,6 +5,7 @@ import Invoice.utils.InvoicePrintUtil;
 import Invoice.vo.*;
 import jcx.jform.sproc;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import jcx.util.*;
 import jcx.html.*;
@@ -159,6 +160,7 @@ public class InvoicePrint_Elec extends sproc{
         String Detailltem = hM031.get( table[x][2].trim() )!=null? (String)hM031.get( table[x][2].trim() ):""  ; // 期款名稱
         String InvoiceMoney = Invo_temp[7].trim();     // 發票未稅金額
         String InvoiceTax = Invo_temp[8].trim();       // 發票稅額
+        String taxKind = Invo_temp[3].trim();          // 營業稅種類
         String InvoiceTotalMoney = Invo_temp[9].trim();// 發票總金額
         int PrintTime = Integer.parseInt(Invo_temp[10].trim());       //列印時間
         String PointNo = Invo_temp[12].trim();         //品項代號
@@ -241,17 +243,18 @@ public class InvoicePrint_Elec extends sproc{
         
         //明細內容
         StringBuilder sbDetail = new StringBuilder();
+        String invoiceDateTime = InvoiceDate + " " + invoiceTime;
         sbDetail.append("營業人統編:").append(companyInvoNo).append(";");
         if(Company_Name.length() > 0) {
-//          Company_Name = Company_Name.replaceAll("股份有限", "(股)").replaceAll("辦事處", "辦");
+        //Company_Name = Company_Name.replaceAll("股份有限", "(股)").replaceAll("辦事處", "辦");
           sbDetail.append("名稱:").append( Company_Name.replaceAll("股份有限", "(股)").replaceAll("市辦事處", "辦") ).append(";");
         }
-        sbDetail.append("日期:").append(createDateTime).append(";");
+        sbDetail.append("日期:").append(invoiceDateTime).append(";");
         sbDetail.append("發票號碼:").append(InvoiceNo).append(";");
         sbDetail.append("買受人:").append(CustomName).append(";");
         sbDetail.append("案名:").append(ProjectNo).append(";");
         sbDetail.append("棟樓別:").append(HuBei).append(";");
-        sbDetail.append("摘要:").append(PointName + "  " + Detailltem).append(";");
+        sbDetail.append("摘要:").append(PointName + "  " + Detailltem);
         
         InvoicePrintVo vo = new InvoicePrintVo();
         //---收件人
@@ -263,10 +266,19 @@ public class InvoicePrint_Elec extends sproc{
         vo.setInvoiceDate( Integer.toString(Integer.parseInt(InvoiceDate.replaceAll("/", "")) - 19110000) );
         vo.setInvoiceNumber(InvoiceNo);
         //vo.setPrintDate(datetime.getToday("YYYYmmdd") + datetime.getTime("hms"));
-        vo.setPrintDate(InvoiceDate + " " + invoiceTime);
+        vo.setPrintDate(invoiceDateTime.replaceAll("/", "").replaceAll(" ", "").replaceAll(":", ""));
         vo.setRandomCode(randomCode);
+        
+        //發票金額
         vo.setSaleAmount(InvoiceMoney);
+        //稅額
+        if( "C".equals(taxKind) ) {
+          InvoiceTax = "";
+        }
+        vo.setTax(InvoiceTax);
+        //發票總額
         vo.setTotal(InvoiceTotalMoney);
+        
         if(CustomNo.length() == 8) {  //法人才要傳送統編
           vo.setBuyerId(CustomNo);
         }else {
@@ -277,7 +289,6 @@ public class InvoicePrint_Elec extends sproc{
         vo.setPrintCount("" + (PrintTime + 1) );
         vo.setDeptId(PrintUserNo.equals("flife")? "25000":"去印25F啦");
         vo.setBuyerName(CustomName);
-        vo.setTax(InvoiceTax);
         
         InvoicePrintUtil iPrintUtil = new InvoicePrintUtil( PRINTURL );
         String rs = iPrintUtil.doPrint(vo);

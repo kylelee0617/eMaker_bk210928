@@ -1,42 +1,42 @@
 package Invoice.vo;
 
 /**
- * µo²¼¦C¦L¹ïÀ³ÀÉ
+ * ç™¼ç¥¨åˆ—å°å°æ‡‰æª”
  * @author B04391
  *
  */
 
 public class InvoicePrintVo {
-  private String title = "»·¶¯¤H¹Ø";                            // µo²¼©ïÀY
+  private String title = "é é›„äººå£½";                            // ç™¼ç¥¨æŠ¬é ­
   
-  private String sendName = "";                                 // ±H¥ó¤H¦WºÙ
-  private String sendPost = "11073";                            // ±H¥ó¤H¶l»¼°Ï¸¹
-  private String sendAddr = "¥x¥_¥«ªQ°ª¸ô1¸¹28¼Ó";              // ±H¥ó¤H¦a§}
-  private String sendCompany = "»·¶¯¤H¹Ø«OÀI¨Æ·~ªÑ¥÷¦³­­¤½¥q";  // ±H¥ó¤H¤½¥q
-  private int DETAIL_LENGTH = 4;                                // ©ú²Ó¦æ¼Æ
+  private String sendName = "";                                 // å¯„ä»¶äººåç¨±
+  private String sendPost = "11073";                            // å¯„ä»¶äººéƒµéå€è™Ÿ
+  private String sendAddr = "å°åŒ—å¸‚æ¾é«˜è·¯1è™Ÿ28æ¨“";              // å¯„ä»¶äººåœ°å€
+  private String sendCompany = "é é›„äººå£½ä¿éšªäº‹æ¥­è‚¡ä»½æœ‰é™å…¬å¸";  // å¯„ä»¶äººå…¬å¸
+  private int DETAIL_LENGTH = 4;                                // æ˜ç´°è¡Œæ•¸
 
-  //¦¬¥ó¤H
-  private String recipientPost = "";        // ¦¬¥ó¤H¶l»¼°Ï¸¹
-  private String recipientAddr = "";        // ¦¬¥ó¤H¦a§}
-  private String recipientCompany = "";     // ¦¬¥ó¤H¤½¥q
-  private String recipientName = "";        // ¦¬¥ó¤H©m¦W
+  //æ”¶ä»¶äºº
+  private String recipientPost = "";        // æ”¶ä»¶äººéƒµéå€è™Ÿ
+  private String recipientAddr = "";        // æ”¶ä»¶äººåœ°å€
+  private String recipientCompany = "";     // æ”¶ä»¶äººå…¬å¸
+  private String recipientName = "";        // æ”¶ä»¶äººå§“å
 
-  //«~¶µ¡Bª÷ÃB
-  private String invoiceDate = "";          // µo²¼²£¥Í¤é´Á
-  private String invoiceNumber = "";        // µo²¼½s¸¹
-  private String printDate = "";            // µo²¼¦C¦L¤é´Á
-  private String randomCode = "";           // ÀH¾÷½X
-  private String saleAmount = "";           // ¾P°âÃB
-  private String total = "";                // Á`­p
-  private String buyerId = "";              // ¶R¤è
-  private String sellerId = "";             // ½æ¤è
-  private String mark1 = "";                // µo²¼¤U¤èµù°O1
-  private String mark2 = "";                // µo²¼¤U¤èµù°O 2
-  private String detail = "";               // ©ú²Ó²Ó¶µ¥H,§@¬°¤À¹jÄæ¦ì ;¸¹¤À¹jµ§¼Æ
-  private String printCount = "1";          // ¦C¦L¦¸¼Æ;¤j©ó1¦¸·|ÅÜ¸É¦L
-  private String deptId = "2200";           // ¦C¦LªÌ©ÒÄİ³æ¦ì
-  private String buyerName = "";            // ¶R¨ü¤H
-  private String tax = "";                  // µ|ÃB
+  //å“é …ã€é‡‘é¡
+  private String invoiceDate = "";          // ç™¼ç¥¨ç”¢ç”Ÿæ—¥æœŸ(yyyyMMdd)
+  private String invoiceNumber = "";        // ç™¼ç¥¨ç·¨è™Ÿ
+  private String printDate = "";            // ç™¼ç¥¨åˆ—å°æ—¥æœŸ(yyyyMMddhhmmss)
+  private String randomCode = "";           // éš¨æ©Ÿç¢¼
+  private String saleAmount = "";           // éŠ·å”®é¡
+  private String total = "";                // ç¸½è¨ˆ
+  private String buyerId = "";              // è²·æ–¹
+  private String sellerId = "";             // è³£æ–¹
+  private String mark1 = "";                // ç™¼ç¥¨ä¸‹æ–¹è¨»è¨˜1
+  private String mark2 = "";                // ç™¼ç¥¨ä¸‹æ–¹è¨»è¨˜ 2
+  private String detail = "";               // æ˜ç´°ç´°é …ä»¥,ä½œç‚ºåˆ†éš”æ¬„ä½ ;è™Ÿåˆ†éš”ç­†æ•¸
+  private String printCount = "1";          // åˆ—å°æ¬¡æ•¸;å¤§æ–¼1æ¬¡æœƒè®Šè£œå°
+  private String deptId = "2200";           // åˆ—å°è€…æ‰€å±¬å–®ä½
+  private String buyerName = "";            // è²·å—äºº
+  private String tax = "";                  // ç¨…é¡
   
   public String getTitle() {
     return title;
