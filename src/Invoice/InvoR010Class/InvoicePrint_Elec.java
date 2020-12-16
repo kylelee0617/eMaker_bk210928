@@ -284,6 +284,7 @@ public class InvoicePrint_Elec extends sproc{
         }else {
           vo.setBuyerId("");
         }
+        
         vo.setSellerId(companyInvoNo);
         vo.setDetail(sbDetail.toString());
         vo.setPrintCount("" + (PrintTime + 1) );
