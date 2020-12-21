@@ -76,7 +76,7 @@ public class InvoicePrint_Elec extends sproc{
     sql.append(",'', a.HuBei, a.HuBei, isnull(a.InvoiceMoney,'0'), isnull(a.InvoiceTax,'0'), isnull(a.InvoiceTotalMoney, '0') ");
     // 10.列印次數 11.發票聯式(2/3) 12.品名代號 13.買受人統編 14.是否刪除 15 發票種類 16 客服戶別
     sql.append(",isnull(a.PrintTimes,'0'), InvoiceKind, PointNo,CustomNo, isnull(DELYes,''), ProcessInvoiceNo, isnull(OBJECT_CD, '' )");
-    // 17. 隨機碼 , 18. 公司代碼 , 19. 發票開立日期 , 20.發票時間
+    // 17. 隨機碼 , 18. 公司代碼 , 19. 發票開立日期
     sql.append(",a.RandomCode ,a.CompanyNo , a.CreateDateTime , a.InvoiceTime ");
     sql.append("from InvoM030 a ");
     sql.append("where 1=1 ");
@@ -124,8 +124,8 @@ public class InvoicePrint_Elec extends sproc{
     }
 
     //期款
-    HashMap hM031 = new HashMap();
-    sql = new StringBuffer("select UPPER(InvoiceNo),RTRIM(Detailitem)+RTRIM(Remark)+'；' from InvoM031");
+    HashMap hM031 = new HashMap();;
+  sql = new StringBuffer("select UPPER(InvoiceNo),','+RTRIM(Detailitem)+RTRIM(Remark) from InvoM031");
     if (choose.length() != 0) sql.append(" WHERE InvoiceNo in (" + choose.toString() + ")");
     String[][] InvoM031 = t.queryFromPool(sql.toString());
     for (int x = 0; x < InvoM031.length; x++) {
@@ -142,7 +142,7 @@ public class InvoicePrint_Elec extends sproc{
 
     // 開始組資料
     Hashtable result = new Hashtable();
-    StringBuilder sbError = new StringBuilder();
+  StringBuilder sbError = new StringBuilder();
     for (int x = 0; x < table.length; x++) {
       if (table[x][0].trim().equals("Y")) {
         String[] Invo_temp = (String[]) hM030_1.get( table[x][2].trim() );
@@ -155,9 +155,12 @@ public class InvoicePrint_Elec extends sproc{
         InvoiceDate = Invo_temp[1].trim();             // 發票日期
         String invoiceTime = Invo_temp[20].trim();     // 發票時間
         String CustomName = Invo_temp[2].trim();       // 客戶名稱
-        String ProjectNo = table[x][4].trim();         // 案別
+        String ProjectNo = table[x][4].trim();  // 案別
         String HuBei = Invo_temp[5].trim();            // 戶別
         String Detailltem = hM031.get( table[x][2].trim() )!=null? (String)hM031.get( table[x][2].trim() ):""  ; // 期款名稱
+        if(Detailltem.length() > 0) {
+          Detailltem = Detailltem.substring(1);
+        }
         String InvoiceMoney = Invo_temp[7].trim();     // 發票未稅金額
         String InvoiceTax = Invo_temp[8].trim();       // 發票稅額
         String taxKind = Invo_temp[3].trim();          // 營業稅種類
@@ -241,12 +244,11 @@ public class InvoicePrint_Elec extends sproc{
         }
         System.out.println("產生發票=" + InvoiceNo);
         
-        //明細內容
+       //明細內容
         StringBuilder sbDetail = new StringBuilder();
         String invoiceDateTime = InvoiceDate + " " + invoiceTime;
         sbDetail.append("營業人統編:").append(companyInvoNo).append(";");
         if(Company_Name.length() > 0) {
-        //Company_Name = Company_Name.replaceAll("股份有限", "(股)").replaceAll("辦事處", "辦");
           sbDetail.append("名稱:").append( Company_Name.replaceAll("股份有限", "(股)").replaceAll("市辦事處", "辦") ).append(";");
         }
         sbDetail.append("日期:").append(invoiceDateTime).append(";");
@@ -254,7 +256,7 @@ public class InvoicePrint_Elec extends sproc{
         sbDetail.append("買受人:").append(CustomName).append(";");
         sbDetail.append("案名:").append(ProjectNo).append(";");
         sbDetail.append("棟樓別:").append(HuBei).append(";");
-        sbDetail.append("摘要:").append(PointName + "  " + Detailltem);
+        sbDetail.append("摘要:").append(PointName + " - " + Detailltem );
         
         InvoicePrintVo vo = new InvoicePrintVo();
         //---收件人
@@ -265,7 +267,6 @@ public class InvoicePrint_Elec extends sproc{
         //----發票內容
         vo.setInvoiceDate( Integer.toString(Integer.parseInt(InvoiceDate.replaceAll("/", "")) - 19110000) );
         vo.setInvoiceNumber(InvoiceNo);
-        //vo.setPrintDate(datetime.getToday("YYYYmmdd") + datetime.getTime("hms"));
         vo.setPrintDate(invoiceDateTime.replaceAll("/", "").replaceAll(" ", "").replaceAll(":", ""));
         vo.setRandomCode(randomCode);
         
@@ -284,7 +285,6 @@ public class InvoicePrint_Elec extends sproc{
         }else {
           vo.setBuyerId("");
         }
-        
         vo.setSellerId(companyInvoNo);
         vo.setDetail(sbDetail.toString());
         vo.setPrintCount("" + (PrintTime + 1) );
@@ -304,16 +304,16 @@ public class InvoicePrint_Elec extends sproc{
           result.put( InvoiceNo, "列印成功於:" + rs.replace("SUCCESS:", "") );
         }else {
           result.put( InvoiceNo, "發生問題:" + rs.replace("ERROR:", "") );
-          if(sbError.length() != 0) sbError.append(",");
+      if(sbError.length() != 0) sbError.append(",");
           sbError.append(InvoiceNo);
         }
         
       } //if end
     } //for end
     
-    System.out.println(">>>InvoicePrint_Elec:" + result);
+    System.out.println(">>>result:" + result);
     if(sbError.length() == 0) {
-      message("列印完成。。。ヽ(✿ﾟ▽ﾟ)ノ");
+      message("列印完成。。。  \u30fd(\u273f\uff9f▽\uff9f)\u30ce");
     }else {
       messagebox("以下發票列印發生問題，請聯繫資訊主辦: \n" + sbError.toString());
     }

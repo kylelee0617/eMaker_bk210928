@@ -23,6 +23,8 @@ public class test111 extends bproc{
     
     System.out.println(h);
     System.out.println(h.get("03062401�Ѣݦ榳"));
+    
+    DecimalFormat df = new DecimalFormat("#,###");
   
     return value;
   }
