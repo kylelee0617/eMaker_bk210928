@@ -16,11 +16,62 @@ public class KUtils extends bvalidate {
     return false;
   }
   
+  
+  /**
+   * 是否測試服務器
+   * 
+   * @return
+   * @throws Throwable
+   */
+  public boolean isTest() throws Throwable {
+    String serverIP = get("serverIP").toString().trim();
+    boolean isTest = serverIP.contains("172.16.")? false:true;
+    return isTest;
+  }
+  
+  
+  /**
+   * 取得伺服器IP
+   * 
+   * @return
+   * @throws Throwable
+   */
+  public String getServerIP() throws Throwable {
+    String ip = get("serverIP").toString().trim();
+    return ip;
+  }
+  
+  /**
+   * 字串前後補字元
+   * 
+   * @param src   原始字串
+   * @param count 補到幾位
+   * @param ch    要補的字元
+   * @param FB    前0，後1
+   * @return      String
+   * @throws Throwable
+   */
+  public String addWhat(String src , int count , String ch , int FB) throws Throwable {
+    String strPlus = "";
+    for(int ii=0 ; ii<count-(src.length()) ; ii++) {
+      strPlus += ch;
+    }
+    
+    if( FB == 0 ) {
+      return strPlus + src; 
+    }else if (FB == 1) {
+      return src + strPlus;
+    }else {
+      return "參數錯誤";
+    }
+  }
+  
   /**
    * 數字前後補0
    * 
-   * @param intSrc 原數字
-   * @param count 最終位數
+   * @param intSrc  原數字
+   * @param count   要補到幾位數
+   * @param FB      補在前面F，補在後面B
    * @return
    * @throws Throwable
    */

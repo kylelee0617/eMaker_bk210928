@@ -13,6 +13,7 @@ public class RiskCheckBean {
   private talk dbEMail = null;
   private talk db400CRM = null;
   private talk dbEIP = null;
+  private String userNo = "";
   
   private String[][] retCustom = null;
   private String[][] retSBen = null;
@@ -20,7 +21,9 @@ public class RiskCheckBean {
   private String orderNo = "";
   private String orderDate = "";
   private String actionText = "";
+  
   private boolean updSale05M091 = false;
+  private boolean upd070Log = false;
   private boolean sendMail = false;
   
   public talk getDbSale() {
@@ -94,6 +97,18 @@ public class RiskCheckBean {
   }
   public void setSendMail(boolean sendMail) {
     this.sendMail = sendMail;
+  }
+  public String getUserNo() {
+    return userNo;
+  }
+  public void setUserNo(String userNo) {
+    this.userNo = userNo;
+  }
+  public boolean isUpd070Log() {
+    return upd070Log;
+  }
+  public void setUpd070Log(boolean upd070Log) {
+    this.upd070Log = upd070Log;
   }
 
 }

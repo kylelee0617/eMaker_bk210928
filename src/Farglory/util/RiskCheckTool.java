@@ -5,13 +5,13 @@ import java.util.*;
 import com.fglife.risk.*;
 import jcx.db.*;
 import jcx.jform.*;
+import java.net.*;
 
 
 public class RiskCheckTool extends bvalidate {
-  talk dbSale = null;
-  talk dbEMail = null;
-  talk dbBen = null;
-  talk dbEIP = null;
+  String serverIP , serverName;    //伺服器IP , NAME
+  talk dbSale , dbEMail , dbBen , dbEIP = null;
+  ResultStatus rsStatus = new ResultStatus();
   
   RiskCheckBean bean = null;
   boolean isTest = true;
@@ -24,24 +24,26 @@ public class RiskCheckTool extends bvalidate {
   String actionNo = "";
   String strHouse = "";
   String strCar = "";
-
   
+
   public RiskCheckTool(RiskCheckBean bean) throws Throwable {
+    InetAddress addr = InetAddress.getLocalHost();
+    serverIP=addr.getHostAddress().toString();      //獲得本機IP
+    serverName=addr.getHostName().toString();       //獲得本機名稱
+    isTest = serverIP.contains("172.16.14")? false:true;
+    if(isTest) {
+      testFlag = " (測試) ";
+      System.out.println("環境>>>" + testFlag);
+    }
+    
     this.dbSale = bean.getDbSale();
     this.dbEMail = bean.getDbEMail();
     this.dbBen = bean.getDb400CRM();
     this.dbEIP = bean.getDbEIP();
     this.bean = bean;
     
-    String serverIP = get("serverIP").toString().trim();
-    isTest = serverIP.contains("172.16.14.4")? false:true;
-    if(isTest) {
-      testFlag = " (測試) ";
-      System.out.println("環境>>>" + testFlag);
-    }
-    
     //Emaker工號
-    this.userNo = getUser().toUpperCase().trim();
+    this.userNo = bean.getUserNo();
     //FG工號
     this.getEMPNO();
     //系統日期時間
@@ -53,7 +55,18 @@ public class RiskCheckTool extends bvalidate {
   }
   
   
-  public String processRisk() throws Throwable {
+  /**
+   * 輸出 : 
+   *    rsMsg : 風險計算結果
+   *    sendMailList : 要發送Email的list
+   * 
+   * @return
+   * @throws Throwable
+   */
+  public Result processRisk() throws Throwable {
+    Result rs = new Result();
+    Map rsData = new HashMap();
+    rs.setRsStatus(rsStatus.SUCCESSBUTSOMEERROR);
     String sysType = "RYB";// 不動產行銷B 銷售C
     String[][] retCustom = this.bean.getRetCustom();
     String[][] retSBen = this.bean.getRetSBen();
@@ -293,6 +306,9 @@ public class RiskCheckTool extends bvalidate {
         tmpMsgText += retCustom[i][6] + "\t" + resultMsg.trim() + "\t" + riskPoint.trim() + "\t" 
                    + rc.getResult()[11].toString().trim() + "\t" + rc.getResult()[13].toString().trim() + "\t" 
                    + rc.getResult()[15].toString().trim() + "\t" + rc.getResult()[17].toString().trim() + "\n";
+        
+        //風險值結果輸出
+        rsData.put("rsMsg", msgboxtext);
 
         HashMap m = new HashMap();
         m.put("p01", strProjectID1);
@@ -310,27 +326,25 @@ public class RiskCheckTool extends bvalidate {
       ra.disconnect();
       
       //更新客戶風險值
-      if(this.bean.isUpdSale05M091()) {
-        this.updSaleM091(list);
-      }
-
-      messagebox(msgboxtext);
-      setValue("RiskCheckRS", tmpMsgText);
+      if(this.bean.isUpdSale05M091()) this.updSaleM091(list);
+      
     } catch (Exception e) {
       e.printStackTrace();
       ra.disconnect();
     }
     System.out.println("存入風險計算客戶資料-----------------------------------E");
 
-    //TODO: insert into Sale05M070
-    this.insSale05M070(list);
+    //insert into Sale05M070
+    if(bean.isUpd070Log()) this.insSale05M070(list);
     
-    //TODO: 發送MAIL
-    if(bean.isSendMail()) {
-      this.sendMail(list);
-    }
+    //組成MAIL
+    List sendMailList = new ArrayList();
+    sendMailList.add(this.sendMail(list));
+    rsData.put("sendMailList", sendMailList );
     
-    return "0";
+    rs.setData(rsData);
+    rs.setRsStatus(rsStatus.SUCCESS);
+    return rs;
   }
   
   //取empNo
@@ -345,8 +359,8 @@ public class RiskCheckTool extends bvalidate {
 
   //系統日期時間
   public void getDateTime() throws Throwable {
-    sysdate = new SimpleDateFormat("yyyyMMdd").format(getDate());
-    systime = new SimpleDateFormat("HHmmss").format(getDate());
+    sysdate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+    systime = new SimpleDateFormat("HHmmss").format(new Date());
   }
   
   //actionNo
@@ -447,9 +461,10 @@ public class RiskCheckTool extends bvalidate {
     return "0";
   }
   
+  
   //發MAIL
-  public String sendMail(List customList) throws Throwable {
-    System.out.println("發送EMAIL-----------------------------------S");
+  public SendMailBean sendMail(List customList) throws Throwable {
+    System.out.println("組成 EMAIL-----------------------------------S");
     String userEmail = "";
     String userEmail2 = "";
     String DPCode = "";
@@ -546,22 +561,31 @@ public class RiskCheckTool extends bvalidate {
       }
 
       context = context + l1;
-    }
+    } //customList for End
     context = context + tail + cbottom;
 
-    // 寄發通知信件
+    //20201222 Kyle : 拉成Server Side共用元件後，無法在這邊使用內建函數，改為組成Mail資訊讓前端做發MAIL的動作
+    //String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "", "text/html");
     String subject = this.bean.getProjectID1() + "案" + strHouse + "不動產訂購客戶風險等級評估結果通知" + testFlag;
+    SendMailBean send = new SendMailBean();
+    send.setColm1("ex.fglife.com.tw");
+    send.setColm2("Emaker-Invoice@fglife.com.tw");
+    send.setSubject(subject);
+    send.setContext(context);
+    send.setColm6(null);
+    send.setColm7("");
+    send.setColm8("text/html");
+    
     if (hilitgt) {
-      String[] arrayUser = { "Justin_Lin@fglife.com.tw", userEmail, DPeMail, PNMail };
-      String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "", "text/html");
-      System.out.println("sendRS===>" + sendRS);
+      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail, DPeMail, PNMail };
+      send.setArrayUser(arrayUser);
     } else {
-      String[] arrayUser = { "Justin_Lin@fglife.com.tw", userEmail };
-      String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "", "text/html");
-      System.out.println("sendRS===>" + sendRS);
+      String[] arrayUser = { "Kyle_Lee@fglife.com.tw", userEmail };
+      send.setArrayUser(arrayUser);
     }
-    System.out.println("發送EMAIL-----------------------------------E");
-    return "0";
+    System.out.println("組成 EMAIL-----------------------------------E");
+    
+    return send;
   }
   
   //是數字回傳 true，否則回傳 false。

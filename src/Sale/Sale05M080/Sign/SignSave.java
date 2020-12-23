@@ -203,7 +203,7 @@ public  class  SignSave  extends  bproc {
                         } else {
                             intAvailableInvoice  =  intAvailableInvoice + doParseInteger(stringEndNo.substring(2,10)) - doParseInteger(stringMaxNo.substring(2,10));
                         } 
-						System.out.println("test0>>>" + intAvailableInvoice);
+            System.out.println("test0>>>" + intAvailableInvoice);
                     }//End of for int intInvoM022
                     hashtableAvailableInvoice.put((stringCompanyCd +  stringInvoiceKind),  ""+intAvailableInvoice) ;
                     //玂臔祇布北恨郎
@@ -2013,7 +2013,8 @@ public  class  SignSave  extends  bproc {
         if( !stringDateTime.split(" ")[0].trim().equals(stringEDate) ) {
           String[] arrTmpTime = strInvoiceTime.split(":");
           int tmpTimeH = (Integer.parseInt(arrTmpTime[0].trim()) + 1) >=24 ? 23:(Integer.parseInt(arrTmpTime[0].trim()) + 1);
-          strInvoiceTime = "" + tmpTimeH + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim();
+          //tip : 计璸衡100穦ぃǎ璶干ㄓ
+          strInvoiceTime = kUtil.add0(tmpTimeH, 2, "F") + ":" + arrTmpTime[1].trim() + ":" + arrTmpTime[2].trim(); 
         }
         
         String  stringSql       =  " INSERT  INTO  InvoM030 (InvoiceNo,                InvoiceDate, InvoiceTime,  InvoiceKind,              CompanyNo,  DepartNo, "  +

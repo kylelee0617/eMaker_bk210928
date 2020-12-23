@@ -1,4 +1,5 @@
-package  Sale ;
+package  Sale.Sale05M094 ;
+
 import javax.swing.*;
 import jcx.jform.bproc;
 import java.io.*;
@@ -7,13 +8,17 @@ import jcx.util.*;
 import jcx.html.*;
 import jcx.db.*;
 import cLabel;
-import    jcx.net.*;
-import    jcx.net.smtp ;
-import  com.jacob.activeX.*;
-import  com.jacob.com.*;
-import  Farglory.util.FargloryUtil ;
+import jcx.net.*;
+import jcx.net.smtp ;
+import com.jacob.activeX.*;
+import com.jacob.com.*;
+import Farglory.util.FargloryUtil ;
 import java.text.SimpleDateFormat;
-public class Sale05M094 extends bproc{
+import Farglory.util.KUtils;
+
+public class CancelDiscount extends bproc{
+  KUtils util = new KUtils();
+  
   public String getDefaultValue(String value)throws Throwable{
     //201808check BEGIN
     System.out.println("chk==>"+getUser()+" , value==>退戶開折讓");
@@ -336,13 +341,16 @@ public class Sale05M094 extends bproc{
         
         //20201208 Kyle : 寫入AS400 GLECPFUF 折讓明細
         talk as400 = getTalk("400CRM");
+        String INVOLIB = "PGENLIB";
+        if(util.isTest()) INVOLIB = "JGENLIB"; 
+        
         StringBuilder sbSQL = new StringBuilder();
         stringSQL = "select * FROM Invom041 WHERE DiscountNo = '"+stringNo+"'" ;
         String[][] retM041 = dbInvoice.queryFromPool(stringSQL);
         for(int ii=0 ; ii<retM041.length ; ii++) {
           String[] m041 = retM041[ii];
           sbSQL = new StringBuilder();
-          sbSQL.append("INSERT INTO GLECPFUF ");
+          sbSQL.append("INSERT INTO "+INVOLIB+".GLECPFUF ");
           sbSQL.append("(EC01U, EC02U, EC03U, EC04U, EC05U, EC06U, EC07U, EC08U, EC09U, EC10U) ");
           sbSQL.append("values ");
           sbSQL.append("(");
@@ -361,7 +369,6 @@ public class Sale05M094 extends bproc{
           intNo++;
         }
         
-        
         stringSQL="update Invom040 set DiscountMoney= DiscountMoney+ " + intInvoiceMoney + " ,"+
                                                                 " DiscountTax= DiscountTax+ " + intInvoiceTax + ", "  +
                                     " DiscountTotalMoney=DiscountTotalMoney + " + (intInvoiceTotalMoney -  integerYiDiscountMoney ) +" "+
@@ -374,7 +381,7 @@ public class Sale05M094 extends bproc{
         for(int ii=0 ; ii<retM040.length ; ii++) {
           String[] m040 = retM040[ii];
           sbSQL = new StringBuilder();
-          sbSQL.append("INSERT INTO GLEBPFUF ");
+          sbSQL.append("INSERT INTO "+INVOLIB+".GLEBPFUF ");
           sbSQL.append("(EB01U, EB02U, EB03U, EB04U, EB05U, EB06U, EB07U, EB08U, EB09U, EB10U, EB11U, EB12U, EB13U, EB14U, EB15U, EB16U, EB17U, EB18U, EB19U) ");
           sbSQL.append("values ");
           sbSQL.append("(");

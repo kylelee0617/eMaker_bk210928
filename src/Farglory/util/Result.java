@@ -6,6 +6,7 @@ public class Result {
   private String returnMsg = "ok";
   private Exception exp;
   private Object data;
+  private String[] rsStatus = ResultStatus.SUCCESS;
 
   public Result() {
   }
@@ -59,6 +60,14 @@ public class Result {
 
   public void setExp(Exception exp) {
     this.exp = exp;
+  }
+
+  public String[] getRsStatus() {
+    return rsStatus;
+  }
+
+  public void setRsStatus(String[] rsStatus) {
+    this.rsStatus = rsStatus;
   }
   
 }
