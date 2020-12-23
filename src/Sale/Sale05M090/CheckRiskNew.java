@@ -1,15 +1,12 @@
-package Sale.test;
+package Sale.Sale05M090;
 
-import Farglory.util.KUtils;
-import Farglory.util.RiskCheckBean;
-import Farglory.util.RiskCheckTool;
 import jcx.db.talk;
 import jcx.util.*;
 import jcx.html.*;
 import java.util.*;
 import Farglory.util.*;
 
-public class test2 extends jcx.jform.sproc {
+public class CheckRiskNew extends jcx.jform.sproc {
   KUtils kUtil = new KUtils();
 
   public String getDefaultValue(String value) throws Throwable {
@@ -56,12 +53,14 @@ public class test2 extends jcx.jform.sproc {
     messagebox(rsMsg);
 
     // ±HµoEmail
-    List rsSendMailList = (List) rsData.get("sendMailList");
-    for (int ii = 0; ii < rsSendMailList.size(); ii++) {
-      SendMailBean smbean = (SendMailBean)rsSendMailList.get(ii);
-      String sendRS = sendMailbcc(smbean.getColm1(), smbean.getColm2(), smbean.getArrayUser(), smbean.getSubject(), smbean.getContext(), null, "", "text/html");
-      System.out.println("±HµoMAIL>>>" + sendRS);
-    }
+   if( !kUtil.isTest() ) {
+     List rsSendMailList = (List) rsData.get("sendMailList");
+     for (int ii = 0; ii < rsSendMailList.size(); ii++) {
+       SendMailBean smbean = (SendMailBean) rsSendMailList.get(ii);
+       String sendRS = sendMailbcc(smbean.getColm1(), smbean.getColm2(), smbean.getArrayUser(), smbean.getSubject(), smbean.getContext(), null, "", "text/html");
+       System.out.println("±HµoMAIL>>>" + sendRS);
+     }
+   }
 
     return value;
   }

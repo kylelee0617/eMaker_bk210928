@@ -343,9 +343,10 @@ public class 收款_購屋證明單_btnRiskCheck extends jcx.jform.sproc {
     }
 
     System.out.println("存入風險計算客戶資料-----------------------------------E");
+    
+    
     System.out.println("存入05M070資料-----------------------------------S");
     talk dbJGENLIB = getTalk("JGENLIB");
-
     String errMsg = "";
     String[][] retPat001;
     String[][] retPat002;
@@ -362,6 +363,7 @@ public class 收款_購屋證明單_btnRiskCheck extends jcx.jform.sproc {
     String strNowTime = nowTimeSdf.format(now);
     System.out.println("RocNowDate=====>" + RocNowDate);
     System.out.println("strNowTime=====>" + strNowTime);
+    
     // 員工碼
     String userNo = getUser().toUpperCase().trim();
     String empNo = "";
@@ -371,6 +373,7 @@ public class 收款_購屋證明單_btnRiskCheck extends jcx.jform.sproc {
       empNo = retEip[0][0];
     }
     System.out.println("empNo=====>" + empNo);
+    
     // 序號
     int intRecordNo = 1;
     String[][] ret05M070;
@@ -380,6 +383,7 @@ public class 收款_購屋證明單_btnRiskCheck extends jcx.jform.sproc {
       intRecordNo = Integer.parseInt(ret05M070[0][0].trim()) + 1;
     }
     System.out.println("intRecordNo=====>" + intRecordNo);
+    
     // 顧客名'
     String strCustomNo = "";
     String strCustomName = "";
@@ -390,6 +394,7 @@ public class 收款_購屋證明單_btnRiskCheck extends jcx.jform.sproc {
       strCustomNo = retCust[0][0];
       strCustomName = retCust[0][1];
     }
+    
     stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97, SHB98, SHB99) VALUES ('"
         + strOrderNo + "','" + strProjectID1 + "','" + intRecordNo + "','" + actionNo + "','購屋證明單','風險計算受益人資料','" + strActionText + "','風險值:" + riskValue + "','" + strCustomNo
         + "','" + strCustomName + "','" + strOrderDate + "','RY','773','022','風險值:" + riskValue + "','" + modifier + "'," + sysdate + "," + systime + ")";
@@ -397,6 +402,8 @@ public class 收款_購屋證明單_btnRiskCheck extends jcx.jform.sproc {
     intRecordNo++;
 
     System.out.println("存入05M070資料-----------------------------------E");
+    
+    
     System.out.println("發送EMAIL-----------------------------------S");
     String userEmail = "";
     String userEmail2 = "";

@@ -338,8 +338,11 @@ public class RiskCheckTool extends bvalidate {
     if(bean.isUpd070Log()) this.insSale05M070(list);
     
     //組成MAIL
+    SendMailBean smBean = new SendMailBean();
+    smBean = this.sendMail(list);
+    
     List sendMailList = new ArrayList();
-    sendMailList.add(this.sendMail(list));
+    sendMailList.add(smBean);
     rsData.put("sendMailList", sendMailList );
     
     rs.setData(rsData);
@@ -435,7 +438,7 @@ public class RiskCheckTool extends bvalidate {
     // 序號
     int intRecordNo = 1;
     String[][] ret05M070;
-    stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='" + this.bean.getOrderNo() + "'";
+    stringSQL = "SELECT MAX(CAST(RecordNo AS decimal(18, 0))) AS MaxNo FROM Sale05M070 WHERE OrderNo ='" + this.bean.getOrderNo() + "'";
     ret05M070 = dbSale.queryFromPool(stringSQL);
     if (!"".equals(ret05M070[0][0].trim())) {
       intRecordNo = Integer.parseInt(ret05M070[0][0].trim()) + 1;
@@ -448,8 +451,10 @@ public class RiskCheckTool extends bvalidate {
       String strCustomNo = data.get("p035").toString().trim();
       String strCustomName = data.get("p03").toString().trim();
       String riskValue = data.get("riskValue").toString().trim();
-      stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97, SHB98, SHB99) VALUES ('"
-          + this.bean.getOrderNo() + "','" + this.bean.getProjectID1() + "','" + intRecordNo + "','" + actionNo + "','購屋證明單','風險計算受益人資料','" + this.bean.getActionText() + "','風險值:" + riskValue + "','" + strCustomNo
+      stringSQL = "INSERT INTO Sale05M070 "
+          + "(OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97, SHB98, SHB99) "
+          + "VALUES "
+          + "('" + this.bean.getOrderNo() + "','" + this.bean.getProjectID1() + "','" + intRecordNo + "','" + actionNo + "','購屋證明單','風險計算受益人資料','" + this.bean.getActionText() + "','風險值:" + riskValue + "','" + strCustomNo
           + "','" + strCustomName + "','" + this.bean.getOrderDate() + "','RY','773','022','風險值:" + riskValue + "','" + empNo + "'," + this.sysdate + "," + this.systime + ")";
       trans.append(stringSQL);
       intRecordNo++;

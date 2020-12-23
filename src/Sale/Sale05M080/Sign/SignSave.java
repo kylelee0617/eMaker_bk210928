@@ -20,6 +20,7 @@ public  class  SignSave  extends  bproc {
     talk dbInvoice = getTalk(""+get("put_dbInvoice"));
     talk dbTestAs400 = getTalk("test400CRM");
     talk dbAs400 = getTalk("400CRM");
+    String GENLIB = ((Map)get("config")).get("GENLIB").toString().trim();
     KUtils kUtil = new KUtils();
     
     //全域mapCustomers
@@ -2060,18 +2061,18 @@ public  class  SignSave  extends  bproc {
         //寫入AS400
         //A : 主檔
         StringBuilder sbSQL = new StringBuilder();
-        sbSQL.append("insert into XAPGENLIB.GLEAPFUF ");
+        sbSQL.append("insert into "+GENLIB+".GLEAPFUF ");
         sbSQL.append("(EA01U, EA02U, EA03U, EA04U, EA05U, EA06U, EA07U, EA08U, EA09U, EA10U, EA11U, EA12U, EA13U, EA14U, EA15U, EA16U, EA17U, EA18U, EA19U, EA20U, EA21U, EA22U) ");
         sbSQL.append("values ");
         sbSQL.append("(");
-        sbSQL.append("'").append(stringInvoiceNo).append("', ");                 //發票號碼
-        sbSQL.append("'").append( stringEDate ).append("', ");     //發票日期
+        sbSQL.append("'").append(stringInvoiceNo).append("', ");         //發票號碼
+        sbSQL.append("'").append( stringEDate ).append("', ");           //發票日期
         sbSQL.append("'").append( stringInvoiceKind ).append("', ");     //發票聯式
         sbSQL.append("'").append( stringCompanyCd ).append("', ");       //公司代碼
         sbSQL.append("'").append( stringDepartNo ).append("', ");        //部門代碼
-        sbSQL.append("'").append( stringProjectID1 ).append("', ");       //案別代碼
-        sbSQL.append("'").append( "A" ).append("', ");                    //Invoice Way
-        sbSQL.append("'").append( stringPosition ).append("', ");         //戶別代號
+        sbSQL.append("'").append( stringProjectID1 ).append("', ");      //案別代碼
+        sbSQL.append("'").append( "A" ).append("', ");                   //Invoice Way
+        sbSQL.append("'").append( stringPosition ).append("', ");        //戶別代號
         sbSQL.append("'").append( stringCustomNo ).append("', ");        //客戶代號
         sbSQL.append("'").append( stringPointNo ).append("', ");         //摘要
         sbSQL.append("").append( stringInvoiceMoney ).append(", ");      //未稅
@@ -2135,11 +2136,11 @@ public  class  SignSave  extends  bproc {
       //400一定寫
       //400 D : 客戶檔
       StringBuilder sbSQL = new StringBuilder();
-      sbSQL.append("select ED01U from XAPGENLIB.GLEDPFUF where ED01U = '" + stringCustomNo + "' ");
+      sbSQL.append("select ED01U from "+GENLIB+".GLEDPFUF where ED01U = '" + stringCustomNo + "' ");
       String[][] arrGLEDPFUF = dbAs400.queryFromPool(sbSQL.toString());
       if(arrGLEDPFUF.length == 0 && !"".equals(stringCustomName)) {
         sbSQL = new StringBuilder();
-        sbSQL.append("insert into XAPGENLIB.GLEDPFUF ");
+        sbSQL.append("insert into "+GENLIB+".GLEDPFUF ");
         sbSQL.append("(ED01U, ED02U) ");
         sbSQL.append("values ");
         sbSQL.append("(");

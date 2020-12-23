@@ -231,8 +231,7 @@ public class ChgDiscount extends bproc{
                   
                   //AS400 GLECPFUF §éÅý©ú²Ó
                   talk as400 = getTalk("400CRM");
-                  String INVOLIB = "PGENLIB";
-                  if(util.isTest()) INVOLIB = "JGENLIB";
+                  String GENLIB = ((Map)get("config")).get("GENLIB").toString().trim();
                   
                   StringBuilder sbSQL = new StringBuilder();
                   stringSQL = "select * FROM Invom041 WHERE DiscountNo = '"+stringNo+"'" ;
@@ -240,7 +239,7 @@ public class ChgDiscount extends bproc{
                   for(int ii=0 ; ii<retM041.length ; ii++) {
                     String[] m041 = retM041[ii];
                     sbSQL = new StringBuilder();
-                    sbSQL.append("INSERT INTO "+INVOLIB+".GLECPFUF ");
+                    sbSQL.append("INSERT INTO "+GENLIB+".GLECPFUF ");
                     sbSQL.append("(EC01U, EC02U, EC03U, EC04U, EC05U, EC06U, EC07U, EC08U, EC09U, EC10U) ");
                     sbSQL.append("values ");
                     sbSQL.append("(");
@@ -270,7 +269,7 @@ public class ChgDiscount extends bproc{
                   for(int ii=0 ; ii<retM040.length ; ii++) {
                     String[] m040 = retM040[ii];
                     sbSQL = new StringBuilder();
-                    sbSQL.append("INSERT INTO "+INVOLIB+".GLEBPFUF ");
+                    sbSQL.append("INSERT INTO "+GENLIB+".GLEBPFUF ");
                     sbSQL.append("(EB01U, EB02U, EB03U, EB04U, EB05U, EB06U, EB07U, EB08U, EB09U, EB10U, EB11U, EB12U, EB13U, EB14U, EB15U, EB16U, EB17U, EB18U, EB19U) ");
                     sbSQL.append("values ");
                     sbSQL.append("(");

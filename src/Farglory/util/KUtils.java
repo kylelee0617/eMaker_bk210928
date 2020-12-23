@@ -6,6 +6,9 @@ package Farglory.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import jcx.jform.bvalidate;
 
@@ -28,7 +31,6 @@ public class KUtils extends bvalidate {
     boolean isTest = serverIP.contains("172.16.")? false:true;
     return isTest;
   }
-  
   
   /**
    * 取得伺服器IP
