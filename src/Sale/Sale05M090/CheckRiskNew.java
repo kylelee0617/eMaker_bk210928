@@ -7,7 +7,6 @@ import java.util.*;
 import Farglory.util.*;
 
 public class CheckRiskNew extends jcx.jform.sproc {
-  KUtils kUtil = new KUtils();
 
   public String getDefaultValue(String value) throws Throwable {
     System.out.println("test2>>>0");
@@ -51,9 +50,12 @@ public class CheckRiskNew extends jcx.jform.sproc {
     // 風險值結果
     String rsMsg = rsData.get("rsMsg").toString().trim();
     messagebox(rsMsg);
+    
+    KUtils util = new KUtils();
+    util.isTest();
 
     // 寄發Email
-   if( !kUtil.isTest() ) {
+   if( "PROD".equals(get("serverType").toString().trim()) ) {
      List rsSendMailList = (List) rsData.get("sendMailList");
      for (int ii = 0; ii < rsSendMailList.size(); ii++) {
        SendMailBean smbean = (SendMailBean) rsSendMailList.get(ii);
