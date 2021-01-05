@@ -183,6 +183,7 @@ public class CheckAML2 extends bproc{
     aml.setOrderNo(strOrderNo);
     aml.setProjectID1(strProjectID1);
     aml.setFuncName("收款");
+    aml.setFuncName2("交易");
     aml.setActionName("存檔");
     aml.setCustomTitle("客戶");
     aml.setTrxDate(strEDate);
@@ -272,7 +273,7 @@ public class CheckAML2 extends bproc{
 		          "INSERT INTO Sale05M070 "
 		          + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
 		          + "VALUES "
-		          + "('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"'"
+		          + "('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"'"
 		              + ",'"+allCustomName+"','"+strEDate+"','RY','773','" + amlNo + "','" + amlDesc + "'"
 		              + ",'"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 	        dbSale.execFromPool(strSaleSql);
@@ -281,47 +282,47 @@ public class CheckAML2 extends bproc{
 		
 		    /*
 				//2
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//3
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//4
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//6
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//7
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//9
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//10
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//11
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//12
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//15
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//16
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				*/
@@ -346,7 +347,7 @@ public class CheckAML2 extends bproc{
 						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '018', '該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
@@ -359,7 +360,7 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"信用卡代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。\n";
 					}else{
 						//不符合
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str083DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
@@ -371,7 +372,7 @@ public class CheckAML2 extends bproc{
 						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str083DeputyId+"', '"+str083DeputyName+"', '773', '021', '該客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
@@ -384,14 +385,14 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"信用卡代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str083DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
 					//代繳款人與購買人關係為非二等親內血/姻親。請依洗錢防制作業辦理
 					if("朋友".equals(str083Rlatsh) || "其他".equals(str083Rlatsh)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -407,13 +408,13 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"信用卡代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str083DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 					//不動產銷售由第三方代理或繳款，系統檢核提示通報。
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+str083DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+str083DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
@@ -431,7 +432,7 @@ public class CheckAML2 extends bproc{
 					//客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。
 					if("Y".equals(str083Bstatus) || "Y".equals(str083Cstatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName ,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName ,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -447,13 +448,13 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"信用卡代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str083DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 					//客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。
 					if("Y".equals(str083Rstatus)){
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -469,34 +470,34 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"信用卡代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','信用卡資料','"+strActionName+"', '不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','信用卡資料','"+strActionName+"', '不符合','"+str083DeputyId+"','"+str083DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str083DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 				}else{
 					//本人繳款(不適用5,8,17,19,20)
 					//5
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//8
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//19
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//20
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','信用卡資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}		
@@ -514,31 +515,31 @@ public class CheckAML2 extends bproc{
 		System.out.println("strCashMoney=====>"+strCashMoney);
 		//不適用LOG_6,9,10,11,12,15,16
 		//6
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//9
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//10
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//11
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//12
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//15
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//16
-		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+		strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 		dbSale.execFromPool(strSaleSql);
 		intRecordNo++;
 		//5, 8, 17,18,19,20,21
@@ -564,7 +565,7 @@ public class CheckAML2 extends bproc{
 					dbJGENLIB.execFromPool(stringSQL);	
 					//SALE LOG
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+strDeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+strDeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 					/*
@@ -578,7 +579,7 @@ public class CheckAML2 extends bproc{
 				}else{
 					//不符合
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+strDeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+strDeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 				}
@@ -591,7 +592,7 @@ public class CheckAML2 extends bproc{
 					dbJGENLIB.execFromPool(stringSQL);	
 					//SALE LOG
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+strDeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+strDeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 					/*
@@ -605,14 +606,14 @@ public class CheckAML2 extends bproc{
 				}else{
 					//不符合
 					stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) "+
-									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+strDeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+									" VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+strDeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(stringSQL);
 					intRecordNo++;
 				}
 				//代繳款人與購買人關係為非二等親內血/姻親。請依洗錢防制作業辦理
 				if("朋友".equals(strDeputyRelationship) || "其他".equals(strDeputyRelationship)){
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
@@ -628,13 +629,13 @@ public class CheckAML2 extends bproc{
 					errMsg =errMsg+"現金代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。\n";
 				}else{
 					//不符合
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+strDeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}
 				//不動產銷售由第三方代理或繳款，系統檢核提示通報。
 				//Sale05M070
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"','代繳款人"+strDeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+strDeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"','代繳款人"+strDeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+strDeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//AS400
@@ -652,7 +653,7 @@ public class CheckAML2 extends bproc{
 				//客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。
 				if("Y".equals(bStatus) || "Y".equals(cStatus)){
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
@@ -668,13 +669,13 @@ public class CheckAML2 extends bproc{
 					errMsg =errMsg+"現金代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
 				}else{
 					//不符合
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+strDeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}
 				//客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。
 				if("Y".equals(rStatus)){
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"', '代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
@@ -690,34 +691,34 @@ public class CheckAML2 extends bproc{
 					errMsg =errMsg+"現金代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
 				}else{
 					//不符合
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"', '不符合','"+strDeputyID+"','"+strDeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+strDeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}
 			}else{//現金本人繳款
 				//不適用5,8,17,18,19,20
 				//5
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo, Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//8
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//17
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//18
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//19
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//20
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','現金資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 			}
@@ -743,41 +744,41 @@ public class CheckAML2 extends bproc{
 		System.out.println("str328bStatus=====>"+str328bStatus);
 		System.out.println("str328cStatus=====>"+str328cStatus);
 		System.out.println("str328rStatus=====>"+str328rStatus);
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//9
 				//不適用3,4,6,7,9,11,12,15,16
 				//3
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//4
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//6
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//7
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//11
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//12
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//15
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//16
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//自金融監督管理委員會函轉國際防制洗錢組織所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循國際防制洗錢組織建議之國家或地區匯入之交易款項。
@@ -787,7 +788,7 @@ public class CheckAML2 extends bproc{
 					String strCZ07 =retPDCZPFTable[0][0].trim();
 					if("優先法高".equals(strCZ07)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '代繳款人"+str328DeputyName+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','010','代繳款人"+str328DeputyName+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '代繳款人"+str328DeputyName+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','010','代繳款人"+str328DeputyName+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -810,7 +811,7 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+strTempMsg+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不符合','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','代繳款人"+str328DeputyName+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不符合','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','代繳款人"+str328DeputyName+"係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區匯入之款項，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
@@ -836,7 +837,7 @@ public class CheckAML2 extends bproc{
 						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '018', '該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
@@ -849,7 +850,7 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"銀行代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。\n";
 					}else{
 						//不符合
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str328DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
@@ -861,7 +862,7 @@ public class CheckAML2 extends bproc{
 						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str328DeputyId+"', '"+str328DeputyName+"', '773', '021', '客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
@@ -874,14 +875,14 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"銀行代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName,RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str328DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
 					//代繳款人與購買人關係為非二等親內血/姻親。請依洗錢防制作業辦理
 					if("朋友".equals(str328Rlatsh) || "其他".equals(str328Rlatsh)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -897,13 +898,13 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"銀行代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str328DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 					//不動產銷售由第三方代理或繳款，系統檢核提示通報。
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+str328DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+str328DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
@@ -921,7 +922,7 @@ public class CheckAML2 extends bproc{
 					//客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。
 					if("Y".equals(str328bStatus) || "Y".equals(str328cStatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -937,13 +938,13 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"銀行代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str328DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 					//客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。
 					if("Y".equals(str328rStatus)){
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"', '代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"', '代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -959,42 +960,42 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"銀行代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"', '不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"', '不符合','"+str328DeputyId+"','"+str328DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str328DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 				}else{
 					//本人繳款(不適用)10,5,8,17,19,20
 					//5
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName, RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//8
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//10
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//18
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','018','該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//19
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"', '不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//20
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//21
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType,ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','銀行資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}	
@@ -1020,47 +1021,47 @@ public class CheckAML2 extends bproc{
 		System.out.println("str082Rstatus=====>"+str082Rstatus);
 				//不適用2,3,4,6,7,9,10,11,12,15,16
 				//2
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','002','同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//3
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','003','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//4
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','004','同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//6
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','006','同一客戶不動產買賣，簽約前退訂取消購買，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//7
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','007','同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//9
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','009','客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//10
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','010','自主管機關所公告防制洗錢與打擊資助恐怖份子有嚴重缺失之國家或地區、及其他未遵循或未充分遵循之國家或地區匯入之交易款項，應檢核其合理性。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//11
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','011','交易最終受益人或交易人為主管機關公告之恐怖分子或團體；或國際認定或追查之恐怖組織；或交易資金疑似與恐怖組織有關聯者，應依資恐防制法進行相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//12
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','012','客戶要求將不動產權利登記予第三人，未能提出任何關聯或拒絕說明之異常狀況。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//15
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','015','要求公司開立取消禁止背書轉讓支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 				//16
-				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+				strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','016','要求公司開立撤銷平行線(取消劃線)支票作為給付方式，應檢核是否符合疑似洗錢交易表徵。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 				dbSale.execFromPool(strSaleSql);
 				intRecordNo++;
 			
@@ -1085,7 +1086,7 @@ public class CheckAML2 extends bproc{
 						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '018', '該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"', '代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"', '代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
@@ -1098,7 +1099,7 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"票據代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。\n";
 					}else{
 						//不符合
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"', '不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"', '不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','018','代繳款人"+str082DeputyName+"為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
@@ -1110,7 +1111,7 @@ public class CheckAML2 extends bproc{
 						stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '"+strDocNo+"', '"+RocNowDate+"', '"+str082DeputyId+"', '"+str082DeputyName+"', '773', '021', '客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbJGENLIB.execFromPool(stringSQL);	
 						//SALE LOG
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"', '代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"', '代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 						/*
@@ -1123,14 +1124,14 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"票據代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"', '不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						stringSQL = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"', '不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','021','代繳款人"+str082DeputyName+"、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(stringSQL);
 						intRecordNo++;
 					}
 					//代繳款人與購買人關係為非二等親內血/姻親。請依洗錢防制作業辦理
 					if("朋友".equals(str082Rlatsh) || "其他".equals(str082Rlatsh)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -1146,13 +1147,13 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"票據代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','005','代繳款人"+str082DeputyName+"與客戶"+allOrderName+"非二親等內親屬關係，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 					//不動產銷售由第三方代理或繳款，系統檢核提示通報。
 					//Sale05M070
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+str082DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','008','代繳款人"+str082DeputyName+"代為辦理不動產交易，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//AS400
@@ -1170,7 +1171,7 @@ public class CheckAML2 extends bproc{
 					//客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。
 					if("Y".equals(str082Bstatus) || "Y".equals(str082Cstatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -1186,14 +1187,14 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"票據代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','020','代繳款人"+str082DeputyName+"為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 					//客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。
 					if("Y".equals(str082Rstatus)){
 						//Sale05M070
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 						//AS400
@@ -1209,34 +1210,34 @@ public class CheckAML2 extends bproc{
 						errMsg =errMsg+"票據代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
 					}else{
 						//不符合
-						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+						strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不符合','"+str082DeputyId+"','"+str082DeputyName+"','"+strEDate+"','RY','773','019','代繳款人"+str082DeputyName+"為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 						dbSale.execFromPool(strSaleSql);
 						intRecordNo++;
 					}
 				}else{//本人繳款
 					//不適用5,8,17,19,20
 					//5
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','005','代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//8
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','008','不動產銷售由第三方代理或繳款，系統檢核提示通報。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//17
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo, Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"', '收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','017','該客戶為控管名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//19
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo, ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','019','該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//20
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','020','該客戶為疑似黑名單對象，請覆核確認後，再進行後續交易。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 					//21
-					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+					strSaleSql = "INSERT INTO Sale05M070 (DocNo, OrderNo, ProjectID1, RecordNo,ActionNo,  Func, RecordType, ActionName, RecordDesc, CustomID, CustomName, EDate, SHB00, SHB06A, SHB06B, SHB06,SHB97,SHB98,SHB99)  VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','票據資料','"+strActionName+"','不適用','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','021','客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 					dbSale.execFromPool(strSaleSql);
 					intRecordNo++;
 				}		
@@ -1245,7 +1246,7 @@ public class CheckAML2 extends bproc{
 		//13.客戶支付不動產交易之款項，以現鈔支付訂金以外各期價款，且無合理說明資金來源，應檢核是否符合疑似洗錢交易表徵。
 		if("Y".equals(rule13)){
 			//Sale05M070
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','客戶資料','"+strActionName+"','客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','客戶資料','"+strActionName+"','客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 			//AS400
@@ -1261,14 +1262,14 @@ public class CheckAML2 extends bproc{
 			errMsg =errMsg+"客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。\n";
 		}else{
 			//不符合
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','客戶資料','"+strActionName+"','不符合','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','客戶資料','"+strActionName+"','不符合','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','013','客戶"+allCustomName+"以現鈔支付訂金以外各期不動產交易價款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 		}
 		//14.客戶於簽約前提前付清自備款，且無合理說明資金來源，應檢核是否符合疑似洗錢交易表徵。
 		if("Y".equals(rule14)){
 			//Sale05M070
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','客戶資料','"+strActionName+"','客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','客戶資料','"+strActionName+"','客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 			//AS400
@@ -1284,7 +1285,7 @@ public class CheckAML2 extends bproc{
 			errMsg =errMsg+"客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。\n";
 		}else{
 			//不符合
-			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款單','客戶資料','"+strActionName+"','不符合','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
+			strSaleSql = "INSERT INTO Sale05M070 (DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,EDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"+strDocNo+"','"+strOrderNo+"','"+strProjectID1+"','"+intRecordNo+"','"+actionNo+"','收款','客戶資料','"+strActionName+"','不符合','"+allCustomID+"','"+allCustomName+"','"+strEDate+"','RY','773','014','客戶"+allCustomName+"簽約前(含當日)提前付清自備款，請依洗錢及資恐防制作業辦理。','"+empNo+"','"+RocNowDate+"','"+strNowTime+"')";
 			dbSale.execFromPool(strSaleSql);
 			intRecordNo++;
 		}

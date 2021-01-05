@@ -3,12 +3,16 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.swing.TransferHandler.TransferSupport;
+
 import Farglory.util.KUtils;
 import Farglory.util.Transaction;
 import jcx.db.talk;
 import jcx.jform.bTransaction;
 
 /**
+ *  PT1527822019699
+ *
  * Tip:
  * 這邊開的是行銷的發票( 哈扣ProcessInvoiceNo=1 )
  * 
@@ -75,7 +79,17 @@ public class InvoM030_New extends bTransaction{
     else
       setValue("InvoiceKind","2");  
     */  
-      
+    
+    String processNo = "1";
+    if( "0351".equals( getValue("DepartNo").trim() ) ) {
+      processNo = "2";
+    }
+    
+    String transferName = "收款";
+    if( "0351".equals( getValue("DepartNo").trim() ) ) {
+      transferName = "客服";
+    }
+    
     //取發票號碼
     String stringInvoiceDate = getValue("InvoiceDate").trim();
     stringInvoiceDate = stringInvoiceDate.substring(0,7);
@@ -96,7 +110,7 @@ public class InvoM030_New extends bTransaction{
                                 " AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim() + "' OR MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0)" +
                                 " AND ENDYES = 'N' " +
                                 " AND CloseYes = 'N' " +
-                                " AND ProcessInvoiceNo = '1'";
+                                " AND ProcessInvoiceNo = '"+processNo+"'";
     if  (getValue("ProjectNo").trim().equals("E2AII") || getValue("ProjectNo").trim().equals("H802A")){
       stringSQL = "SELECT TOP 1 InvoiceYYYYMM," +
                       " FSChar," +
@@ -115,7 +129,7 @@ public class InvoM030_New extends bTransaction{
                     " AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim() + "' OR MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0)" +
                     " AND ENDYES = 'N' " +
                     " AND CloseYes = 'N' " +
-                    " AND ProcessInvoiceNo = '1'" +
+                    " AND ProcessInvoiceNo = '"+processNo+"'" +
                     " AND CompanyNo+BranchNo IN( " +  
                                                 " SELECT  CompanyNo+BranchNo " +
                                                  " FROM Invom025" +
@@ -247,8 +261,8 @@ public class InvoM030_New extends bTransaction{
       sbSQL.append("").append(0).append(", ");                                    //補印次數
       sbSQL.append("'").append("N").append("', ");                                //作廢YN
       sbSQL.append("'").append("N").append("', ");                                //入帳YN
-      sbSQL.append("'").append("1").append("', ");                                //ProcessInvoiceNo
-      sbSQL.append("'").append("發票系統").append("', ");                                      //Transfer
+      sbSQL.append("'").append(processNo).append("', ");                                //ProcessInvoiceNo
+      sbSQL.append("'").append("發票"+transferName).append("', ");                                      //Transfer
       sbSQL.append("'").append(getUser().trim().toUpperCase()).append("', ");                   //CreateUserNo
       sbSQL.append("'").append(stringSystemDateTime).append("', ");               //CreateDateTime
       sbSQL.append("'").append(getUser().trim()).append("', ");                   //LastUserNo
@@ -333,7 +347,9 @@ public class InvoM030_New extends bTransaction{
       sbSQL.append("and ENDYES='").append("N").append("' ");
       sbSQL.append("and CloseYes='").append("N").append("' ");
       sbSQL.append("AND (MaxInvoiceDate <='").append(getValue("InvoiceDate").trim()).append("' or MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0) ");
-      sbSQL.append("and ProcessInvoiceNo='").append("1").append("' ");
+      sbSQL.append("and ProcessInvoiceNo='").append(processNo).append("' ");
+      sbSQL.append("and InvoiceBook='").append(stringInvoiceBook).append("' ");
+      sbSQL.append("and StartNo='").append(stringStartNo).append("' ");
       trans.append(sbSQL.toString());
       
       //執行Transaction
@@ -352,10 +368,10 @@ public class InvoM030_New extends bTransaction{
                         " AND (MaxInvoiceDate <= '" + getValue("InvoiceDate").trim() + "' OR MaxInvoiceDate IS NULL OR LEN(MaxInvoiceDate) = 0)" +
                         " AND ENDYES = 'N' " +
                         " AND CloseYes = 'N' " +
-                        " AND ProcessInvoiceNo = '1'";
+                        " AND ProcessInvoiceNo = '"+processNo+"'";
       String retTestInvoM022[][] = dbInvoice.queryFromPool(testSql);
       if( stringNowInvoiceNo.equals(retTestInvoM022[0][0].trim()+retTestInvoM022[0][1].trim()) ) {
-        messagebox("發生錯誤  ｡ﾟヽ(ﾟ´Д`)ﾉﾟ｡  ...請洽資訊主辦");
+        messagebox("發生錯誤  \uff61\uff9f\u30fd(\uff9f?\u0414`)\uff89\uff9f\uff61  ...請洽資訊主辦");
         return false;
       }
       
@@ -389,7 +405,7 @@ public class InvoM030_New extends bTransaction{
       sbSQL.append("'").append("N").append("', ");         //作廢YN
       sbSQL.append("'").append("N").append("', ");         //入帳YN
       sbSQL.append("'").append("").append("', ");          //發票處理方式
-      sbSQL.append("'").append("收款").append("' ");       //收款/客服
+      sbSQL.append("'").append(transferName).append("' ");       //收款/客服
       sbSQL.append(") ");
       as400.execFromPool(sbSQL.toString());
       
@@ -398,6 +414,9 @@ public class InvoM030_New extends bTransaction{
       sbSQL.append("select ED01U from GLEDPFUF where ED01U = '" +  getValue("CustomNo").trim() + "' ");
       String[][] arrGLEDPFUF = as400.queryFromPool(sbSQL.toString());
       if(arrGLEDPFUF.length == 0 && !"".equals(customName)) {
+    //400特殊需求，小於六個字要補滿到六個全形
+        if(customName.length() < 6) customName = kUtil.addWhat(customName, 6, "　", 1);
+    
         sbSQL = new StringBuilder();
         sbSQL.append("insert into GLEDPFUF ");
         sbSQL.append("(ED01U, ED02U) ");
@@ -407,7 +426,7 @@ public class InvoM030_New extends bTransaction{
         sbSQL.append("'").append(customName).append("' ");
         sbSQL.append(") ");
         as400.execFromPool(sbSQL.toString());
-      }
+      } 
 //      as400.execFromPool( (String[]) vectorSql.toArray(new String[0]) );
       
       setValue("InvoiceNo",stringNowInvoiceNo);

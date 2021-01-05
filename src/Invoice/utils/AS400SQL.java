@@ -53,7 +53,7 @@ public class AS400SQL extends bproc {
     sbSQL.append("'").append(aBean.getEA19U()).append("', ");     //作廢YN
     sbSQL.append("'").append(aBean.getEA20U()).append("', ");     //入帳YN
     sbSQL.append("'").append(aBean.getEA21U()).append("', ");                   //發票處理方式
-    sbSQL.append("'").append(aBean.getEA22U()).append("' ");      //收款/客服
+    sbSQL.append("'").append(aBean.getEA22U().replace("發票", "")).append("' ");      //收款/客服
     sbSQL.append(") ");
     
     return as400.execFromPool(sbSQL.toString());

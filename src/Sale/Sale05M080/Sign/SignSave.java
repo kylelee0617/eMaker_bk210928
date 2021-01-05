@@ -2139,6 +2139,9 @@ public  class  SignSave  extends  bproc {
       sbSQL.append("select ED01U from "+GENLIB+".GLEDPFUF where ED01U = '" + stringCustomNo + "' ");
       String[][] arrGLEDPFUF = dbAs400.queryFromPool(sbSQL.toString());
       if(arrGLEDPFUF.length == 0 && !"".equals(stringCustomName)) {
+        //400特殊需求，小於六個字要補滿到六個全形
+        if(stringCustomName.length() < 6) stringCustomName = kUtil.addWhat(stringCustomName, 6, "　", 1);
+        
         sbSQL = new StringBuilder();
         sbSQL.append("insert into "+GENLIB+".GLEDPFUF ");
         sbSQL.append("(ED01U, ED02U) ");

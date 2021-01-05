@@ -141,8 +141,9 @@ public class InvoicePrint_Elec extends sproc{
     }
 
     // 開始組資料
+    InvoicePrintUtil iPrintUtil = new InvoicePrintUtil( PRINTURL );
     Hashtable result = new Hashtable();
-  StringBuilder sbError = new StringBuilder();
+    StringBuilder sbError = new StringBuilder();
     for (int x = 0; x < table.length; x++) {
       if (table[x][0].trim().equals("Y")) {
         String[] Invo_temp = (String[]) hM030_1.get( table[x][2].trim() );
@@ -291,7 +292,6 @@ public class InvoicePrint_Elec extends sproc{
         vo.setDeptId(PrintUserNo.equals("flife")? "25000":"去印25F啦");
         vo.setBuyerName(CustomName);
         
-        InvoicePrintUtil iPrintUtil = new InvoicePrintUtil( PRINTURL );
         String rs = iPrintUtil.doPrint(vo);
         boolean printOK = rs.indexOf("SUCCESS:") == 0;
         if(printOK) {

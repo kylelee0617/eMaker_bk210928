@@ -3,7 +3,7 @@ package Farglory.util;
 import jcx.db.talk;
 
 /**
- * 發票列印對應檔
+ * 計算風險值資料物件
  * @author B04391
  *
  */
@@ -20,7 +20,9 @@ public class RiskCheckBean {
   private String projectID1 = "";
   private String orderNo = "";
   private String orderDate = "";
-  private String actionText = "";
+  private String actionText = "";     // 新增、寫入、存檔...等等
+  private String func = "";           // 功能 (購屋證明單、收款、合約會審、換名...等等)
+  private String recordType = "";     // 甚麼資料 (客戶資料、代理人資料、風險計算...ETC)
   
   private boolean updSale05M091 = false;
   private boolean upd070Log = false;
@@ -109,6 +111,18 @@ public class RiskCheckBean {
   }
   public void setUpd070Log(boolean upd070Log) {
     this.upd070Log = upd070Log;
+  }
+  public String getFunc() {
+    return func;
+  }
+  public void setFunc(String func) {
+    this.func = func;
+  }
+  public String getRecordType() {
+    return recordType;
+  }
+  public void setRecordType(String recordType) {
+    this.recordType = recordType;
   }
 
 }

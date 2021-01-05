@@ -9,7 +9,7 @@ import Farglory.util.*;
 public class CheckRiskNew extends jcx.jform.sproc {
 
   public String getDefaultValue(String value) throws Throwable {
-    System.out.println("test2>>>0");
+    System.out.println("Class >>> Sale.Sale05M090.ChekRiskNew");
     System.out.println(datetime.getTime("h:m:s"));
 
     RiskCheckBean bean = new RiskCheckBean();
@@ -35,28 +35,29 @@ public class CheckRiskNew extends jcx.jform.sproc {
     bean.setProjectID1(strProjectID1);
     bean.setOrderDate(strOrderDate);
     bean.setActionText(actionText);
+    bean.setFunc("購屋證明單");
+    bean.setRecordType("風險計算受益人資料");
     bean.setUpdSale05M091(true);
     bean.setUpd070Log(true);
     bean.setSendMail(true);
 
     RiskCheckTool check = new RiskCheckTool(bean);
     Result rs = check.processRisk();
-    Map rsData = (Map) rs.getData();
 
     // 執行結果
     String rsStatus = rs.getRsStatus()[3].toString().trim();
     System.out.println("執行結果>>>" + rsStatus);
 
-    // 風險值結果
-    String rsMsg = rsData.get("rsMsg").toString().trim();
-    messagebox(rsMsg);
-    
-    KUtils util = new KUtils();
-    util.isTest();
-
-    // 寄發Email
+   //////////////////////
+   RiskCheckRS rcRs = (RiskCheckRS) rs.getData();
+   
+   //風險值結果
+   String rsMsg = !"".equals(rcRs.getRsMsg())? rcRs.getRsMsg():"無風險值結果，請確認名單內容是否正確。";
+   messagebox(rsMsg);
+   
+   //寄發Email
    if( "PROD".equals(get("serverType").toString().trim()) ) {
-     List rsSendMailList = (List) rsData.get("sendMailList");
+     List rsSendMailList = (List) rcRs.getSendMailList();
      for (int ii = 0; ii < rsSendMailList.size(); ii++) {
        SendMailBean smbean = (SendMailBean) rsSendMailList.get(ii);
        String sendRS = sendMailbcc(smbean.getColm1(), smbean.getColm2(), smbean.getArrayUser(), smbean.getSubject(), smbean.getContext(), null, "", "text/html");
