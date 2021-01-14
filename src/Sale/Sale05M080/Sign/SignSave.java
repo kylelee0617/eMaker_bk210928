@@ -570,7 +570,7 @@ public  class  SignSave  extends  bproc {
             vectorLCom.add("A5") ; //2014-05-15 B3018
             // 客戶編號-公司-Position-狀態-狀態數目
             for(int  intSale05M084P=0  ;  intSale05M084P<retSale05M084P.length  ;  intSale05M084P++) {
-                //System.out.println("1111111111進入 Sale05M084P START =============================");
+                System.out.println("1111111111進入 Sale05M084P START =============================");
                 stringCustomNo  =  retSale05M084P[intSale05M084P][0].trim( ) ;
                 stringNationality  =  retSale05M084P[intSale05M084P][1].trim( ) ;
                 stringInvoiceKind     =  (stringCustomNo.length( ) == 8)  ?  "3"  :  "2" ;  //聯式
@@ -578,13 +578,13 @@ public  class  SignSave  extends  bproc {
                 if("3".equals(stringNationality))  stringInvoiceKind  =  "2" ;      //  2101-3-5
                 if("4".equals(stringNationality))  stringInvoiceKind  =  "2" ;      // 20100401
                 for(int  intPositionNo=0  ;  intPositionNo<vectorUniquePosition.size( )  ;  intPositionNo++) {
-                    //System.out.println("22222222進入 vectorUniquePosition START =============================");    
+                    System.out.println("22222222進入 vectorUniquePosition START =============================" + intPositionNo + "/" + vectorUniquePosition);    
                     stringPosition  =  ""  +  (String)  vectorUniquePosition.get(intPositionNo) ;
                     for(int  intCompanNo=0  ;  intCompanNo<vectorCompanyCd.size( )  ;  intCompanNo++) {
-                        //System.out.println("3333333333進入 vectorCompanyCd START =============================");   
+                        System.out.println("3333333333進入 vectorCompanyCd START =============================" + intCompanNo + "/" + vectorCompanyCd);   
                         stringCompanyCd  =  ""  +  (String)  vectorCompanyCd.get(intCompanNo) ;
                         for(int  intNo=0  ;  intNo<4  ;  intNo++) {
-                            //System.out.println("44444444進入 intNo START ============================="); 
+                            System.out.println("44444444進入 intNo START =============================" + intNo + "/" + 4); 
                             intDiscountCount               =  1 ;  // 折讓單流水號
                             intDiscountCountInvoice    =  0 ;
                             doubleInvoiceMoney          =  0 ;
@@ -593,10 +593,12 @@ public  class  SignSave  extends  bproc {
                             doubleDiscountMoney        =  0 ;
                             booleanDiscountFlag          =  false ;
                             stringKey                             =  stringCustomNo  +  stringCompanyCd  +  stringPosition  +  intNo ;
-                            //System.out.println("stringKey===========>"+stringKey);
+                            System.out.println("stringKey===========>"+stringKey);
+                            System.out.println("hashtableCustomCompanyPositionTypeCount===========>"+hashtableCustomCompanyPositionTypeCount);
                             intRecordMax                      =  doParseInteger(""  +  (String)hashtableCustomCompanyPositionTypeCount.get(stringKey)) ;
+                            System.out.println("intRecordMax===========>"+intRecordMax);
                             for(int  intRecord=1  ;  intRecord<=intRecordMax  ;  intRecord++) {
-                                //System.out.println("55555555進入 intRecordMax START =============================");    
+                                System.out.println("55555555進入 intRecordMax START =============================");    
                                 booleanNextNotNull  =  true ;
                                 stringKey                 =  stringCustomNo  +  stringCompanyCd  +  stringPosition  +  arrayPointNo[intNo]  +  intRecord ;
                                 objtectReturn           =  hashtableData.get(stringKey) ;
@@ -615,19 +617,19 @@ public  class  SignSave  extends  bproc {
                                 stringDocNo                      =  (String)  vectorReturn.get(6) ;
                                 stringLCom                       =  (String)  vectorReturn.get(7) ;
                                 stringOrderNo                   =  (String)  vectorReturn.get(8) ;
-                                /*System.out.println("後--------------------"+
+                                System.out.println("後--------------------"+
                                                                stringCustomNo            +  "-----------------"  +
                                                      stringCompanyCd        +  "-----------------"  +
                                                      stringPosition               +  "-----------------"  +
                                                      arrayPointNo[intNo]      +  "-----------------"  +
-                                                     intRecord                     +  "------------------"  +  stringL_DiscountMoney) ;*/
+                                                     intRecord                     +  "------------------"  +  stringL_DiscountMoney) ;
                                 // 判斷下一筆是否有值
                                 stringKey                          =  stringCustomNo  +  stringCompanyCd  +  stringPosition  +  arrayPointNo[intNo]  +  (intRecord+1) ;
                                 objtectReturn                    =  hashtableData.get(stringKey) ;
                                 if(objtectReturn  ==  null) booleanNextNotNull  =  false ;
                                 // 取得發票號碼
                                 if(intRecord  %  5  ==  1) {
-                                    //System.out.println("6666666666進入 Sale05M084P START =============================");   
+                                    System.out.println("6666666666進入 Sale05M084P START =============================");   
                                     /*發票號碼自動產生(僅一筆)*/
                                     //   0  InvoiceYYYYMM     1  FSChar     2  StartNo    3  InvoiceBook    4  InvoiceStartNo
                                     //   5  InvoiceEndNo      6  MaxInvoiceNo
@@ -1179,7 +1181,7 @@ public  class  SignSave  extends  bproc {
         return  stringRet ;
     }
     public  int  doParseInteger(String  stringNum) {
-        // 
+        System.out.println("stringNum>>>" + stringNum) ;
         int  intNum  =  0 ;
         if("".equals(stringNum)  ||  "null".equals(stringNum))  return  0;
         try{
@@ -2139,9 +2141,9 @@ public  class  SignSave  extends  bproc {
       sbSQL.append("select ED01U from "+GENLIB+".GLEDPFUF where ED01U = '" + stringCustomNo + "' ");
       String[][] arrGLEDPFUF = dbAs400.queryFromPool(sbSQL.toString());
       if(arrGLEDPFUF.length == 0 && !"".equals(stringCustomName)) {
-        //400特殊需求，小於六個字要補滿到六個全形
-        if(stringCustomName.length() < 6) stringCustomName = kUtil.addWhat(stringCustomName, 6, "　", 1);
-        
+	    //400特殊需求，小於六個字要補滿到六個全形
+		if(stringCustomName.length() < 6) stringCustomName = kUtil.addWhat(stringCustomName, 6, "　", 1);
+		
         sbSQL = new StringBuilder();
         sbSQL.append("insert into "+GENLIB+".GLEDPFUF ");
         sbSQL.append("(ED01U, ED02U) ");

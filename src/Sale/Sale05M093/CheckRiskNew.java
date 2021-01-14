@@ -88,7 +88,7 @@ public class CheckRiskNew extends jcx.jform.sproc {
     bean.setOrderDate(strOrderDate);
     bean.setActionText("存檔");
     bean.setFunc("換名");
-    bean.setRecordType("風險計算受益人資料");
+    bean.setRecordType("風險計算結果");
     bean.setUpdSale05M091(true);
     bean.setUpd070Log(true);
     bean.setSendMail(true);

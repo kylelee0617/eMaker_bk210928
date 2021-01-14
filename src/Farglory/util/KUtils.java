@@ -110,11 +110,17 @@ public class KUtils extends bvalidate {
       return 0;
     }
     
-    Date date1 = new SimpleDateFormat("yyyy/mm/dd").parse(day1);
-    Date date2 = new SimpleDateFormat("yyyy/mm/dd").parse(day2);
+    Date date1 = new SimpleDateFormat("yyyy/MM/dd").parse(day1);
+    Date date2 = new SimpleDateFormat("yyyy/MM/dd").parse(day2);
+    
+//    System.out.println("day1>>>" + day1);
+//    System.out.println("day2>>>" + day2);
+//    System.out.println("Date1>>>" + date1);
+//    System.out.println("Date2>>>" + date2);
+//    System.out.println("time>>>" + (date1.getTime()-date2.getTime()) );
 	
     //日期相減得到相差的日期
-    long day = (date1.getTime()-date2.getTime())/(24*60*60*1000);
+    long day = (date1.getTime()-date2.getTime()) / (24*60*60*1000);
     
     return day;
   }

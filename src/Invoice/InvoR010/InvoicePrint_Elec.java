@@ -1,4 +1,4 @@
-package Invoice.InvoR010Class;
+package Invoice.InvoR010;
 import javax.swing.*;
 
 import Invoice.utils.InvoicePrintUtil;
@@ -17,7 +17,9 @@ public class InvoicePrint_Elec extends sproc{
     
 //    String PRINTURL = "http://172.16.5.77:8081/InvoicePrintService/services/";
 //    String PRINTURL = "http://172.16.5.77:8081/InvoicePrintService/services";
-    String PRINTURL = "http://172.22.10.51:8080/InvoiceService/services";
+//    String PRINTURL = "http://172.22.10.51:8080/InvoiceService/services";
+    
+    String PRINTURL = ((Map)get("config")).get("invoPRINTURL").toString().trim();
     String CompanyNo = getValue("CompanyNo");
     String InvoiceDate = getValue("InvoiceDate");
     String [][] table = getTableData("table1");
@@ -255,7 +257,7 @@ public class InvoicePrint_Elec extends sproc{
         sbDetail.append("日期:").append(invoiceDateTime).append(";");
         sbDetail.append("發票號碼:").append(InvoiceNo).append(";");
         sbDetail.append("買受人:").append(CustomName).append(";");
-        sbDetail.append("案名:").append(ProjectNo).append(";");
+        sbDetail.append("案名:").append( hM0D0.get(ProjectNo).toString().trim() ).append(";");
         sbDetail.append("棟樓別:").append(HuBei).append(";");
         sbDetail.append("摘要:").append(PointName + " - " + Detailltem );
         

@@ -50,6 +50,12 @@ public class RiskCheckTool extends bvalidate {
     this.getActionNo();
     // HouseCar
     this.getHouseCar();
+    
+    //使用bean傳入的場合，轉換成舊有陣列格式
+    if(this.bean.getListCustom().size() > 0) 
+      this.processRetCustom();
+    if(this.bean.getListBen().size() > 0) 
+      this.processRetBen();
   }
 
   /**
@@ -60,9 +66,9 @@ public class RiskCheckTool extends bvalidate {
    */
   public Result processRisk() throws Throwable {
     Result rs = new Result();
-    Map rsData = new HashMap();
     RiskCheckRS rcRS = new RiskCheckRS();
     rs.setRsStatus(rsStatus.SUCCESSBUTSOMEERROR);
+    
     String sysType = "RYB";// 不動產行銷B 銷售C
     String[][] retCustom = this.bean.getRetCustom();
     String[][] retSBen = this.bean.getRetSBen();
@@ -75,8 +81,13 @@ public class RiskCheckTool extends bvalidate {
     System.out.println("strOrderDate=====>" + strOrderDate);
 
     System.out.println("存入風險計算受益人資料-----------------------------------S");
+    
+    // 實受人陣列定義
     // 0.OrderNo, CustomNo, RecordNo, BenName, BCustomNo, 5.Birthday, CountryName,
     // HoldType, IsBlackList, IsControlList, 10.IsLinked, TrxDate, StatusCd
+    
+    //12            4            1           7         3         5          6
+    //StatusCd , BCustomNo , CustomNo , HoldType , BenName , Birthday , CountryName
     for (int i = 0; i < retSBen.length; i++) {
 
       // 忽略已被換名的 (或需要忽略的資料，給C)
@@ -114,26 +125,8 @@ public class RiskCheckTool extends bvalidate {
       String PDCZPFSql = "SELECT CZ02 FROM PDCZPF WHERE CZ01='NATIONCODE' AND CZ09='" + nation + "'";
       String[][] retPDCZPF = null;
       retPDCZPF = dbBen.queryFromPool(PDCZPFSql);
-      nationCode = retPDCZPF[0][0].trim();
+      if(retPDCZPF.length > 0) nationCode = retPDCZPF[0][0].trim();
 
-      //以法人為KEY，找出他所有實質受益人(不管訂單號)
-//      String sqlBen = "Select * FROM PSHAPF WHERE SHA11 = '" + oid + "' And SHA00 = 'RY'";
-//      String[][] retBen = dbBen.queryFromPool(sqlBen);
-//
-//      //搬去實質受益人備份檔
-//      StringBuilder sbMove1 = new StringBuilder();
-//      sbMove1.append("INSERT INTO PSHAPFHF ");
-//      sbMove1.append("(SHA00, SHA01, SHA02, SHA03, SHA04, SHA05, SHA06, SHA07, SHA08, SHA97, SHA98, SHA99, SHA100, SHA101, SHA102, SHA09, SHA10, SHA11, SHA12, SHA13) ");
-//      sbMove1.append("VALUES ");
-//      for (int ii = 0; ii < retBen.length; ii++) {
-//        if (ii != 0) sbMove1.append(" , ");
-//        sbMove1.append("('" + retBen[ii][0] + "' , '" + retBen[ii][1] + "' , '" + retBen[ii][2] + "' , '" + retBen[ii][3] + "' , '" + retBen[ii][4] + "' , '" + retBen[ii][5] + "' , '" + retBen[ii][6] + "' ");
-//        sbMove1.append(" , '" + retBen[ii][7] + "' , '" + retBen[ii][8] + "' , '" + retBen[ii][9] + "' , '" + retBen[ii][10] + "' , '" + retBen[ii][11] + "' , '" + retBen[ii][12] + "' ");
-//        sbMove1.append(" , '" + retBen[ii][13] + "' , '" + retBen[ii][14] + "' , '" + retBen[ii][15] + "' , '" + retBen[ii][16] + "' , '" + retBen[ii][17] + "' , '" + retBen[ii][18] + "' ");
-//        sbMove1.append(" , '" + retBen[ii][19] + "')");
-//      }
-//      dbBen.execFromPool(sbMove1.toString());
-      
       //以法人為KEY，將他所有實質受益人複製至備份檔(訂單號無視)
       String sqlMove1 = "INSERT INTO PSHAPFHF (Select * FROM PSHAPF WHERE SHA11 = '" + oid + "' And SHA00 = 'RY')";
       dbBen.execFromPool(sqlMove1);
@@ -176,17 +169,29 @@ public class RiskCheckTool extends bvalidate {
       String msgboxtext = "";
       String tmpMsgText = "";
 
-      // 0.OrderNo, RecordNo, auditorship, Nationality, CountryName, 5.CustomNo,
-      // CustomName, Percentage, Birthday, MajorName, 10.PositionName, ZIP, City,
-      // Town, Address, Cellphone,
-      // 16.Tel, Tel2, eMail, IsLinked, IsControlList, 21.IsBlackList, TrxDate,
-      // 23.StatusCd
+      // 客戶陣列定義
+      // OrderNo, RecordNo, auditorship, Nationality, 4.CountryName, 5.CustomNo,
+      // 6.CustomName, Percentage, 8.Birthday, 9.MajorName, 10.PositionName, 11.ZIP, 12.City,
+      // 13.Town, 14.Address, Cellphone,
+      // 16.Tel, 17.Tel2, eMail, IsLinked, IsControlList, IsBlackList, TrxDate,
+      // 23.StatusCd , 24.MajorCD
+      
+      //     4           5           6           8           9            10        11     12     13      14      16    17       23          24
+      //CountryName , CustomNo , CustomName , Birthday , MajorName , PositionName , ZIP , City , Town , Address , Tel , Tel2 , statusCD , industryCode
       for (int i = 0; i < retCustom.length; i++) { // start 客戶for
 
         // 忽略已被換名的 (或需要忽略的資料，給C)
-        if ("C".equals(retCustom[i][23].trim()))
-          continue;
-
+        if ("C".equals(retCustom[i][23].trim()))  continue;
+        
+        //210114 Kyle : 行業別
+        String industryCode = retCustom[i][24] != null? retCustom[i][23].toString().trim():"";
+        if( "".equals(industryCode) ) {
+          //舊資料沒有行業別代碼
+          String sql  =  "SELECT CZ02,CZ09 FROM PDCZPF WHERE CZ01='INDUSTRY' And CZ09 = '"+ retCustom[i][9].trim() +"' " ;
+          String[][] retMajor  = dbBen.queryFromPool(sql) ;
+          if(retMajor.length  > 0) industryCode = retMajor[0][0] != null? retMajor[0][0].trim():"";
+        }
+        
         sqltopmanager = " SELECT TOP 1 PositionCD, PName, ChairMan From A_Position " + " WHERE PName = '" + retCustom[i][10] + "'" + " ORDER BY PositionCD DESC ";
         String retPosition2[][] = dbSale.queryFromPool(sqltopmanager);
         String isManager = "N";
@@ -239,7 +244,7 @@ public class RiskCheckTool extends bvalidate {
         map.put("SEX", sex);// 性別 M,F
         map.put("CNY", cnyCode);// 國籍
         map.put("JOB", "");// 職業代碼
-        map.put("VOC", "");// 行業別
+        map.put("VOC", industryCode);// 行業別
         map.put("CUST", " ");// 監護宣告
         map.put("IESTD", " "); // 設定日期
         map.put("IEXEC", isManager);// 高階管理人 Y/N
@@ -316,7 +321,12 @@ public class RiskCheckTool extends bvalidate {
         riskPoint = rc.getResult()[19].toString().trim();
         riskValue = rc.getResult()[20].toString().trim();
         System.out.println("RiskValue=====>" + riskValue);
-        msgboxtext += "客戶 " + retCustom[i][6] + " 洗錢風險等級 :" + resultMsg + "\n";
+        
+        String customTitle = "客戶 ";
+        if(this.bean.getRecordType().indexOf("指定第三人") != -1) {
+          customTitle = "指定第三人 "; 
+        }
+        msgboxtext += customTitle + retCustom[i][6].trim() + " 洗錢風險等級 :" + resultMsg + "\n";
         tmpMsgText += retCustom[i][6] + "\t" + resultMsg.trim() + "\t" + riskPoint.trim() + "\t" + rc.getResult()[11].toString().trim() + "\t"
             + rc.getResult()[13].toString().trim() + "\t" + rc.getResult()[15].toString().trim() + "\t" + rc.getResult()[17].toString().trim() + "\n";
 
@@ -336,12 +346,13 @@ public class RiskCheckTool extends bvalidate {
       ra.disconnect();
 
       // 風險值結果輸出
-//      rsData.put("rsMsg", msgboxtext);
       rcRS.setRsMsg(msgboxtext);
 
       // 更新客戶風險值
-      if (this.bean.isUpdSale05M091())
-        this.updSaleM091(list);
+      if (this.bean.isUpdSale05M091()) this.updSaleM091(list);
+      
+      //更新合約客戶風險值
+      if (this.bean.isUpdSale05M277()) this.updSaleM277(list);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -359,10 +370,8 @@ public class RiskCheckTool extends bvalidate {
 
     List sendMailList = new ArrayList();
     sendMailList.add(smBean);
-//    rsData.put("sendMailList", sendMailList );
     rcRS.setSendMailList(sendMailList);
 
-//    rs.setData(rsData);
     rs.setData(rcRS);
     rs.setRsStatus(rsStatus.SUCCESS);
     return rs;
@@ -439,6 +448,30 @@ public class RiskCheckTool extends bvalidate {
     dbSale.execFromPool(trans.getString());
 
     System.out.println("回寫05M091資料----------" + customList.size() + "------------------E");
+    return "0";
+  }
+  
+  /**
+   * 回寫Sale05M277 合約客戶風險值
+   * 
+   * @param customList
+   * @return
+   * @throws Throwable
+   */
+  public String updSaleM277(List customList) throws Throwable {
+    System.out.println("回寫05M277資料----------" + customList.size() + "------------------S");
+
+    Transaction trans = new Transaction();
+    for (int ii = 0; ii < customList.size(); ii++) {
+      HashMap data = (HashMap) customList.get(ii);
+      String M277Sql = "UPDATE Sale05M277 SET RiskValue = '" + data.get("riskValue").toString().trim() + "' " + "WHERE ContractNo = '" + this.bean.getContractNo() + "' AND CustomNo = '"
+          + data.get("p035").toString().trim() + "' and ISNULL(StatusCd , '') = '';  ";
+      trans.append(M277Sql);
+    }
+    trans.close();
+    dbSale.execFromPool(trans.getString());
+
+    System.out.println("回寫05M277資料----------" + customList.size() + "------------------E");
     return "0";
   }
 
@@ -585,11 +618,10 @@ public class RiskCheckTool extends bvalidate {
     } // customList for End
     context = context + tail + cbottom;
 
-    // 20201222 Kyle : 拉成Server Side共用元件後，無法在這邊使用內建函數，改為組成Mail資訊讓前端做發MAIL的動作
-    // String sendRS = sendMailbcc("ex.fglife.com.tw",
-    // "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "",
-    // "text/html");
-    String subject = this.bean.getProjectID1() + "案" + strHouse + "不動產訂購客戶風險等級評估結果通知" + testFlag;
+    //20201222 Kyle : 拉成Server Side共用元件後，無法在這邊使用內建函數，改為組成Mail資訊讓前端做發MAIL的動作
+//    String sendRS = sendMailbcc("ex.fglife.com.tw", "Emaker-Invoice@fglife.com.tw", arrayUser, subject, context, null, "", "text/html");
+//    String subject = this.bean.getProjectID1() + "案" + strHouse + "不動產訂購客戶風險等級評估結果通知" + testFlag;
+    String subject = this.bean.getProjectID1() + "案" + strHouse + "不動產" + this.bean.getFunc() + this.bean.getRecordType() + "通知" + testFlag;
     SendMailBean send = new SendMailBean();
     send.setColm1("ex.fglife.com.tw");
     send.setColm2("Emaker-Invoice@fglife.com.tw");
@@ -609,6 +641,84 @@ public class RiskCheckTool extends bvalidate {
     System.out.println("組成 EMAIL-----------------------------------E");
 
     return send;
+  }
+  
+  /**
+   * 使用bean物件傳入的場合，處理成通用陣列格式 (Custom)
+   * 
+   * @param listCustom
+   * @return
+   * @throws Throwable
+   */
+  private String processRetCustom() throws Throwable{
+    List list = this.bean.getListCustom();
+    String[][] tmpCustom = new String[list.size()][25];
+    for(int ii=0 ; ii<list.size() ; ii++) {
+      RiskCustomBean bean = (RiskCustomBean)list.get(ii);
+      String[] data = new String[25];
+      data[0] = "";
+      data[1] = "";
+      data[2] = "";
+      data[3] = "";
+      data[4] = bean.getCountryName(); //CountryName
+      data[5] = bean.getCustomNo(); //CustomNo
+      data[6] = bean.getCustomName(); //CustomName
+      data[7] = "";
+      data[8] = bean.getBirthday(); //Birthday
+      data[9] = bean.getMajorName();  //majorName
+      data[10] = bean.getPositionName();  //PositionName
+      data[11] = bean.getZip();  //ZIP
+      data[12] = bean.getCity();  //City
+      data[13] = bean.getTown();  //Town
+      data[14] = bean.getAddress();  //Address
+      data[15] = "";
+      data[16] = bean.getTel();  //Tel
+      data[17] = bean.getTel2();  //Tel2
+      data[18] = "";
+      data[19] = "";
+      data[20] = "";
+      data[21] = "";
+      data[22] = "";
+      data[23] = bean.getStatusCd();  //StatusCd
+      data[24] = bean.getIndustryCode();  //industryCode
+      tmpCustom[ii] = data;
+    }
+    this.bean.setRetCustom(tmpCustom);
+    
+    return "0";
+  }
+  
+  /**
+   * 使用bean物件傳入的場合，處理成通用陣列格式 (Ben)
+   * 
+   * @param listCustom
+   * @return
+   * @throws Throwable
+   */
+  private String processRetBen() throws Throwable{
+    List list = this.bean.getListBen();
+    String[][] tmp = new String[list.size()][13];
+    for(int ii=0 ; ii<list.size() ; ii++) {
+      RiskBenBean bean = (RiskBenBean)list.get(ii);
+      String[] data = new String[24];
+      data[0] = "";
+      data[1] = bean.getbCustomNo(); //CustomNo
+      data[2] = "";
+      data[3] = bean.getBenName(); //BenName
+      data[4] = bean.getbCustomNo(); //BCustomNo
+      data[5] = bean.getBirthday(); //Birthday
+      data[6] = bean.getCountryName(); //CountryName
+      data[7] = bean.getHoldType(); //HoldType
+      data[8] = "";
+      data[9] = "";
+      data[10] = "";
+      data[11] = "";
+      data[12] = bean.getStatusCd();  //statusCd
+      tmp[ii] = data;
+    }
+    this.bean.setRetSBen(tmp);
+    
+    return "0";
   }
 
   // 是數字回傳 true，否則回傳 false。
