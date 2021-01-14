@@ -10,16 +10,16 @@ import java.util.*;
 import jcx.util.*;
 import jcx.html.*;
 import jcx.db.*; 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class InvoicePrint_Elec extends sproc{
   public String getDefaultValue(String value)throws Throwable{
     System.out.println("-------------------InvoicePrintTest2----------------------S") ;
     
-//    String PRINTURL = "http://172.16.5.77:8081/InvoicePrintService/services/";
-//    String PRINTURL = "http://172.16.5.77:8081/InvoicePrintService/services";
-//    String PRINTURL = "http://172.22.10.51:8080/InvoiceService/services";
+    String PRINTURL = ((Map)get("config")).get("PRINTURL") != null? ((Map)get("config")).get("PRINTURL").toString().trim():"";
+    System.out.println("列印位置" + PRINTURL);
     
-    String PRINTURL = ((Map)get("config")).get("invoPRINTURL").toString().trim();
     String CompanyNo = getValue("CompanyNo");
     String InvoiceDate = getValue("InvoiceDate");
     String [][] table = getTableData("table1");
@@ -210,6 +210,19 @@ public class InvoicePrint_Elec extends sproc{
           if (AFE5D05.length > 0) {
             address = AFE5D05[0][1].trim();
             CustomName = AFE5D05[0][0].trim();
+			//拆出郵遞區號
+			//判斷郵遞區號種類
+			if (isInteger(AFE5D05[0][1].trim().substring(0, 6)) ){//3+3碼
+				//重設address&buyerZip
+				buyerZip = AFE5D05[0][1].trim().substring(0, 6) ;
+				address = AFE5D05[0][1].trim().substring( 6) ;
+			}else if (isInteger(AFE5D05[0][1].trim().substring(0, 5)) ){//3+2碼
+				buyerZip = AFE5D05[0][1].trim().substring(0, 5) ;
+				address = AFE5D05[0][1].trim().substring( 5) ;
+			}else if (isInteger(AFE5D05[0][1].trim().substring(0, 3)) ){//3碼
+				buyerZip = AFE5D05[0][1].trim().substring(0, 3) ;
+				address = AFE5D05[0][1].trim().substring( 3) ;
+			}
           }
           stringSQL = "SELECT "
               + "OBJECT_FULL_NAME " 
@@ -325,4 +338,9 @@ public class InvoicePrint_Elec extends sproc{
   public String getInformation(){
     return "---------------button1(發票套印).defaultValue()----------------";
   }
+  
+	public static boolean isInteger(String str) {
+		Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+		return pattern.matcher(str).matches();
+	}
 }
