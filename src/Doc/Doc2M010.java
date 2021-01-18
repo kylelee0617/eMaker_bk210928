@@ -13,11 +13,10 @@ import         com.jacob.com.*;//
 import         Farglory.util.FargloryUtil ;
 public  class  Doc2M010  extends  bTransaction{
          talk  dbDoc                       =  getTalk(""  +get("put_Doc"));
-         talk  dbPurchase                  =  getTalk(""  +get("put_Purchase"));
          talk  dbFE3D                      =  getTalk(""  +get("put_FE3D"));
          talk  dbSale                      =  getTalk(""  +get("put_Sale"));  
          talk  dbFED1                      =  getTalk(""  +get("put_FED1"));
-         talk  dbFED1A                     =  getTalk(""  +get("put_FED1A"));
+         talk  dbFED1A                     =  dbFED1;
          public  boolean  action (String  value) throws  Throwable{
                // 發票 LU52628354、LU52628356、LU52628357、LU52628394、LU52628430、WU53306624 為楊信義手動鍵入資料庫 Doc6M011 中，已退回廠商不允使用。
                /*
@@ -39,6 +38,7 @@ public  class  Doc2M010  extends  bTransaction{
                getStopUseObjectCDMessage              廠商停權
                isSupplementMoneyOK                    補充保費
                getInvoiceKindName                     發票格式
+               getDoc5M060UndergoName                 驗收流程
                資料庫 Asset
                資料庫 Doc
                */
@@ -124,6 +124,32 @@ public  class  Doc2M010  extends  bTransaction{
                                              "停權區間　："+stringStopDate+"。\n" +
                                              "停權原因　："+stringReason1+"。" ;
                  return  stringMessage ;
+         }
+         public  String  getDoc5M060UndergoName(String  stringUndergoWrite)  throws Throwable{
+            String  stringUndergoName      =  "" ;
+            //
+            if("".equals(stringUndergoWrite))   return  "" ;
+            //
+               stringUndergoWrite  =  stringUndergoWrite.substring(0,1) ;
+            if("A".equals(stringUndergoWrite))  return  "承辦" ;
+            if("B".equals(stringUndergoWrite))  return  "承辦-科主管" ;
+            if("C".equals(stringUndergoWrite))  return  "承辦-室主管" ;
+            if("D".equals(stringUndergoWrite))  return  "人總人員" ;
+            if("E".equals(stringUndergoWrite))  return  "作廢" ;
+               if("F".equals(stringUndergoWrite))  return  "人總主管" ;
+            if("G".equals(stringUndergoWrite))  return  "採購人員" ;
+            if("H".equals(stringUndergoWrite))  return  "監理-設計專案" ;
+               if("I".equals(stringUndergoWrite))  return  "監理-設計機電" ;
+               if("J".equals(stringUndergoWrite))  return  "監理-營業" ;
+               if("K".equals(stringUndergoWrite))  return  "行銷企劃室承辦" ;
+               if("L".equals(stringUndergoWrite))  return  "行銷企劃室主管" ;
+               if("Y".equals(stringUndergoWrite))  return  "採購主管" ;
+            
+            
+            
+          if("X".equals(stringUndergoWrite))  return  "退件" ;
+          
+            return  "" ;
          }
          // stringSource  A 請購單、統購廠商對照表     B 管理-後續申請單(請款、借款、借款沖銷不處理，轉傳票)    C 行銷-後續申請單(請款、借款、借款沖銷不處理，轉傳票)     D 驗收單    E 
          public  String  getStopUseObjectCDSql (Hashtable  hashtableCond,  FargloryUtil  exeUtil) throws  Throwable{
@@ -569,7 +595,7 @@ public  class  Doc2M010  extends  bTransaction{
                 stringBarCodeHead      =  exeUtil.doSubstring(stringBarCode,  0,  1) ;    
                         stringBarCodeNum       =  exeUtil.doSubstring(stringBarCode,  2,  stringBarCode.length()) ;   
             }
-            if(getQueryDataHashtableDoc("Doc1H010",  new  Hashtable(),  " AND  Used  =  'Y'  AND  HeadCode  = '"+stringBarCodeHead+"' ",  new  Vector(),  exeUtil).size()  ==  0) return "[條碼編號] 字頭不允許使用。" ;
+            if(",R,S,".indexOf(stringBarCodeHead)==-1  &&  getQueryDataHashtableDoc("Doc1H010",  new  Hashtable(),  " AND  Used  =  'Y'  AND  HeadCode  = '"+stringBarCodeHead+"' ",  new  Vector(),  exeUtil).size()  ==  0) return "[條碼編號] 字頭不允許使用。" ;
                   //
                   if(exeUtil.doParseDouble(stringBarCodeNum)  >  0) return  "OK" ;
                   if(stringBarCodeNum.equals("00000")) return  "OK" ;
@@ -653,10 +679,11 @@ public  class  Doc2M010  extends  bTransaction{
                      double      doubleReceiptTotalMoney             =  exeUtil.doParseDouble(stringReceiptTotalMoney) ;
                      double      doubleReceiptMoney                  =  exeUtil.doParseDouble(stringReceiptMoney) ;
                      double      doubleReceiptTax                    =  exeUtil.doParseDouble(stringReceiptTax) ;
-                     double      doubleSupplementMoney               =  exeUtil.doParseDouble(stringSupplementMoney) ;
+                     double      doubleSupplementMoney               =  exeUtil.doParseDouble(stringSupplementMoney);
                      double      doubleSupplementMoneyL              =  0 ;
-                     double      doubleSupplementCheckMoney          =  20000 ;    // 2016-01-11 修正，原本5000 
-                     double      doubleSupplementRatio               =  1.91/100 ; // 2016-01-11 修正，原本 2.0/1000
+                     double      doubleSupplementCheckMoney          =  20000 ;    // 2016-01-11 修正，原本5000
+                     //double      doubleSupplementRatio               =  1.91/100 ; // 2016-01-11 修正，原本 2.0/1000
+                     double      doubleSupplementRatio               =  2.11/100 ; // 2021-01-15 Kyle 變更
                      double      doubleTaxRate                       =  exeUtil.doParseDouble(stringReceiptTaxType)/100 ;
                      boolean     booleanSupplement                   =  true ;
                      boolean     booleanSpecCostID                   =  "Y".equals(stringSpecCostID) ;
@@ -675,16 +702,22 @@ public  class  Doc2M010  extends  bTransaction{
                                  }
                      }
                      // 補充保費 金額 判斷
-                     System.out.println("stringTYPE("+stringTYPE+")----------------------------------------") ;
-                     System.out.println("stringReceiptTaxType("+stringReceiptTaxType+")----------------------------------------") ;
+                     //System.out.println("stringTYPE("+stringTYPE+")----------------------------------------") ;
+                     //System.out.println("stringReceiptTaxType("+stringReceiptTaxType+")----------------------------------------") ;
+                     /*
                      if("5".equals(stringReceiptTaxType)) {
-                              doubleSupplementCheckMoney  =  21009 ;// 2017-01-09 修改，原本 20008
+                              doubleSupplementCheckMoney  =  23800 ;// 2020-02-06 修改，原本 21009
+                     }
+                     */
+                     if("228202".equals(stringAcctNo)) { //代收款-代扣薪資所得稅 
+                         doubleSupplementCheckMoney  =  23800 ;// 2020-02-06 修改，原本 21009
                      }
                      System.out.println("doubleSupplementCheckMoney("+exeUtil.getFormatNum2(""+doubleSupplementCheckMoney)+")----------------------------------------") ;
                      // 補充保費 判斷
                      if(check.isCoId(stringFactoryNo))                                             booleanSupplement  =  false ;  // 2013-03-29 統一編號 無 補充保費
                      if(",A,B,".indexOf(","+stringReceiptKind+",") ==  -1)                         booleanSupplement  =  false ; 
-                     if(",228202,228203,228208,228204,".indexOf(","+stringAcctNo+",")==-1)         booleanSupplement  =  false ; 
+                     //if(",228202,228208,228204,228226,".indexOf(","+stringAcctNo+",")==-1)  booleanSupplement  =  false ; //2020-02-06 拿掉228203 執行業務所得
+                     if(",228202,228203,228208,228204,228226,".indexOf(","+stringAcctNo+",")==-1)  booleanSupplement  =  false ; 
                      if(booleanTable21Exist)                                                       booleanSupplement  =  false ; 
                      if(!"Z0001".equals(stringFactoryNo)  &&  doubleReceiptTotalMoney<doubleSupplementCheckMoney)  {
                                  // 特殊請款代碼時，不作預設處理
@@ -707,7 +740,7 @@ public  class  Doc2M010  extends  bTransaction{
                                              doubleSupplementMoney    =  exeUtil.doParseDouble(convert.FourToFive(""+doubleSupplementMoney,      0)) ;
                                              doubleSupplementMoneyL  =  exeUtil.doParseDouble(convert.FourToFive(""+doubleSupplementMoneyL,  0)) ;
                                              if(!booleanSpecUser  &&  (doubleSupplementMoney>doubleSupplementMoneyL+10  ||  doubleSupplementMoney<doubleSupplementMoneyL-10)) {
-                                                      hashtableData.put("MESSAGE",  "補充保費("+exeUtil.getFormatNum2(""+doubleSupplementMoney)+") 大於或小於 [所得金額] 1.91%("+exeUtil.getFormatNum2(""+doubleSupplementMoneyL)+") ± 10。") ;
+                                                      hashtableData.put("MESSAGE",  "補充保費("+exeUtil.getFormatNum2(""+doubleSupplementMoney)+") 大於或小於 [所得金額] " + doubleSupplementRatio*100 + "%("+exeUtil.getFormatNum2(""+doubleSupplementMoneyL)+") ± 10。") ;
                                                       return  false ;
                                              }
                                  }
@@ -1175,7 +1208,6 @@ public  class  Doc2M010  extends  bTransaction{
          public  Hashtable  getUsedProjectIDMoney2(boolean  booleanSource,  String  stringComNo,  String  stringBarCode,  String[][]  retTable6Data) throws  Throwable {
                   FargloryUtil  exeUtil  =  new  FargloryUtil() ;
                   return  getUsedProjectIDMoney2(booleanSource,  stringComNo,  stringBarCode,  retTable6Data,  exeUtil) ;
-                  //誰可以告訴我到底為什麼要這樣脫褲子放屁
          }
          public  Hashtable  getUsedProjectIDMoney2(boolean  booleanSource,  String  stringComNo,  String  stringBarCode,  String[][]  retTable6Data,  FargloryUtil  exeUtil) throws  Throwable {
                      //System.out.println("已請款案別金額整理----------------------S") ;
@@ -1814,7 +1846,8 @@ public  class  Doc2M010  extends  bTransaction{
                            retTable[0][0]  =  "查無資料。" ;
                            return retTable ;
                   }
-                  boolean  booleanApplyTypeD  =  ",P38453,P20829,".indexOf(","+stringBarCode+",")==-1  &&  isApplyTypeDVoucher1("A",  retDoc2M010[0][0].trim(),  stringBarCode,  retDoc2M010[0][33].trim()) ;
+                  boolean  booleanApplyTypeD  =  ",P38453,P20829,".indexOf(","+stringBarCode+",")==-1  &&  
+                                                 isApplyTypeDVoucher1("A",  retDoc2M010[0][0].trim(),  stringBarCode,  retDoc2M010[0][33].trim()) ;
                   //
                   String         stringCDate                =  retDoc2M010[0][16].trim() ;
                   String         stringCDateAC              =  exeUtil.getDateConvert(stringCDate) ;
@@ -1869,6 +1902,7 @@ public  class  Doc2M010  extends  bTransaction{
                            retDoc2M013  =  getDoc2M013(stringBarCode) ;    // 取得扣繳資料，Doc2M013
                            retTable          =  getConvertToArrayForPocketMoney(booleanTEST,  booleanSource,  retDoc2M010,  retDoc2M011,  retDoc2M012,  retDoc2M013,  exeUtil) ;
                   } else {
+                           System.out.println("booleanCostIDSpec("+booleanCostIDSpec+")booleanApplyTypeD("+booleanApplyTypeD+")retDoc2M011.length("+retDoc2M011.length+")retDoc5M0224.length("+retDoc5M0224.length+")-----------------------1") ;
                            if(!booleanCostIDSpec  &&  !booleanApplyTypeD  &&  retDoc2M011.length != 0  &&  retDoc5M0224.length==0)  {
                                        System.out.println("getConvertToArray1-----------------------2") ;
                                        retTable  =  getConvertToArrayForInvoice(booleanTEST,  retDoc2M010,  retDoc2M011,  retDoc2M012,  booleanDoc2M0201ForB,  exeUtil) ;
@@ -2049,8 +2083,8 @@ public  class  Doc2M010  extends  bTransaction{
                                              hashtableAnd.put("KIND",                           "0") ;
                                              vectorFED1012  =  getQueryDataHashtableFED1("FED1012",  hashtableAnd,  "",  new  Vector(),  exeUtil) ;
                                              for(int  intNoL=0  ;  intNoL<vectorFED1012.size()  ;  intNoL++) {
-                                                      hashtableTemp        =  (Hashtable)  vectorFED1012.get(intNoL) ;         if(hashtableTemp  ==  null)          continue ;
-                                                      stringKEY                  =  ""+hashtableTemp.get("DESCRIPTION_1") ;
+                                                      hashtableTemp       =  (Hashtable)  vectorFED1012.get(intNoL) ;         if(hashtableTemp  ==  null)          continue ;
+                                                      stringKEY           =  ""+hashtableTemp.get("DESCRIPTION_1") ;
                                                       stringVoucherSeqNo  =  ""+hashtableTemp.get("VOUCHER_SEQ_NO") ;
                                                       hashtableKEY.put(stringKEY,  stringVoucherYMD+"-"+stringVoucherFlowNo+"-"+stringVoucherSeqNo) ;
                                              }
@@ -2100,19 +2134,19 @@ public  class  Doc2M010  extends  bTransaction{
                               System.out.println("DocNo("+stringDocNo+")----------------------------E") ;
                               for(int  intNoL=0  ;  intNoL<vectorFED1040.size()  ;  intNoL++) {
                                     hashtableTemp           =  (Hashtable)  vectorFED1040.get(intNoL) ;         if(hashtableTemp  ==  null)             continue ;
-                                    stringTempFlowNo     =  ""+hashtableTemp.get("TEMP_FLOW_NO") ;
+                                    stringTempFlowNo      =  ""+hashtableTemp.get("TEMP_FLOW_NO") ;
                                     stringTempSeqNo         =  ""+hashtableTemp.get("TEMP_SEQ_NO") ;           
-                                    stringDbCrCd               =  ""+hashtableTemp.get("DB_CR_CD") ;
-                                    stringAcctNo               =  ""+hashtableTemp.get("ACCT_NO") ;
-                                    stringDepartNo             =  ""+hashtableTemp.get("DEPT_CD") ;
-                                    stringObjectCd             =  ""+hashtableTemp.get("OBJECT_CD") ;
-                                    stringAmt                     =  ""+hashtableTemp.get("AMT") ;
-                                    arrayDescript[0]           =  ""+hashtableTemp.get("DESCRIPTION_1") ;
-                                    arrayDescript[1]           =  ""+hashtableTemp.get("DESCRIPTION_2") ;
-                                    arrayDescript[2]           =  ""+hashtableTemp.get("DESCRIPTION_3") ;
-                                    arrayDescript[3]           =  ""+hashtableTemp.get("DESCRIPTION_4") ;
-                                    arrayDescript[4]           =  ""+hashtableTemp.get("DESCRIPTION_5") ;
-                                    stringDescript             =  ""+hashtableTemp.get("DESCRIPTION") ;
+                                    stringDbCrCd            =  ""+hashtableTemp.get("DB_CR_CD") ;
+                                    stringAcctNo            =  ""+hashtableTemp.get("ACCT_NO") ;
+                                    stringDepartNo          =  ""+hashtableTemp.get("DEPT_CD") ;
+                                    stringObjectCd          =  ""+hashtableTemp.get("OBJECT_CD") ;
+                                    stringAmt               =  ""+hashtableTemp.get("AMT") ;
+                                    arrayDescript[0]        =  ""+hashtableTemp.get("DESCRIPTION_1") ;
+                                    arrayDescript[1]        =  ""+hashtableTemp.get("DESCRIPTION_2") ;
+                                    arrayDescript[2]        =  ""+hashtableTemp.get("DESCRIPTION_3") ;
+                                    arrayDescript[3]        =  ""+hashtableTemp.get("DESCRIPTION_4") ;
+                                    arrayDescript[4]        =  ""+hashtableTemp.get("DESCRIPTION_5") ;
+                                    stringDescript          =  ""+hashtableTemp.get("DESCRIPTION") ;
                                     //
                                     if("null".equals(stringTempSeqNo)) {
                                              System.out.println("FED1040 TEMP_SEQ_NO 為空白") ;
@@ -2122,10 +2156,10 @@ public  class  Doc2M010  extends  bTransaction{
                                              System.out.println("FED1040 DB_CR_CD 為空白") ;
                                              return  retTable ;
                                        }
-                                       if("null".equals(stringAcctNo))                    stringAcctNo      = "" ;
+                                       if("null".equals(stringAcctNo))                    stringAcctNo   = "" ;
                                        if("null".equals(stringDepartNo))                  stringDepartNo = "" ;
                                        if("null".equals(stringObjectCd))                  stringObjectCd = "" ;
-                                       if(exeUtil.doParseDouble(stringAmt) <= 0)    stringAmt         = "0" ;
+                                       if(exeUtil.doParseDouble(stringAmt) <= 0)        stringAmt      = "0" ;
                                        //
                                        if("2251".equals(stringAcctNo)  &&  stringTempKey.endsWith("2")) {
                                                 stringLastYMD  =  ""+hashtableKEY.get(arrayDescript[0]) ;
@@ -2185,8 +2219,8 @@ public  class  Doc2M010  extends  bTransaction{
                   return  retTable ;
          }
          public  double  getG20Amt(String  stringBarCode,  FargloryUtil  exeUtil) throws  Throwable {
-                  String            stringTemp        =  "" ;
-                  Hashtable      hashtableAnd   =  new  Hashtable() ;
+                  String         stringTemp        =  "" ;
+                  Hashtable      hashtableAnd     =  new  Hashtable() ;
                   double         dobuleAmt         =  0 ;
                   hashtableAnd.put("BarCode",  stringBarCode) ;
                   stringTemp  =  getNameUnionDoc("BarCode",  "Doc5M020",  "",  hashtableAnd,  exeUtil) ;
@@ -2243,7 +2277,7 @@ public  class  Doc2M010  extends  bTransaction{
                      Vector         retVector                        =  new  Vector( ) ;
                      String         stringVoucherYMD014              =  (""+get("Doc2M014_VOUCHER_YMD")).trim( ) ;    
                      String         stringAccountCountS              =  (""+get("Doc2M014_AccountCount")).trim( ) ;
-                     String         stringAccountCountStatusS        =  (""+get("Doc2M014_AccountCount_Status")).trim( ) ;
+                     String         stringAccountCountStatusS        =  (""+get("Doc2M014_AccountCount_Status")).trim( ) ;    // 扣繳月數一致
                      String         stringAccountCount               =  ""+hashtableDoc2M010.get("AccountCount") ; 
                      String         stringAcctCSession               =  (""+get("Doc2M014_AcctNo")).trim() ;
                      //
@@ -2517,6 +2551,7 @@ public  class  Doc2M010  extends  bTransaction{
                                     if(vectrorDoc5M0202.size()<=0  &&  retDoc2M030.length==0) return  getErrorArray("貸方資料錯誤2") ;
                                     //
                                     if(exeUtil.doParseInteger(""+hashtableDoc2M010.get("Count"))==0)  stringMailMoney1  =  "0" ;
+                                    if(",Q71901,".indexOf(stringBarCode)!=-1)  stringMailMoney1  =  "0" ;
                                     //
                                     doubleRate  =  getRate(intMaxCount,  retDoc2M017,  hashtableDoc2M010,  exeUtil)  ;
                         }
@@ -2541,7 +2576,7 @@ public  class  Doc2M010  extends  bTransaction{
                                     hashtableDoc2M010.put("到期日", "") ;
                                     System.out.println("---------------------貸方-扣繳2["+hashtableDoc2M010.get("TotalAmt")+"]" );
                         }
-                        System.out.println(retVector.size()+"---------------------貸方正常  部門["+hashtableDoc2M010.get("DepartNoFirst")+"]廠商["+hashtableDoc2M010.get("FactoryNo")+"]");
+                        System.out.println("筆數："+retVector.size()+"---------------------貸方正常  部門["+hashtableDoc2M010.get("DepartNoFirst")+"]廠商["+hashtableDoc2M010.get("FactoryNo")+"]");
                         
                       if("B".equals(stringDocNoType)) {
                                     stringRowtype        =  "T" ;  // 事後補發票
@@ -2624,7 +2659,7 @@ public  class  Doc2M010  extends  bTransaction{
                                                                   retVector,         exeUtil) ;
                      }
                      hashtableDoc2M010.put("到期日",  "") ;
-                     System.out.println(retVector.size()+"---------------------貨方-固資 前期沖轉["+hashtableDoc2M010.get("DepartNoFirst")+"]("+stringRetainMoney+")booleanEnd("+booleanEnd+")booleanApplyTypeD("+booleanApplyTypeD+")retAsAsset.length("+retAsAsset.length+")-----------" );
+                     System.out.println("筆數："+retVector.size()+"---------------------貨方-固資 前期沖轉["+hashtableDoc2M010.get("DepartNoFirst")+"]("+stringRetainMoney+")booleanEnd("+booleanEnd+")booleanApplyTypeD("+booleanApplyTypeD+")retAsAsset.length("+retAsAsset.length+")-----------" );
                      // 貨方-固資 前期沖轉
                      if(",K01241,K01261,".indexOf(stringBarCode) ==  -1  &&  booleanEnd  &&  booleanApplyTypeD  &&  retAsAsset.length>0) {
                               intFlowNo      =  putCeditAssetFront(intFlowNo,  "01",  stringPurchaseNo,  hashtableDoc2M010,  retVector,  exeUtil) ;
@@ -2854,7 +2889,7 @@ public  class  Doc2M010  extends  bTransaction{
                               return  retDoc2M030 ;
                   } else if(",A,B,D,Z,".indexOf(stringDocNoType)  !=  -1) { 
                   //} else if("A".equals(stringDocNoType)  ||  "B".equals(stringDocNoType)  ||  "Z".equals(stringDocNoType)) { 
-                              System.out.println("getAcctC-----------------------stringDocNoType ABDZ") ;
+                              System.out.println("getAcctC-----stringComNo("+stringComNo+")------------------stringDocNoType ABDZ") ;
                               // 一般
                               // 由 [借方會計科目] 取得 [貸方會計科目]
                               // retDoc2M030
@@ -2975,7 +3010,13 @@ public  class  Doc2M010  extends  bTransaction{
                                                                      case 3 :stringAcctCSession  =  "2146" ;  stringAcctCSession2  =  "2147"  ;  break ;
                                                             }
                                                             // 2014-06-30 B3018 修正 當廠商為關係人，且可匯款廠商時，貸方會計科目改為 2142
-                                                            if(booleanFactoryNo)  stringAcctCSession = "2142" ;
+                                                            if(booleanFactoryNo) {
+                                                                     if("20".equals(stringComNo)  &&  !stringAccountNo.startsWith("166")) {
+                                                                                  stringAcctCSession = "2193" ; 
+                                                                     } else {
+                                                                                  stringAcctCSession = "2142" ; 
+                                                                     }
+                                                            } 
                                                    }
                                           } else {
                                                       if(!"".equals(stringAcctCSession)  &&  ("2146".equals(stringAcctCSession)  ||  "2147".equals(stringAcctCSession))) stringAcctCSession  =  "" ;
@@ -3463,8 +3504,8 @@ public  class  Doc2M010  extends  bTransaction{
                                                 // 遠翔建設02 且為 5881 開頭，貸方設為 2146 2013-08-14
                                                 stringAcctountType    =  "1" ;
                                        } else if(",12,10,".indexOf(","+stringComNo+",")!=-1) {
-                                                   // 遠雄營造 12、東源營造 10
-                                                   stringAcctountType    =  "1" ;
+                                                   // 遠雄營造 12、東源營造 10   2017-11-09 B5309 林勁豪 修為2
+                                                   stringAcctountType    =  "2" ;
                                        } else if(stringAccountNo.equals("214114")) {
                                                    stringAcctountType    =  "1" ;
                                        } else {
@@ -4382,7 +4423,7 @@ public  class  Doc2M010  extends  bTransaction{
                                          // 無營業稅憑證大於費用合計之金額，使用 8111 
                                          if(",F282302,F282303,".indexOf(","+stringCostID+",")  !=  -1) {
                                                    // 2013-05-30 修正
-                                                   doubleTotalAmt       =  doF282302_2(stringBarCode,  stringCostID,  stringDepartNoFirst,  stringRowtype,  doubleTotalAmt,  vectorDescrip,  vectorVoucherData,  vectorVoucherDataKey,retDoc2M013,  exeUtil) ; 
+                                                   doubleTotalAmt       =  doF282302_2(stringBarCode,  stringCostID,  stringDepartNoFirst,  "B",  doubleTotalAmt,  vectorDescrip,  vectorVoucherData,  vectorVoucherDataKey,retDoc2M013,  exeUtil) ; 
                                          } 
                                          //else {
                                          //          doubleTotalAmt       =  doF282302(stringBarCode,  stringCostID,  stringDepartNoFirst,  stringRowtype,  doubleTotalAmt,  vectorDescrip,  vectorVoucherData,  vectorVoucherDataKey,retDoc2M013,  exeUtil) ;
@@ -5218,7 +5259,7 @@ public  class  Doc2M010  extends  bTransaction{
                       return  intFlowNo ;
          }
          public  int  putCedit2Doc2M013(boolean  boolean110301,  Vector  vectorPayCondition,  int  intFlowNo,  int  intMaxCount,  String  stringRowType,  String  stringInputDepartNo,  String  stringType,  String  stringAcctCSession,  String  stringAccountCount,  Hashtable hashtableDoc2M010,  String[][]  retDoc2M013,  Vector  retVector,  FargloryUtil  exeUtil) throws  Throwable {
-                      System.out.println("putCedit2Doc2M013--------------------------------------------S") ;
+                      System.out.println("putCedit2Doc2M013-stringAccountCount("+stringAccountCount+")-------------------------------------------S") ;
                       String   stringFactoryNo          =  "" ;
                       String   stringReceiptMoney       =  "" ;
                       String   stringAcctNo             =  "" ;
@@ -5230,16 +5271,16 @@ public  class  Doc2M010  extends  bTransaction{
                       if("".equals(stringAcctCSession)  ||  "null".equals(stringAcctCSession)) {
                                    String[][]  retDoc2M030  =  getAcctC(boolean110301,  vectorPayCondition,  intMaxCount,  "Z",  "",  "",  hashtableDoc2M010,  exeUtil) ; 
                                    if(retDoc2M030.length>0)stringAcctCSession  =  retDoc2M030[0][0].trim() ;
-                                   System.out.println("stringAcctCSession-----------------------------["+stringAcctCSession+"]") ;
+                                   System.out.println("stringAcctCSession["+stringAcctCSession+"]-stringAccountCount["+stringAccountCount+"]----------------------------") ;
                       }
                       if("110301".equals(stringAcctCSession)) {
                                  stringKind          =  "A" ;
                       } else if("2121,2131,".indexOf(stringAcctCSession+",")!=-1) {
                                  stringKind          =  "B" ;
-                                 stringAccountCount  =  "1" ;
+                                 //stringAccountCount  =  "1" ;
                       } else  if("2122,2132,".indexOf(stringAcctCSession+",")!=-1) {
                                  stringKind          =  "C" ;
-                                 stringAccountCount  =  "1" ;
+                                 //stringAccountCount  =  "1" ;
                       }  else if("2143,2153,".indexOf(stringAcctCSession+",")!=-1) {
                                 stringKind          =  "D" ;
                                 stringAccountCount  =  "1" ;
@@ -5252,7 +5293,7 @@ public  class  Doc2M010  extends  bTransaction{
                       }
                       //
                       int         intMaxNo    =  ("C".equals(stringType)  ||  "A".equals(stringKind)) ? 1 : retDoc2M013.length ;
-                      System.out.println("stringType("+stringType+")intMaxNo("+intMaxNo+")--------------------------------------------") ;
+                      System.out.println("stringType("+stringType+")intMaxNo("+intMaxNo+")stringAccountCount("+stringAccountCount+")--------------------------------------------") ;
                       String[][]  retFED1005  =  null ;
                       for(int  intDoc2M013=0  ;  intDoc2M013<intMaxNo  ;  intDoc2M013++) {
                                  if("C".equals(stringType)) {
@@ -5283,6 +5324,7 @@ public  class  Doc2M010  extends  bTransaction{
                                                 stringAcctNo  =  "110301" ;
                                  }
                                  // 
+                                 System.out.println(intDoc2M013+"stringAccountCount("+stringAccountCount+")-------------------------------------------") ;
                                  intFlowNo             =  putIntoVector3(stringRowType,        " ",                       intFlowNo,             "C",        stringAcctNo,
                                                                          "",                   stringFactoryNo,           stringReceiptMoney,     "",
                                                                          (intDoc2M013+1),      stringAccountCount,
@@ -6011,6 +6053,8 @@ public  class  Doc2M010  extends  bTransaction{
                     //Hashtable   hashtableDoc2M042               =  getDoc2M042( ) ;
                       int         intAcctCount                    =  0 ;
                       int         intMaxCount                     =  exeUtil.doParseInteger(stringCount) ;  if(intMaxCount<=0)intMaxCount=1 ;
+                      //
+                      System.out.println("intMaxCount("+intMaxCount+")---------------------------") ;
                         //
                       if("null".equals(stringWriteVoucherData)) {
                                     stringWriteVoucherData  =  getToday("yymmdd") ;
@@ -6345,6 +6389,7 @@ public  class  Doc2M010  extends  bTransaction{
                                  intMaxCount  =  1 ;
                       }
                      //
+                     System.out.println("stringKind("+stringKind+")intMaxCount("+intMaxCount+")boolean2146("+boolean2146+")stringAcctountType("+stringAcctountType+")---------------------------") ;
                      for(int  intAcctNo=0  ;  intAcctNo<intAcctCount  ;  intAcctNo++) {
                                  //
                                  if("貸方".equals(stringKind)) {
@@ -6392,13 +6437,13 @@ public  class  Doc2M010  extends  bTransaction{
                                                 doubleMoneySum  =  exeUtil.doParseDouble(stringRealMoney) ;
                                  }
                                  // 
-                                 String      stringDate                       =  "" ;
-                                 String      stringFlow                       =  "" ;
-                                 String[]    arrayTemp                     =  null ;
-                                 double    doubleMoneySumFinal  =  doubleMoneySum ;
-                                 double    doubleMoney                  =  0 ;     
-                                 double    doubleMoneyFinal          =  doubleMoneySumFinal  /  intMaxCount ;
-                                                doubleMoneyFinal           =  exeUtil.doParseDouble(convert.FourToFive(""+doubleMoneyFinal,  0)) ;
+                                 String      stringDate           =  "" ;
+                                 String      stringFlow           =  "" ;
+                                 String[]    arrayTemp            =  null ;
+                                 double      doubleMoneySumFinal  =  doubleMoneySum ;
+                                 double      doubleMoney          =  0 ;     
+                                 double      doubleMoneyFinal     =  doubleMoneySumFinal  /  intMaxCount ;
+                                             doubleMoneyFinal     =  exeUtil.doParseDouble(convert.FourToFive(""+doubleMoneyFinal,  0)) ;
                                  for(int  intCount=0  ;  intCount<intMaxCount ;  intCount++) {
                                                 arrayTemp  =  exeUtil.doCopyArray(retDataTemp) ;
                                              if(intCount==0  &&  intAcctNo==0){} else  intFlowNo++ ;  
@@ -7809,6 +7854,12 @@ public  class  Doc2M010  extends  bTransaction{
                                  } else {*/
                                           vectorItemCd  =  new  Vector() ;
                                  //}
+                                 if("990".equals(stringCostID+stringCostID1)) {
+                                          retDataTemp     =  new  String[2] ;
+                                          retDataTemp[0]  =  "Y09" ;
+                                          retDataTemp[1]  =  retDoc2M011.length>0?"01":"04" ;
+                                          vectorItemCd.add(retDataTemp) ;                                    
+                                 }
                                  //
                                  //  0  ACCT_IN       1  ACCT_OUT          2  ITEM_CD        3  USED_CD
                                  retDoc2M020  =  getDoc2M020All(stringComNo,  stringCostID,  stringCostID1) ;
@@ -8098,9 +8149,12 @@ public  class  Doc2M010  extends  bTransaction{
                                              String      stringVoucherKind  =  "" ;
                                              String[][]  retFED1005         =  getFED1005(stringFactoryNoTop1) ;
                                              //
-                                             stringVoucherKind  =  retFED1005[0][15].trim() ;
-                                             stringBankCd       =  retFED1005[0][16].trim() ;
-                                             stringBankNo       =  retFED1005[0][17].trim() ;
+                       System.out.println("chekc retFED1005 data exists");
+                       if(retFED1005.length > 0 ) {
+                        stringVoucherKind  =  retFED1005[0][15].trim() ;
+                        stringBankCd       =  retFED1005[0][16].trim() ;
+                        stringBankNo       =  retFED1005[0][17].trim() ;
+                      } 
                                              // 廠商憑證(VOUCHER_KIND)不為其他類(3)
                                              if(!"3".equals(stringVoucherKind)  &&  !"".equals(stringBankCd)  &&  !"".equals(stringBankNo)) {
                                                          // 銀行代號   BANK_CD
@@ -8815,15 +8869,25 @@ public  class  Doc2M010  extends  bTransaction{
                                                       //
                                                       System.out.println("發票("+arrayTemp[19]+")("+arrayStringInvoiceTotalMoney[intNo]+")---------------------------------") ;
                                                       //2015-06-11
-                                                      if("P83534".equals(stringBarCode)) {
-                                                                     if("PG52878082,".indexOf(arrayTemp[19])  !=  -1) {
-                                                                                 arrayStringInvoiceTotalMoney[intNo] = "1000" ;
-                                                                                 arrayStringInvoiceNoTaxMoney[intNo] = "952" ;
+                                                      if("Q94446".equals(stringBarCode)) {
+                                                                     if("PL49016609,".indexOf(arrayTemp[19])  !=  -1) {
+                                                                                 arrayStringInvoiceTotalMoney[intNo] = "1958625" ;
+                                                                                 arrayStringInvoiceNoTaxMoney[intNo] = "1865357" ;
                                                                      }
-                                                                     if("PG52878087,".indexOf(arrayTemp[19])  !=  -1) {
+                                                                     /*if("PG52878087,".indexOf(arrayTemp[19])  !=  -1) {
                                                                                  arrayStringInvoiceTotalMoney[intNo] = "2000" ;
                                                                                  arrayStringInvoiceNoTaxMoney[intNo] = "1905" ;
+                                                                     }*/
+                                                      }
+                                                      if("AB1918".equals(stringBarCode)) {
+                                                                     if("QB53592054,".indexOf(arrayTemp[19])  !=  -1) {
+                                                                                 arrayStringInvoiceTotalMoney[intNo] = "576" ;
+                                                                                 arrayStringInvoiceNoTaxMoney[intNo] = "549" ;
                                                                      }
+                                                                     /*if("PG52878087,".indexOf(arrayTemp[19])  !=  -1) {
+                                                                                 arrayStringInvoiceTotalMoney[intNo] = "2000" ;
+                                                                                 arrayStringInvoiceNoTaxMoney[intNo] = "1905" ;
+                                                                     }*/
                                                       }
                                              }
                                              System.out.println("7----------------------------END") ;
@@ -10452,7 +10516,7 @@ public  class  Doc2M010  extends  bTransaction{
             arrayTable[4]  =  stringFactoryNoTop1 ;
             arrayTable[5]  =  ""+intFlowNo ;
             System.out.println("putDebitForReceipt1--------------------S") ;
-            intFlowNo      =  putDebitForReceipt1(retDoc2M010,  retDoc2M012,  retDoc5M0224,  hashtableDoc2M041,  hashtbleFunctionType,  exeUtil,  retVector,  retVectorNegative,  arrayTable) ;
+            intFlowNo      =  putDebitForReceipt1(retDoc2M010,  retDoc2M012,  retDoc2M013,  retDoc5M0224,  hashtableDoc2M041,  hashtbleFunctionType,  exeUtil,  retVector,  retVectorNegative,  arrayTable) ;
             System.out.println("putDebitForReceipt1("+retVector.size()+")--------------------E") ;
             if(intFlowNo  ==  0) {
                   retTable[0][0]  =  arrayTable[0] ;
@@ -11026,7 +11090,7 @@ public  class  Doc2M010  extends  bTransaction{
             if("".equals(stringFactoryNoTop1))  stringFactoryNoTop1  =  retDoc2M010[0][28].trim( ) ; 
             return stringFactoryNoTop1 ;
       }
-      public  int  putDebitForReceipt1(String[][]  retDoc2M010,  String[][]  retDoc2M012,  String[][]  retDoc5M0224,  Hashtable  hashtableDoc2M041,  Hashtable  hashtbleFunctionType,  FargloryUtil  exeUtil,  Vector  retVector,  Vector  retVectorNegative,  String[]  arrayTable) throws  Throwable {
+      public  int  putDebitForReceipt1(String[][]  retDoc2M010,  String[][]  retDoc2M012,  String[][]  retDoc2M013,  String[][]  retDoc5M0224,  Hashtable  hashtableDoc2M041,  Hashtable  hashtbleFunctionType,  FargloryUtil  exeUtil,  Vector  retVector,  Vector  retVectorNegative,  String[]  arrayTable) throws  Throwable {
             String      stringVoucherYMD014      =  arrayTable[0].trim() ;
             String      stringKind               =  arrayTable[1].trim() ;
             String      stringStatus             =  arrayTable[2].trim() ;
@@ -11178,7 +11242,7 @@ public  class  Doc2M010  extends  bTransaction{
                  }
                   //
                   if(!"01".equals(stringComNo)) {
-                        // 特殊案別及請款代碼 使用 125104預付廣告費S
+                        // 特殊案別及請款代碼 使用 125104?w付廣告費S
                         booleanSpecAcctNo  =  (vectorCost.indexOf(stringCostID+stringCostID1)!=-1  &&  vectorProjectID1.indexOf(stringProjectID1)!=-1) ;
                         // 特殊案別及請款代碼 使用 125104預付廣告費E
                   }
@@ -11192,6 +11256,24 @@ public  class  Doc2M010  extends  bTransaction{
                   } else {*/
                         vectorItemCd  =  new  Vector() ;
                   //}
+                  if("990".equals(stringCostID+stringCostID1)) {
+                        String  stringTemp  =  "" ;
+                        if(retDoc2M013.length>0) {
+                               if("A".equals(retDoc2M013[0][1].trim())) {
+                                     stringTemp  =  "05" ;
+                               } else if("B".equals(retDoc2M013[0][1].trim())) {
+                                      stringTemp  =  "04" ;
+                               }
+                        } else {
+                               stringTemp  =  "01" ;
+                        }
+                        if(!"".equals(stringTemp)) {
+                              retDataTemp     =  new  String[2] ;
+                              retDataTemp[0]  =  "Y09" ;
+                              retDataTemp[1]  =  stringTemp  ;
+                              vectorItemCd.add(retDataTemp) ;                                      
+                        }
+                  }
                   //  0  ACCT_IN       1  ACCT_OUT          2  ITEM_CD        3  USED_CD        4  InvoiceType
                   //  5  ACCT_C_IN    6  ACCT_C_OUT
                   retDoc2M020  =  getDoc2M020All(stringComNo,  stringCostID,  stringCostID1) ;
@@ -11414,12 +11496,15 @@ public  class  Doc2M010  extends  bTransaction{
             String      stringRealMoney       =  "" ;
             String      stringRowtype         =  "" ;
             String      stringUsedCd          =  "" ;
+            String      stringReceiptKind     =  "" ;
             String[]    retDataTemp           =  null ;
             String[]    arrayDescription      =  new  String[5] ;
             String[][]  retDoc2M020           =  null ;
             String[][]  retFED1004            =  null ;
+            Vector      vectorItemCd          =  new  Vector() ;
             for(int  intDoc2M013=0  ;  intDoc2M013<retDoc2M013.length  ;  intDoc2M013++) {
                   stringFactoryNo           =  retDoc2M013[intDoc2M013][0].trim( ) ;
+                  stringReceiptKind         =  retDoc2M013[intDoc2M013][1].trim( ) ;
                   stringRealMoney           =  retDoc2M013[intDoc2M013][5].trim( ) ;
                   stringDepartNo            =  retDoc2M013[intDoc2M013][9].trim( ) ;
                   //
@@ -11435,7 +11520,16 @@ public  class  Doc2M010  extends  bTransaction{
                            stringItemCd   =  retDoc2M020[0][2].trim( ) ;
                            stringUsedCd   =  retDoc2M020[0][3].trim( ) ;
                      }
-               }
+                  }
+                  if("420".equals(stringCostID+stringCostID1)) {
+                           if(",A,B,".indexOf(","+stringReceiptKind+",")  !=  -1) {
+                                 retDataTemp     =  new  String[2] ;
+                                 retDataTemp[0]  =  "Y09" ;
+                                 retDataTemp[1]  =  "A".equals(stringReceiptKind)?"05":"04" ;
+                                 vectorItemCd.add(retDataTemp) ;                     
+                           }
+                  }
+
                   if(exeUtil.isDigitNum(stringDepartNo)) {
                         stringAccountNo  =  retDoc2M020[0][0].trim( ) ; 
                   } else { 
@@ -11460,8 +11554,8 @@ public  class  Doc2M010  extends  bTransaction{
                   //
                   retFED1004         =  getFED1004(stringAccountNo) ;
                   // 明細一、明細二、明細三、明細四、明細五 18-22
-                  stringPosition             =  (""+hashtableDoc2M041.get(stringAccountNo)).trim( ) ;
-                  getDescriptionUnion(stringComNo,  stringAccountNo,  stringCostID,  stringCostID1,  stringItemCd,  stringUsedCd,  stringPosition,  arrayDescription,  retFED1004,  exeUtil) ;
+                  stringPosition  =  (""+hashtableDoc2M041.get(stringAccountNo)).trim( ) ;
+                  getDescriptionUnionFinal(stringComNo,  stringAccountNo,  stringCostID,  stringCostID1,  stringItemCd,  stringUsedCd,  stringPosition,  arrayDescription,  retFED1004,  vectorItemCd,  exeUtil, false);
                   if(intDoc2M013  ==  0) stringInputDepartNo  = stringDepartNo ;
                   //
                   stringRowtype    =  "F" ;
@@ -11483,7 +11577,7 @@ public  class  Doc2M010  extends  bTransaction{
                   retDataTemp[12]   =  stringFactoryNo ;                                          // 對象                 12
                   retDataTemp[13]   =  stringRealMoney ;                                      // 金額                  13
                   retDataTemp[14]   =  "0" ;                                                              // 匯率                  14
-                  retDataTemp[15]   =  "0" ;                                                              // ?嚆�金額             15
+                  retDataTemp[15]   =  "0" ;                                                              // ?嚆鷖B             15
                   retDataTemp[16]   =  "0" ;                                                  // 請款金額          16(不使用，為了避免亂了，仍沿用，但值統一為 0)
                   retDataTemp[17]   =  stringStatus ;                                                   // 狀態-未過帳       17
                   retDataTemp[18]   =  arrayDescription[0] ;                                   // 明細一            18
@@ -11714,6 +11808,7 @@ public  class  Doc2M010  extends  bTransaction{
                   stringFactoryNo          =  stringFactoryNoTop1 ;
                   // 
                   if(intNo  ==  0)     stringInputDepartNo  = stringDepartNo ;
+                  if("B67283".equals(stringBarCode)  &&  intNo==1)  continue ;
                   //
                   if(doubleRealMoney>0)            intFlowNo++ ;
                   retDataTemp       =  new  String[27] ;
@@ -12778,10 +12873,10 @@ public  class  Doc2M010  extends  bTransaction{
             String      stringPurchaseNo             =  arrayTable[6].trim() ;
             String      stringKindNo                      =  arrayTable[7].trim() ;
             // 
-               String      stringComNo                       =  retDoc2M010[0][0].trim( ) ;
-               String      stringBarCodeThis             =  retDoc2M010[0][3].trim( ) ;
-               String      stringBarCode                    =  retDoc2M010[0][3].trim( ) ;
-               String      stringDocNo                         =  retDoc2M010[0][4].trim( ) ;
+            String      stringComNo                       =  retDoc2M010[0][0].trim( ) ;
+            String      stringBarCodeThis             =  retDoc2M010[0][3].trim( ) ;
+            String      stringBarCode                    =  retDoc2M010[0][3].trim( ) ;
+            String      stringDocNo                         =  retDoc2M010[0][4].trim( ) ;
             String      stringPayCondition1         =  retDoc2M010[0][14].trim( ) ;
             String      stringPayCondition2         =  retDoc2M010[0][15].trim( ) ;
             String      stringVoucherYMD             =  "" ;
@@ -13103,7 +13198,11 @@ public  class  Doc2M010  extends  bTransaction{
                         for(int  intNoL=0  ;  intNoL<vectorItemCd.size()  ;  intNoL++) {
                               arrayTemp  =  (String[])vectorItemCd.get(intNoL) ;  if(arrayTemp  ==  null)  continue ;
                               if(arrayTemp[0].equals(stringItemCd)) {
-                                    arrayDescription[intNo]  =  getUseName(arrayTemp[0],  arrayTemp[1]) ;      
+                                    if("".equals(arrayTemp[1])) {
+                                          arrayDescription[intNo]  =  "" ;      
+                                    } else {
+                                          arrayDescription[intNo]  =  getUseName(arrayTemp[0],  arrayTemp[1]) ;        
+                                    }
                               }
                         }
                         if("ASSET".equals(stringSourceType)) {
@@ -13790,9 +13889,11 @@ public  class  Doc2M010  extends  bTransaction{
                       int              intStart                = 0 ;
                       int              intEnd                  = 0 ;
                       int              intTemp                 = 0 ;
+                      int              intStartNumPos          =  0 ;
                       String           stringBarCode           =  "" ;
                       String           stringBarCodeStart      =  "" ;
                       String           stringBarCodeEnd        =  "" ;
+                      String           stringBarCodeHead       =  "" ;
                       String           stringSql               =  "" ;
                       String[]         arrayBarCode            =  null ;
                       String[][]       retDoc2M044             =  getDoc2M044(stringComNo,  stringDepartNo) ;
@@ -13802,6 +13903,8 @@ public  class  Doc2M010  extends  bTransaction{
                         for(int  intNo=0  ;  intNo<retDoc2M044.length  ;  intNo++) {
                                     stringBarCodeStart  =  retDoc2M044[intNo][0].trim() ;
                                     stringBarCodeEnd    =  retDoc2M044[intNo][1].trim() ;
+                                    intStartNumPos      =  getBarCodeStartMum(stringBarCodeStart,  exeUtil) ;
+                                    stringBarCodeHead   =  exeUtil.doSubstring(stringBarCodeStart,  0,  intStartNumPos) ;
                                     // 0  BarCodeStart  1  BarCodeEnd
                                     stringSql      =  "SELECT  BarCode  FROM  Doc2M010  WHERE  BarCode  BETWEEN  '"+stringBarCodeStart+"' AND  '"+stringBarCodeEnd+"'" +
                                                      " UNION " +
@@ -13835,8 +13938,9 @@ public  class  Doc2M010  extends  bTransaction{
                                        if(!stringBarCodeStart.equals(arrayBarCode[0].trim())) {
                                                    return  stringBarCodeStart ;
                                        }
-                                       intStart  =  getBarCodeInt(arrayBarCode[0],                       exeUtil) ;
-                                       intEnd    =  getBarCodeInt(arrayBarCode[arrayBarCode.length-1],   exeUtil) ;
+                                       
+                                       intStart  =  getBarCodeInt(intStartNumPos,  arrayBarCode[0],                       exeUtil) ;
+                                       intEnd    =  getBarCodeInt(intStartNumPos,  arrayBarCode[arrayBarCode.length-1],   exeUtil) ;
                                        System.out.println("intStart("+intStart+")("+arrayBarCode[0]+")intEnd("+intEnd+")("+arrayBarCode[arrayBarCode.length-1]+")arrayBarCode("+arrayBarCode.length+")-----------");
                                        if((intEnd-intStart+1)  ==  arrayBarCode.length) {
                                                    System.out.println("getAutoBarCode-----------中間無缺項");
@@ -13845,19 +13949,18 @@ public  class  Doc2M010  extends  bTransaction{
                                                             System.out.println("getAutoBarCode-----------已使用完");
                                                             continue ; 
                                                    }
-                                                   intEnd                  =  intEnd+1 ;
-                                                   stringBarCode     =  ""+intEnd ;
-                                                   intTemp              =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
-                                                   stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                                   intEnd            =  intEnd+1 ;
+                                                   stringBarCode     =  stringBarCodeHead+convert.add0(""+intEnd,  ""+(6-intStartNumPos)) ;
                                                    return  stringBarCode ;                
                                        } else {
                                                    //System.out.println("getAutoBarCode-----------中間有缺項");
-                                                   intStart  =  getBarCodeInt(stringBarCodeStart,  exeUtil) ;
-                                                   intEnd    =  getBarCodeInt(stringBarCodeEnd,    exeUtil) ;
+                                                   intStart  =  getBarCodeInt(intStartNumPos,  stringBarCodeStart,  exeUtil) ;
+                                                   intEnd    =  getBarCodeInt(intStartNumPos,  stringBarCodeEnd,    exeUtil) ;
                                                    for(int  intNoL=intStart  ;  intNoL<=intEnd  ;  intNoL++) {
-                                                            stringBarCode     =  ""+intNoL ;
-                                                            intTemp              =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
-                                                            stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                                            //stringBarCode     =  ""+intNoL ;
+                                                            //intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
+                                                            //stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                                            stringBarCode       =  stringBarCodeHead+convert.add0(""+intNoL,  ""+(6-intStartNumPos)) ;
                                                             //
                                                             if(vectorBarCode.indexOf(stringBarCode)  ==  -1) {
                                                                         return   stringBarCode ;
@@ -13866,13 +13969,28 @@ public  class  Doc2M010  extends  bTransaction{
                                        }
                         }
                         //
-                        return  stringBarCode ;
+                        return  "" ;
+         }
+         public int getBarCodeStartMum(String  stringBarCode,  FargloryUtil  exeUtil)throws Throwable{
+                     char       charWord    =  'A' ;
+                     char[]   arrayChar   =  stringBarCode.toCharArray() ;    
+                     //
+                     if("".equals(stringBarCode))  return  -1 ;
+                     //
+                     for(int  intNo=0  ;  intNo<arrayChar.length  ;  intNo++) {
+                           charWord  =  arrayChar[intNo] ;
+                           if(Character.isDigit(charWord)){
+                                 return  intNo ;
+                           }
+                     }
+            return  -1 ;
          }
          // 無紙化自動給號
          public  String  getNoPageAutoBarCode(String  stringBarCode1,  FargloryUtil  exeUtil) throws  Throwable {
                       int              intStart                = 0 ;
                       int              intEnd                  = 0 ;
                       int              intTemp                 = 0 ;
+                      int              intStartNumPos          = 0 ;
                       String           stringBarCode           =  "" ;
                       String           stringBarCodeStart      =  stringBarCode1+convert.add0("1",  ""+(6-stringBarCode1.length())) ;
                       String           stringBarCodeEnd        =  "" ;
@@ -13884,7 +14002,8 @@ public  class  Doc2M010  extends  bTransaction{
                       for(int  intNo=1  ;  intNo<=(6-stringBarCode1.length())  ;  intNo++) {
                                stringTemp  +=  "9" ; 
                       }
-                      stringBarCodeEnd  =  stringBarCode1+stringTemp ;
+                      stringBarCodeEnd    =  stringBarCode1+stringTemp ;
+                      intStartNumPos      =  getBarCodeStartMum(stringBarCodeEnd,  exeUtil) ;
                       //
                       stringSql      =  "SELECT  BarCode  FROM  Doc2M010  WHERE  BarCode  BETWEEN  '"+stringBarCodeStart+"' AND  '"+stringBarCodeEnd+"'" +
                                        " UNION " +
@@ -13916,8 +14035,8 @@ public  class  Doc2M010  extends  bTransaction{
                       if(!stringBarCodeStart.equals(arrayBarCode[0].trim())) {
                                return  stringBarCodeStart ;
                       }
-                      intStart  =  getBarCodeInt(arrayBarCode[0],                       exeUtil) ;
-                      intEnd    =  getBarCodeInt(arrayBarCode[arrayBarCode.length-1],   exeUtil) ;
+                      intStart  =  getBarCodeInt(intStartNumPos,  arrayBarCode[0],                       exeUtil) ;
+                      intEnd    =  getBarCodeInt(intStartNumPos,  arrayBarCode[arrayBarCode.length-1],   exeUtil) ;
                       if((intEnd-intStart+1)  ==  arrayBarCode.length) {
                                //System.out.println("getAutoBarCode-----------中間無缺項");
                                if(stringBarCodeEnd.equals(arrayBarCode[arrayBarCode.length-1])) {
@@ -13926,18 +14045,20 @@ public  class  Doc2M010  extends  bTransaction{
                                        return "" ;
                                }
                                intEnd            =  intEnd+1 ;
-                               stringBarCode     =  ""+intEnd ;
-                               intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
-                               stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                               //stringBarCode     =  ""+intEnd ;
+                               //intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
+                               //stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                               stringBarCode     =  stringBarCode1+convert.add0(""+intEnd,  ""+(6-intStartNumPos)) ;
                                return  stringBarCode ;                
                       } else {
                                //System.out.println("getAutoBarCode-----------中間有缺項");
-                               intStart  =  getBarCodeInt(stringBarCodeStart,  exeUtil) ;
-                               intEnd    =  getBarCodeInt(stringBarCodeEnd,    exeUtil) ;
+                               intStart  =  getBarCodeInt(intStartNumPos,  stringBarCodeStart,  exeUtil) ;
+                               intEnd    =  getBarCodeInt(intStartNumPos,  stringBarCodeEnd,    exeUtil) ;
                                for(int  intNoL=intStart  ;  intNoL<=intEnd  ;  intNoL++) {
-                                        stringBarCode     =  ""+intNoL ;
-                                        intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
-                                        stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                        //stringBarCode     =  ""+intNoL ;
+                                        //intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
+                                        //stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                        stringBarCode       =  stringBarCode1+convert.add0(""+intNoL,  ""+(6-intStartNumPos)) ;
                                         //
                                         if(vectorBarCode.indexOf(stringBarCode)  ==  -1) {
                                                     return   stringBarCode ;
@@ -13951,6 +14072,7 @@ public  class  Doc2M010  extends  bTransaction{
                       int              intStart                = 0 ;
                       int              intEnd                  = 0 ;
                       int              intTemp                 = 0 ;
+                      int              intStartNumPos          =  0 ;
                       String           stringBarCode           =  "" ;
                       String           stringBarCodeStart      =  stringBarCode1+"00001" ;
                       String           stringBarCodeEnd        =  stringBarCode1+"99999" ;
@@ -13958,6 +14080,8 @@ public  class  Doc2M010  extends  bTransaction{
                       String[]         arrayBarCode            =  null ;
                       String[][]       retBarCode              =  null ;
                       Vector           vectorBarCode           =  new  Vector() ;
+                      //
+                      intStartNumPos      =  getBarCodeStartMum(stringBarCodeEnd,  exeUtil) ;
                       // 買賣
                       stringSql      =  "SELECT  BarCode  FROM  Doc10M001  WHERE  BarCode  BETWEEN  '"+stringBarCodeStart+"' AND  '"+stringBarCodeEnd+"'" +
                                         " UNION " +
@@ -13979,8 +14103,8 @@ public  class  Doc2M010  extends  bTransaction{
                       if(!stringBarCodeStart.equals(arrayBarCode[0].trim())) {
                                return  stringBarCodeStart ;
                       }
-                      intStart  =  getBarCodeInt(arrayBarCode[0],                       exeUtil) ;
-                      intEnd    =  getBarCodeInt(arrayBarCode[arrayBarCode.length-1],   exeUtil) ;
+                      intStart  =  getBarCodeInt(intStartNumPos,  arrayBarCode[0],                       exeUtil) ;
+                      intEnd    =  getBarCodeInt(intStartNumPos,  arrayBarCode[arrayBarCode.length-1],   exeUtil) ;
                       if((intEnd-intStart+1)  ==  arrayBarCode.length) {
                                //System.out.println("getAutoBarCode-----------中間無缺項");
                                if(stringBarCodeEnd.equals(arrayBarCode[arrayBarCode.length-1])) {
@@ -13989,18 +14113,20 @@ public  class  Doc2M010  extends  bTransaction{
                                        return "" ;
                                }
                                intEnd            =  intEnd+1 ;
-                               stringBarCode     =  ""+intEnd ;
-                               intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
-                               stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                               //stringBarCode     =  ""+intEnd ;
+                               //intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
+                               //stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                               stringBarCode     =  stringBarCode1+convert.add0(""+intEnd,  ""+(6-intStartNumPos)) ;
                                return  stringBarCode ;                
                       } else {
                                //System.out.println("getAutoBarCode-----------中間有缺項");
-                               intStart  =  getBarCodeInt(stringBarCodeStart,  exeUtil) ;
-                               intEnd    =  getBarCodeInt(stringBarCodeEnd,    exeUtil) ;
+                               intStart  =  getBarCodeInt(intStartNumPos,  stringBarCodeStart,  exeUtil) ;
+                               intEnd    =  getBarCodeInt(intStartNumPos,  stringBarCodeEnd,    exeUtil) ;
                                for(int  intNoL=intStart  ;  intNoL<=intEnd  ;  intNoL++) {
-                                        stringBarCode     =  ""+intNoL ;
-                                        intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
-                                        stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                        //stringBarCode     =  ""+intNoL ;
+                                        //intTemp           =  exeUtil.doParseInteger(exeUtil.doSubstring(stringBarCode,0,2)) ;
+                                        //stringBarCode     =  ((char)intTemp)+exeUtil.doSubstring(stringBarCode,2,stringBarCode.length()) ;
+                                        stringBarCode     =  stringBarCode1+convert.add0(""+intNoL,  ""+(6-intStartNumPos)) ;
                                         //
                                         if(vectorBarCode.indexOf(stringBarCode)  ==  -1) {
                                                     return   stringBarCode ;
@@ -14009,9 +14135,9 @@ public  class  Doc2M010  extends  bTransaction{
                       }
                       return  stringBarCode ;
          }
-         public int getBarCodeInt(String  stringBarCode,  FargloryUtil  exeUtil)throws Throwable{
-                     int      intChar           =  stringBarCode.charAt(0) ;
-                     String   stringBarCodeRet  =   intChar +exeUtil.doSubstring(stringBarCode,  1,  stringBarCode.length()) ;
+         public int getBarCodeInt(int  intStartNumPos,  String  stringBarCode,  FargloryUtil  exeUtil)throws Throwable{
+                     //int      intChar           =  stringBarCode.charAt(0) ;
+                     String   stringBarCodeRet  =   exeUtil.doSubstring(stringBarCode,  intStartNumPos,  stringBarCode.length()) ;
                      return   exeUtil.doParseInteger(stringBarCodeRet) ;
          }
          // 公司部門一致檢核判斷，正確回傳 true
@@ -14184,6 +14310,7 @@ public  class  Doc2M010  extends  bTransaction{
                         if(stringDepartNo.equals("4171"))          stringDepartNo  =  "4170";
                         if(stringDepartNo.equals("033OO1A"))       stringDepartNo  =  "133O1";
                         if(stringDepartNo.equals("133O01A"))       stringDepartNo  =  "133O1";
+                        if(stringDepartNo.equals("033H108GT"))     stringDepartNo  =  "033H108A";  // 2017-12-01 B3018
                         if(!"A".equals(stringType)) {
                                     // 2014-09-01 CT 改成 GT 2015-07-25 B1721 停止
                                     //if(stringDepartNo.equals("033GT"))         stringDepartNo  =  "033H121A"; //2013-09-14 原轉成 033H115A
@@ -17907,9 +18034,10 @@ public  class  Doc2M010  extends  bTransaction{
             String    stringInvoiceNo  =  ""+hashtableLimit.get("InvoiceNo") ;
             String    stringSql        =  "" ;
             String    stringTemp       =  "" ;
+            String    stringTempL      =  "" ;
             String[][]retFED1012       =  null ;
             // 財會
-            stringSql         =  "SELECT  DISTINCT  VOUCHER_YMD, VOUCHER_FLOW_NO,  VOUCHER_SEQ_NO "  +
+            stringSql         =  "SELECT  VOUCHER_YMD, VOUCHER_FLOW_NO,  VOUCHER_SEQ_NO "  +
                                   " FROM  FED1012 "  +
                                  " WHERE  COMPANY_CD = '"       +stringComNo        +  "' " +
                                    " AND  VOUCHER_YMD >= "      +stringDateStart    +  " " +
@@ -17918,10 +18046,14 @@ public  class  Doc2M010  extends  bTransaction{
             retFED1012  =  dbFED1.queryFromPool(stringSql) ;
             if(retFED1012.length  !=   0) {
                  for(int  intNo=0  ;  intNo<retFED1012.length  ;  intNo++) {
+                      stringTempL  =   retFED1012[intNo][0].trim()+"-"+retFED1012[intNo][1].trim()+"-"+retFED1012[intNo][2].trim() ;
+                      //
+                      if(stringTemp.indexOf(stringTempL)  !=  -1) continue ;
+                      //
                       if(!"".equals(stringTemp))  stringTemp  +=  "、" ;
-                      stringTemp  +=   retFED1012[intNo][0].trim()+"-"+retFED1012[intNo][1].trim()+"-"+retFED1012[intNo][2].trim() ;
+                      stringTemp  +=   stringTempL ;
                  }
-                 stringTemp  =  "??[?]會][傳票]("+stringTemp+")中使用。" ;
+                 stringTemp  =  "[發票已使用在傳票]("+stringTemp+")中使用。" ;
                   System.out.println("--------------------------"+stringTemp) ;
                  put("DULInvoiceNo",  stringTemp) ;
                  return  false ;
@@ -20323,9 +20455,9 @@ public  class  Doc2M010  extends  bTransaction{
             // 0  PurchaseNo1       1  PurchaseNo2          2  PurchaseNo3    3  RetainMoney        4  PurchaseMoney
             // 5  PurchaseNo4          6  FactoryNo            7  ProjectID1        8  PurchaseNo
             stringSql  =  "SELECT  PurchaseNo1,  PurchaseNo2,  PurchaseNo3,  RetainMoney,  PurchaseMoney, "  +
-                                           " PurchaseNo4,  FactoryNo,    ProjectID1,   PurchaseNo "  +
-                               " FROM  "+stringTable+" "  +
-                              " WHERE  BarCode  =  '"        +  stringBarCode  +  "' " ;
+                                 " PurchaseNo4,  FactoryNo,    ProjectID1,   PurchaseNo "  +
+                           " FROM  "+stringTable+" "  +
+                          " WHERE  BarCode  =  '"        +  stringBarCode  +  "' " ;
             retDoc2M017  =  dbDoc.queryFromPool(stringSql) ;
 
             return  retDoc2M017 ;
@@ -23405,10 +23537,10 @@ public  class  Doc2M010  extends  bTransaction{
             // 0  OBJECT_FULL_NAME           1  OBJECT_SHORT_NAME       2 COMPANY_TEL_NO1       3  COMPANY_TEL_NO2         4  COMPANY_TEL_NO3
             // 5  CONTACT_NO              6  CONTACT_TEL_NO1        7  CONTACT_TEL_NO2    8  CONTACT_TEL_NO3      9  OBJECT_AREA
             stringSql         =  "SELECT  OBJECT_FULL_NAME,  OBJECT_SHORT_NAME,  COMPANY_TEL_NO1,  COMPANY_TEL_NO2,  COMPANY_TEL_NO3, "  +
-                                                      " CONTACT_NO,        CONTACT_TEL_NO1,    CONTACT_TEL_NO2,  CONTACT_TEL_NO3,  OBJECT_AREA "  +
-                                        " FROM  Doc3M015 "  +
-                                       " WHERE  OBJECT_CD  =  '"  +  stringObjectCd  +  "' " +
-                                         " AND  UseStatus  =  'Y' " ;
+                                        " CONTACT_NO,        CONTACT_TEL_NO1,    CONTACT_TEL_NO2,  CONTACT_TEL_NO3,  OBJECT_AREA "  +
+                                  " FROM  Doc3M015 "  +
+                                 " WHERE  OBJECT_CD  =  '"  +  stringObjectCd  +  "' " +
+                                   " AND  UseStatus  =  'Y' " ;
             retDoc3M015  =  dbDoc.queryFromPool(stringSql) ;
             return retDoc3M015 ;
       }
@@ -23506,69 +23638,85 @@ public  class  Doc2M010  extends  bTransaction{
       }
       // 表格 Doc3M016
       public  boolean  isCostIDExistDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringSqlAnd) throws  Throwable {
+              return  isCostIDExistDoc3M016(stringCostID,  stringCostID1,  "XX",  stringSqlAnd) ;
+      }
+      public  boolean  isCostIDExistDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringCostID2,  String  stringSqlAnd) throws  Throwable {
             String      stringSql    =  "" ;
             String[][]  retDoc3M016  =  null ; 
             boolean     booleanFlag  =  true ;
             // 請購
             stringSql         =  "SELECT  CostID "  +
-                                        " FROM  Doc3M016 "  +
-                                       " WHERE  CostID  =  '"   +  stringCostID   +  "' "  +
-                                         " AND  CostID1  =  '"  +  stringCostID1  +  "' "  +
-                                         stringSqlAnd ;
+                                  " FROM  Doc3M016 "  +
+                                 " WHERE  CostID  =  '"   +  stringCostID   +  "' "  +
+                                   " AND  CostID1  =  '"  +  stringCostID1  +  "' "  +
+                                   " AND  CostID2  =  '"  +  stringCostID2  +  "' "  +
+                                    stringSqlAnd ;
             retDoc3M016  =  dbDoc.queryFromPool(stringSql) ;
             if(retDoc3M016.length  ==  0)booleanFlag  =  false ;
             return booleanFlag ;
       }
       public  boolean  isCostIDExistDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringDateStart,  String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
+             return  isCostIDExistDoc3M016(stringCostID,  stringCostID1,  "XX",  stringDateStart,  stringDateEnd,  stringSqlAnd) ;
+      }
+      public  boolean  isCostIDExistDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringCostID2,  String  stringDateStart,  String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
             String      stringSql    =  "" ;
             String[][]  retDoc3M016  =  null ; 
             boolean     booleanFlag  =  true ;
             // 請購
             stringSql         =  "SELECT  CostID "  +
-                                        " FROM  Doc3M016 "  +
-                                       " WHERE  CostID     =  '"       +  stringCostID     +  "' "  +
-                                         " AND  DateStart  <>  '"      +  stringDateStart  +  "' "  +
-                                           " AND  CostID1  =  '"         +  stringCostID1    +  "' "  +
-                                           " AND  ( (DateStart  >=  '"   +  stringDateStart  +  "'  AND  DateStart  <=  '"  +  stringDateEnd  +  "')  OR "  +
-                                                  " (DateEnd  >=  '"     +  stringDateStart  +  "'  AND  DateEnd  <=  '"    +  stringDateEnd  +  "')  OR "  +
-                                                     " (DateStart  <=  '"   +  stringDateStart  +  "'  AND  DateEnd  >=  '"    +  stringDateEnd  +  "')  OR "  +
-                                                     " (DateStart  >=  '"   +  stringDateStart  +  "'  AND  DateEnd  <=  '"    +  stringDateEnd  +  "')) " ;
+                                  " FROM  Doc3M016 "  +
+                                 " WHERE  CostID     =  '"       +  stringCostID     +  "' "  +
+                                   " AND  CostID1  =  '"         +  stringCostID1    +  "' "  +
+                                   " AND  CostID2  =  '"         +  stringCostID2    +  "' "  +
+                                   " AND  DateStart  <>  '"      +  stringDateStart  +  "' "  +
+                                   " AND  ( (DateStart  >=  '"   +  stringDateStart  +  "'  AND  DateStart  <=  '"  +  stringDateEnd  +  "')  OR "  +
+                                          " (DateEnd  >=  '"     +  stringDateStart  +  "'  AND  DateEnd  <=  '"    +  stringDateEnd  +  "')  OR "  +
+                                          " (DateStart  <=  '"   +  stringDateStart  +  "'  AND  DateEnd  >=  '"    +  stringDateEnd  +  "')  OR "  +
+                                          " (DateStart  >=  '"   +  stringDateStart  +  "'  AND  DateEnd  <=  '"    +  stringDateEnd  +  "')) " ;
             retDoc3M016  =  dbDoc.queryFromPool(stringSql) ;
             if(retDoc3M016.length  ==  0)booleanFlag  =  false ;
             stringSql  +=  stringSqlAnd ;
             return booleanFlag ;
       }
       public  String[][]  getDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringDateStart,  String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
+            return  getDoc3M016(stringCostID,  stringCostID1,  "XX",  stringDateStart,  stringDateEnd,  stringSqlAnd);
+      }
+      public  String[][]  getDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringCostID2,  String  stringDateStart,  String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
             String      stringSql     =  "" ;
             String[][]  retDoc3M016   =  null ; 
             boolean     booleanFlag   =  true ;
             // 請購
             stringSql         =  "SELECT  CostID "  +
-                                        " FROM  Doc3M016 "  +
-                                       " WHERE  CostID  =  '"     +  stringCostID     +  "' "  +
-                                         " AND  CostID1  =  '"    +  stringCostID1    +  "' " +
-                                         " AND  DateStart  =  '"  +  stringDateStart  +  "' " ;
+                                  " FROM  Doc3M016 "  +
+                                 " WHERE  CostID  =  '"     +  stringCostID     +  "' "  +
+                                   " AND  CostID1  =  '"    +  stringCostID1    +  "' " +
+                                   " AND  CostID2  =  '"    +  stringCostID2    +  "' " +
+                                   " AND  DateStart  =  '"  +  stringDateStart  +  "' " ;
             if(!"".equals(stringDateEnd))  stringSql  +=  " AND  DateEnd  =  '"  +  stringDateEnd  +  "' " ;
-            stringSql  +=  stringSqlAnd ;
+            stringSql   +=  stringSqlAnd ;
             retDoc3M016  =  dbDoc.queryFromPool(stringSql) ;
             return retDoc3M016 ;
       }
       // 引用：統購廠商 POP
       public  String[][]  getBetweenDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringDateStart,  String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
+             return  getBetweenDoc3M016(stringCostID,  stringCostID1,  "XX",  stringDateStart,  stringDateEnd,  stringSqlAnd)  ; 
+      }
+      public  String[][]  getBetweenDoc3M016(String  stringCostID,  String  stringCostID1,  String  stringCostID2,  String  stringDateStart,  String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
             String      stringSql     =  "" ;
             String[][]  retDoc3M016   =  null ; 
             boolean     booleanFlag   =  true ;
             // 請購
             stringSql         =  "SELECT  CostID,  CostID1, CostID_New "  +
-                                        " FROM  Doc3M016 "  +
-                                       " WHERE  1=1 " ;
-            if(!"".equals(stringCostID))     stringSql  +=  " AND  CostID  =  '"    +  stringCostID    +  "' "  ;
+                                  " FROM  Doc3M016 "  +
+                                 " WHERE  CostID  <>  '' " ;
+            if(!"".equals(stringCostID))     stringSql  +=  " AND  CostID  =  '"   +  stringCostID   +  "' "  ;
             if(!"".equals(stringCostID1))    stringSql  +=  " AND  CostID1  =  '"  +  stringCostID1  +  "' "  ;
+            if(!"".equals(stringCostID2))    stringSql  +=  " AND  CostID2  =  '"  +  stringCostID2  +  "' "  ;
             if(!"".equals(stringDateStart)  &&  !"".equals(stringDateEnd)) {
                   stringSql  += " AND  ( (DateStart  >=  '"   +  stringDateStart   +  "'  AND  DateStart  <=  '"  +  stringDateEnd  +  "')  OR "  +
-                                             " (DateEnd   >=  '"    +  stringDateStart   +  "'  AND  DateEnd   <=  '"   +  stringDateEnd  +  "')  OR "  +
-                                               " (DateStart  <=  '"   +  stringDateStart   +  "'  AND  DateEnd   >=  '"   +  stringDateEnd  +  "')  OR "  +
-                                               " (DateStart  >=  '"   +  stringDateStart   +  "'  AND  DateEnd   <=  '"   +  stringDateEnd  +  "')) " ;
+                                       " (DateEnd   >=  '"    +  stringDateStart   +  "'  AND  DateEnd   <=  '"   +  stringDateEnd  +  "')  OR "  +
+                                       " (DateStart  <=  '"   +  stringDateStart   +  "'  AND  DateEnd   >=  '"   +  stringDateEnd  +  "')  OR "  +
+                                       " (DateStart  >=  '"   +  stringDateStart   +  "'  AND  DateEnd   <=  '"   +  stringDateEnd  +  "')) " ;
             }
             stringSql  +=  stringSqlAnd ;
             retDoc3M016  =  dbDoc.queryFromPool(stringSql) ;
@@ -23576,14 +23724,22 @@ public  class  Doc2M010  extends  bTransaction{
       }
       // 表格 Doc3M017
       public  String[][]  getDoc3M017(String  stringCostID,      String  stringCostID1,  String  stringItemName,  String  stringDescript,  String  stringUnit,
-                                                   String  stringStatus,      String  stringArea,     String  stringVersionPos,  
+                                      String  stringStatus,      String  stringArea,     String  stringVersionPos,  
                                       String  stringDateStart,   String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
         return  getDoc3M017(stringCostID,      stringCostID1,  stringItemName,     stringDescript,  stringUnit,
-                               stringStatus,      stringArea,     stringVersionPos,   "",  
-                             stringDateStart,   stringDateEnd,  stringSqlAnd) ;
+                            stringStatus,      stringArea,     stringVersionPos,   "",  
+                            stringDateStart,   stringDateEnd,  stringSqlAnd) ;
       }
       public  String[][]  getDoc3M017(String  stringCostID,      String  stringCostID1,  String  stringItemName,     String  stringDescript,  String  stringUnit,
-                                                   String  stringStatus,      String  stringArea,     String  stringVersionPos,   String  stringCostIDTxt,  
+                                      String  stringStatus,      String  stringArea,     String  stringVersionPos,   String  stringCostIDTxt,  
+                                      String  stringDateStart,   String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
+             return  getDoc3M017(stringCostID,      stringCostID1,  "XX",                stringItemName,     stringDescript,  stringUnit,
+                                 stringStatus,      stringArea,     stringVersionPos,    stringCostIDTxt,  
+                                 stringDateStart,   stringDateEnd,  stringSqlAnd) ;
+      
+      }
+      public  String[][]  getDoc3M017(String  stringCostID,      String  stringCostID1,  String  stringCostID2,      String  stringItemName,     String  stringDescript,  String  stringUnit,
+                                      String  stringStatus,      String  stringArea,     String  stringVersionPos,   String  stringCostIDTxt,  
                                       String  stringDateStart,   String  stringDateEnd,  String  stringSqlAnd) throws  Throwable {
             String      stringSql    =  "" ;
             String[][]  retDoc3M017  =  null ; 
@@ -23597,7 +23753,7 @@ public  class  Doc2M010  extends  bTransaction{
                                         " Price,             PayCondition1,  Remark,     PayCondition1Amt,  PayCondition2, "  +
                                         " PayCondition2Amt,  RecordNo,       FactoryNo,   StubPath "  +
                                   " FROM  Doc3M017 "  +
-                                 " WHERE  1=1 " ;
+                                 " WHERE  CostID  <> '' " ;
             if(!"".equals(stringItemName))   stringSql  +=  " AND  ItemName  =  '"    +  stringItemName       +  "' "  ;
             if(!"".equals(stringDescript))   stringSql  +=  " AND  Descript  =  '"    +  stringDescript       +  "' "  ;
             if(!"".equals(stringUnit))       stringSql  +=  " AND  Unit  =  '"        +  stringUnit           +  "' "  ;
@@ -23609,9 +23765,10 @@ public  class  Doc2M010  extends  bTransaction{
                stringSql  +=  " AND  RTRIM(CostID)+RTRIM(CostID1)+RTRIM(DateStart)+RTRIM(DateEnd) IN ( "  +
                                    " SELECT RTRIM(CostID)+RTRIM(CostID1)+RTRIM(DateStart)+RTRIM(DateEnd) " +
                                      " FROM  Doc3M016 " +
-                                    " WHERE  1=1 " ;
+                                    " WHERE  CostID  <>  '' " ;
                if(!"".equals(stringCostID))     stringSql  +=  " AND  CostID  =  '"      +  stringCostID         +  "' "  ;
                if(!"".equals(stringCostID1))    stringSql  +=  " AND  CostID1  =  '"     +  stringCostID1        +  "' "  ;
+               if(!"".equals(stringCostID2))    stringSql  +=  " AND  CostID2  =  '"     +  stringCostID2        +  "' "  ;
                if(!"".equals(stringCostIDTxt))  stringSql  +=  " AND  (CostID_New  =  '" +  stringCostIDTxt +  "' OR  CostID  =  '"  +  stringCostIDTxt +  "' )"  ;
                if(!"".equals(stringDateStart)  &&  !"".equals(stringDateEnd)) {
                      stringSql  += " AND  ( (DateStart  >=  '"  +  stringDateStart   +  "'  AND  DateStart  <=  '" +  stringDateEnd  +  "')  OR "  +
@@ -23630,12 +23787,15 @@ public  class  Doc2M010  extends  bTransaction{
             return retDoc3M017 ;
       }
       public  String  doUpdateDoc3M017(String  stringCostID,      String  stringCostID1,  String  stringFieldName,  String  stringFieldValue,  String  stringFieldValueOld,  boolean  booleanDB) throws  Throwable {
+            return  doUpdateDoc3M017(stringCostID,      stringCostID1,  "XX",  stringFieldName,  stringFieldValue,  stringFieldValueOld,  booleanDB) ;
+      }
+      public  String  doUpdateDoc3M017(String  stringCostID,      String  stringCostID1,  String  stringCostID2,  String  stringFieldName,  String  stringFieldValue,  String  stringFieldValueOld,  boolean  booleanDB) throws  Throwable {
             String      stringSql          =  "" ;
             //
             stringSql         =  "UPDATE  Doc3M017  SET  "+stringFieldName+"  =  '"  +  stringFieldValue  + "' " +
-                                       " WHERE  CostID  =  '" +stringCostID +"' "  +
-                                         " AND  CostID1  =  '"+stringCostID1+"' "  +
-                                          " AND "+stringFieldName+"  =  '"  +  stringFieldValueOld  + "' " ;
+                                 " WHERE  CostID  =  '" +stringCostID +"' "  +
+                                   " AND  CostID1  =  '"+stringCostID1+"' "  +
+                                   " AND "+stringFieldName+"  =  '"  +  stringFieldValueOld  + "' " ;
             if(booleanDB)   dbDoc.execFromPool(stringSql) ;
             return stringSql ;
       }
@@ -23648,20 +23808,26 @@ public  class  Doc2M010  extends  bTransaction{
       }
       public  String[][]  getDoc3M0171(String  stringCostID,     String  stringCostID1,  String  stringFactoryNo,
                                        String  stringDateStart,  String  stringDateEnd,  String  stringCostID_New,   String  stringSqlAnd) throws  Throwable {
+              return  getDoc3M0171(stringCostID,     stringCostID1,  "XX",  stringFactoryNo,  stringDateStart,  stringDateEnd,  stringCostID_New,   stringSqlAnd) ;                         
+      
+      }
+      public  String[][]  getDoc3M0171(String  stringCostID,     String  stringCostID1,  String  stringCostID2,      String  stringFactoryNo,
+                                       String  stringDateStart,  String  stringDateEnd,  String  stringCostID_New,   String  stringSqlAnd) throws  Throwable {
             String      stringSql     =  "" ;
             String[][]  retDoc3M0171  =  null ; 
             // 請購
             //   0  CostID          1  CostID1                2  DateStart       3  DateEnd         4  FactoryNo
             stringSql   =  "SELECT  CostID,  CostID1,  DateStart,  DateEnd,  FactoryNo "  +
                             " FROM  Doc3M0171 "  +
-                           " WHERE  1=1 " ;
+                           " WHERE  CostID  <> '' " ;
             if(!"".equals(stringCostID)  ||  !"".equals(stringCostID_New)  ||  !"".equals(stringCostID1)) {
                stringSql  +=  " AND  RTRIM(CostID)+RTRIM(CostID1) IN (SELECT  RTRIM(CostID)+RTRIM(CostID1) " +
                                                                       " FROM Doc3M016 " +
-                                                                      " WHERE  1=1 " ;
+                                                                      " WHERE  CostID  <>  '' " ;
                if(!"".equals(stringCostID))     stringSql  +=           " AND  CostID  =  '"         +  stringCostID          +  "' "  ;
                if(!"".equals(stringCostID_New)) stringSql  +=           " AND  (CostID  =  '"        +  stringCostID_New  +  "' OR  CostID_New  =  '"+  stringCostID_New  +  "') "  ;
                if(!"".equals(stringCostID1))    stringSql  +=           " AND  CostID1  =  '"        +  stringCostID1         +  "' "  ;
+               if(!"".equals(stringCostID2))    stringSql  +=           " AND  CostID2  =  '"        +  stringCostID2         +  "' "  ;
                stringSql  +=                                         ")" ;
            }
             
@@ -23688,7 +23854,7 @@ public  class  Doc2M010  extends  bTransaction{
             //
             stringSql  =  " SELECT  CostID,  CostID1,  CostIDText "  + 
                             " FROM  Doc3M020 "  +
-                                " WHERE  1=1 " ;
+                           " WHERE  CostID  <>  '' " ;
             if(!"".equals(stringCostID))    stringSql  +=  " AND  CostID   =  '"+stringCostID  +"' " ;
             if(!"".equals(stringCostID1))   stringSql  +=  " AND  CostID1  =  '"+stringCostID1 +"' " ;
             stringSql  +=  " ORDER BY  CostID,  CostID1 " ;
@@ -23702,7 +23868,7 @@ public  class  Doc2M010  extends  bTransaction{
             // 0  CostID      1  CostID1        2  GroupValue     3  DefaultValue      4  FieldName
             stringSql  =  " SELECT  CostID,  CostID1,  GroupValue, DefaultValue, "  + stringFieldName + ",  RecordNo "  +
                             " FROM  "  +  stringTableName  +  " "  +
-                                " WHERE  1=1 " ;
+                           " WHERE  CostID  <>  '' " ;
             if(!"".equals(stringCostID))        stringSql  +=  " AND  CostID   =  '"     +stringCostID      +"' " ;
             if(!"".equals(stringCostID1))       stringSql  +=  " AND  CostID1  =  '"     +stringCostID1     +"' " ;
             if(!"".equals(stringGroupValue))    stringSql  +=  " AND  GroupValue  =  '"  +stringGroupValue  +"' " ;
@@ -23726,7 +23892,7 @@ public  class  Doc2M010  extends  bTransaction{
                   stringSql  =  stringSqlSelect ;
             }
             stringSql  +=  " FROM  Doc3M030 "  +
-                               " WHERE  1=1 " ;
+                          " WHERE  1=1 " ;
             if(!"".equals(stringSheetClass))    stringSql  +=  " AND  SheetClass   =  '"  +  stringSheetClass  +  "' " ;
             if(!"".equals(stringItemNo))        stringSql  +=  " AND  ItemNo  =  '"       +  stringItemNo      +  "' " ;
             if("".equals(stringSqlAnd)) {
@@ -23744,9 +23910,9 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retDoc5M010      =  null ;
             // 
             stringSql  =  "SELECT  RecordNo "  +
-                                " FROM  Doc5M010 "  +
-                              " WHERE  BarCode  =  '"  +  stringBarCode  +  "' "  +
-                                " AND  RTRIM(InOut)+'-'+RTRIM(DepartNo)+'-'+RTRIM(ProjectID)+'-'+RTRIM(ProjectID1) = '"  +  stringKey  +  "' "  ;
+                           " FROM  Doc5M010 "  +
+                          " WHERE  BarCode  =  '"  +  stringBarCode  +  "' "  +
+                            " AND  RTRIM(InOut)+'-'+RTRIM(DepartNo)+'-'+RTRIM(ProjectID)+'-'+RTRIM(ProjectID1) = '"  +  stringKey  +  "' "  ;
             retDoc5M010  =  dbDoc.queryFromPool(stringSql) ;
             if(retDoc5M010.length  ==  0)  return  stringRecordNo ;
             stringRecordNo  =  retDoc5M010[0][0].trim( ) ;
@@ -23758,9 +23924,9 @@ public  class  Doc2M010  extends  bTransaction{
             double      doubleDiscountMoney  =  0 ;
             //  0  InOut         1  DepartNo       2  ProjectID      3  ProjectID1        4  CostID            5  CostID1        6  DiscountMoney 
             stringSql  =  "SELECT   DiscountMoney "  +
-                                " FROM  Doc5M010 "  +
-                              " WHERE  BarCode  =  '"           +  stringBarCode  +  "' "  +
-                                " AND  RecordNo  =  "           +  stringRecordNo  +  " " ;
+                           " FROM  Doc5M010 "  +
+                          " WHERE  BarCode  =  '"           +  stringBarCode  +  "' "  +
+                            " AND  RecordNo  =  "           +  stringRecordNo  +  " " ;
             retDoc5M010  =  dbDoc.queryFromPool(stringSql) ;
             if(retDoc5M010.length  >  0)  doubleDiscountMoney  =  doParseDouble(retDoc5M010[0][0].trim( )) ; 
             return  doubleDiscountMoney ;
@@ -23772,15 +23938,15 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]   retDoc5M010           =  null ;
             //  0  InOut         1  DepartNo       2  ProjectID      3  ProjectID1        4  CostID            5  CostID1        6  DiscountMoney 
             stringSql  =  "SELECT   DiscountMoney "  +
-                                " FROM  Doc5M010 "  +
-                              " WHERE  BarCode  =  '"            +  stringBarCode           +  "' "  +
-                                " AND  RTRIM(InOut)  =  '"       +  retDoc2M015[0].trim( )  +  "' "  +
-                                  " AND  RTRIM(DepartNo)  =  '"    +  retDoc2M015[1].trim( )  +  "' "  +
-                                  " AND  RTRIM(ProjectID)  =  '"   +  retDoc2M015[2].trim( )  +  "' "  +
-                                  " AND  RTRIM(ProjectID1)  =  '"  +  retDoc2M015[3].trim( )  +  "' "  +
-                                  " AND  RTRIM(CostID)  =  '"      +  retDoc2M015[4].trim( )  +  "' "  +
-                                  " AND  RTRIM(CostID1)  =  '"     +  retDoc2M015[5].trim( )  +  "' "  +
-                          " ORDER BY  RecordNo " ;
+                           " FROM  Doc5M010 "  +
+                          " WHERE  BarCode  =  '"            +  stringBarCode           +  "' "  +
+                            " AND  RTRIM(InOut)  =  '"       +  retDoc2M015[0].trim( )  +  "' "  +
+                            " AND  RTRIM(DepartNo)  =  '"    +  retDoc2M015[1].trim( )  +  "' "  +
+                            " AND  RTRIM(ProjectID)  =  '"   +  retDoc2M015[2].trim( )  +  "' "  +
+                            " AND  RTRIM(ProjectID1)  =  '"  +  retDoc2M015[3].trim( )  +  "' "  +
+                            " AND  RTRIM(CostID)  =  '"      +  retDoc2M015[4].trim( )  +  "' "  +
+                            " AND  RTRIM(CostID1)  =  '"     +  retDoc2M015[5].trim( )  +  "' "  +
+                       " ORDER BY  RecordNo " ;
             retDoc5M010  =  dbDoc.queryFromPool(stringSql) ;
             if(retDoc5M010.length  >  0)  stringDiscountMoney  =  retDoc5M010[0][0].trim( ) ; 
             return  stringDiscountMoney ;
@@ -23791,9 +23957,9 @@ public  class  Doc2M010  extends  bTransaction{
             //  0  InOut           1  DepartNo        2  ProjectID      3  ProjectID1        4  CostID            5  CostID1        
             //  6  DiscountMoney    7  RecordNo
             stringSql  =  "SELECT  InOut,  DepartNo,  ProjectID,  ProjectID1,  CostID,  CostID1,  DiscountMoney,  RecordNo "  +
-                                " FROM  Doc5M010 "  +
-                              " WHERE  BarCode  =  '"  +  stringBarCode  +  "' "  +
-                          " ORDER BY  RecordNo " ;
+                           " FROM  Doc5M010 "  +
+                          " WHERE  BarCode  =  '"  +  stringBarCode  +  "' "  +
+                       " ORDER BY  RecordNo " ;
             retDoc5M010  =  dbDoc.queryFromPool(stringSql) ;
             return  retDoc5M010 ;
       }
@@ -23884,9 +24050,9 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retDoc3M0131   =  null ; 
             // 0  RecordNo       1  FactoryNo         2  BackRetainPercent          3  BackRetainMoney      4  BackRetainYear
             stringSql         =  "SELECT  RecordNo,    FactoryNo,  BackRetainPercent, BackRetainMoney, BackRetainYear "  +
-                                        " FROM  Doc5M0131 "  +
-                                       " WHERE  BarCode  =  '"  +stringBarCode  +"' " +
-                                         " AND  FactoryNo  =  '"+stringFactoryNo+"' " +
+                                  " FROM  Doc5M0131 "  +
+                                 " WHERE  BarCode  =  '"  +stringBarCode  +"' " +
+                                   " AND  FactoryNo  =  '"+stringFactoryNo+"' " +
                               " ORDER BY  RecordNo " ;
             retDoc3M0131  =  dbDoc.queryFromPool(stringSql) ;
             return retDoc3M0131 ;
@@ -23900,9 +24066,9 @@ public  class  Doc2M010  extends  bTransaction{
             // 5  CostID1     6  RealMoney         7  BudgetMoney
             stringSql         =  "SELECT  M14.InOut,    M14.DepartNo,                      M14.ProjectID, M14.ProjectID1, M14.CostID, "  +
                                         " M14.CostID1, (M14.RealMoney-M14.NoUseRealMoney), M14.BudgetMoney "  +
-                                        " FROM  Doc5M014 M14 ,  Doc5M011 M11 "  +
-                                       " WHERE  M14.BarCode  =  M11.BarCode " +
-                                         " AND  M11.UNDERGO_WRITE  <>  'X' " ;
+                                  " FROM  Doc5M014 M14 ,  Doc5M011 M11 "  +
+                                 " WHERE  M14.BarCode  =  M11.BarCode " +
+                                   " AND  M11.UNDERGO_WRITE  <>  'X' " ;
             if(!"".equals(stringBarCode))  stringSql  +=  " AND  M11.BarCode  =  '"+stringBarCode+"' " ;
             if(!"".equals(stringComNo))    stringSql  +=  " AND  M11.ComNo    =  '"+stringComNo+"' " ;
             if(!"".equals(stringDocNo))    stringSql  +=  " AND  M11.DocNo    =  '"+stringDocNo+"' " ;
@@ -23921,8 +24087,8 @@ public  class  Doc2M010  extends  bTransaction{
             stringSql         =  "SELECT  BarCode,             ComNo,          DocNo1,     DocNo2,        DocNo3, "  +
                                         " ExistContractMoney,  ContractMoney,  MoneyKind,  ContractKind,  Descript, "  +
                                         " PayConditionCross,   STATUS "  +
-                                        " FROM  Doc5M015 "  +
-                                       " WHERE  1=1 ";
+                                  " FROM  Doc5M015 "  +
+                                 " WHERE  1=1 ";
             if(!"".equals(stringBarCode))  stringSql  +=  " AND  BarCode  =  '"+stringBarCode+"' " ;
             if(!"".equals(stringComNo))    stringSql  +=  " AND  ComNo    =  '"+stringComNo+"' " ;
             if(!"".equals(stringDocNo))    stringSql  +=  " AND  DocNo    =  '"+stringDocNo+"' " ;
@@ -23957,10 +24123,10 @@ public  class  Doc2M010  extends  bTransaction{
                            String  stringBarCode,           String  stringComNo,             String  stringEDateTime,  
                         String  stringPurchaseNo1,    String  stringPurchaseNo2,    String  stringPurchaseNo3,  
                         String  stringFactoryNo) throws  Throwable {
-            return  ""+getRealTotalMoneyDoc6M012Union(stringBarCode,             stringComNo,            stringEDateTime,  
-                                                                                         stringPurchaseNo1,    stringPurchaseNo2,   stringPurchaseNo3,  
-                                                                                        "",                                stringFactoryNo,
-                                                                                        false) ;
+            return  ""+getRealTotalMoneyDoc6M012Union(stringBarCode,        stringComNo,         stringEDateTime,  
+                                                      stringPurchaseNo1,    stringPurchaseNo2,   stringPurchaseNo3,  
+                                                      "",                   stringFactoryNo,
+                                                      false) ;
          }
     //
     public  String  getExistRealMoneyForDoc5M020(String  stringBarCode,  String  stringComNo,  String  stringEDateTime,  String  stringPurchaseNo1,  String  stringPurchaseNo2,  String  stringPurchaseNo3,  String  stringPurchaseNo4) throws  Throwable {
@@ -23969,15 +24135,15 @@ public  class  Doc2M010  extends  bTransaction{
          String[][]  retDoc2M012         =  null ;
          //
          stringSql  =  "SELECT  SUM(M17.PurchaseMoney) "  +
-                              "FROM  Doc5M020 M10,  Doc5M027 M17 "  +
-                           " WHERE  M10.BarCode  =  M17.BarCode "  +
-                               " AND  M10.UNDERGO_WRITE  <>  'E' " +
-                               " AND  M10.ComNo  =  '"        +  stringComNo        +  "' "  +
-                               " AND  M17.PurchaseNo1  =  '"  +  stringPurchaseNo1  +  "' "  +
-                               " AND  M17.PurchaseNo2  =  '"  + stringPurchaseNo2   +  "' "  +
-                               " AND  M17.PurchaseNo3  =  '"  + stringPurchaseNo3   +  "' "  +
-                               " AND  M17.PurchaseNo4  =  '"  + stringPurchaseNo4   +  "' "  +
-                               " AND  M10.BarCode  <>  '"     +  stringBarCode      +  "' " ;
+                        " FROM  Doc5M020 M10,  Doc5M027 M17 "  +
+                       " WHERE  M10.BarCode  =  M17.BarCode "  +
+                         " AND  M10.UNDERGO_WRITE  <>  'E' " +
+                         " AND  M10.ComNo  =  '"        +  stringComNo        +  "' "  +
+                         " AND  M17.PurchaseNo1  =  '"  +  stringPurchaseNo1  +  "' "  +
+                         " AND  M17.PurchaseNo2  =  '"  + stringPurchaseNo2   +  "' "  +
+                         " AND  M17.PurchaseNo3  =  '"  + stringPurchaseNo3   +  "' "  +
+                         " AND  M17.PurchaseNo4  =  '"  + stringPurchaseNo4   +  "' "  +
+                         " AND  M10.BarCode  <>  '"     +  stringBarCode      +  "' " ;
          if(!"".equals(stringEDateTime))     stringSql  +=  " AND  M10.EDateTime  <  '"  +  stringEDateTime  +  "' " ;
          
          retDoc2M012  =  dbDoc.queryFromPool(stringSql) ;
@@ -24004,17 +24170,17 @@ public  class  Doc2M010  extends  bTransaction{
                      double         doublePurchaseMoney        =  0 ;
                      // 請款
                      stringSql  =  "SELECT  SUM(M17.PurchaseMoney) "  +
-                                       " FROM  Doc5M020 M10,  Doc5M027 M17 "  +
-                                     " WHERE  M10.BarCode  =  M17.BarCode "  +
-                                       " AND  M10.UNDERGO_WRITE  <>  'E' " +
-                                          " AND  M10.ComNo  =  '"                         +  stringComNo             +  "' "  +
-                                          " AND  M17.PurchaseNo1  =  '"                +  stringPurchaseNo1    +  "' "  +
-                                          " AND  ISNULL(M17.ProjectID1,'')   =  '"  +  stringProjectID1        +  "' "  +
-                                          " AND  M17.PurchaseNo2  =  '"                + stringPurchaseNo2     +  "' "  +
-                                       " AND  M17.PurchaseNo3  =  '"                + stringPurchaseNo3     +  "' "  +
-                                       " AND  M17.FactoryNo  =  '"                     + stringFactoryNo          +  "' "  +
-                                       " AND  M10.BarCode  <>  '"                      +  stringBarCode           +  "' " +
-                                       " AND  M10.BarCode NOT IN (SELECT BarCode  FROM  Doc2M014 WHERE  STATUS_CD  =  'Z') "+
+                                    " FROM  Doc5M020 M10,  Doc5M027 M17 "  +
+                                   " WHERE  M10.BarCode  =  M17.BarCode "  +
+                                     " AND  M10.UNDERGO_WRITE  <>  'E' " +
+                                     " AND  M10.ComNo  =  '"                         +  stringComNo             +  "' "  +
+                                     " AND  M17.PurchaseNo1  =  '"                +  stringPurchaseNo1    +  "' "  +
+                                     " AND  ISNULL(M17.ProjectID1,'')   =  '"  +  stringProjectID1        +  "' "  +
+                                     " AND  M17.PurchaseNo2  =  '"                + stringPurchaseNo2     +  "' "  +
+                                     " AND  M17.PurchaseNo3  =  '"                + stringPurchaseNo3     +  "' "  +
+                                     " AND  M17.FactoryNo  =  '"                     + stringFactoryNo          +  "' "  +
+                                     " AND  M10.BarCode  <>  '"                      +  stringBarCode           +  "' " +
+                                     " AND  M10.BarCode NOT IN (SELECT BarCode  FROM  Doc2M014 WHERE  STATUS_CD  =  'Z') "+
                                            stringSqlAnd ;
                      retDoc2M012  =  dbDoc.queryFromPool(stringSql) ;
                      if(retDoc2M012.length  !=  0) {
@@ -24037,17 +24203,17 @@ public  class  Doc2M010  extends  bTransaction{
                      double         doublePaidUpMoney       =  0 ;
                      // 請款
                      stringSql  =  "SELECT  DISTINCT  M14.BarCode "  +
-                                       "FROM  Doc5M020 M10,  Doc5M027 M17,  Doc2M014 M14 "  +
-                                    " WHERE  M10.BarCode  =  M17.BarCode "  +
-                                          " AND  M17.BarCode  =  M14.BarCode "  +
-                                       " AND  M10.UNDERGO_WRITE  <>  'E' "  +
-                                       " AND  M10.ComNo  =  '"                         +  stringComNo             +  "' "  +
-                                          " AND  M17.PurchaseNo1  =  '"                +  stringPurchaseNo1    +  "' "  +
-                                          " AND  ISNULL(M17.ProjectID1,'')  =  '"   +  stringProjectID1        +  "' "  +
-                                          " AND  M17.PurchaseNo2  =  '"                +  stringPurchaseNo2    +  "' "  +
-                                       " AND  M17.PurchaseNo3  =  '"                +  stringPurchaseNo3    +  "' "  +
-                                       " AND  M17.FactoryNo  =  '"                     +  stringFactoryNo         +  "' "  +
-                                       " AND  M14.STATUS_CD  =  'Z' " ;
+                                     "FROM  Doc5M020 M10,  Doc5M027 M17,  Doc2M014 M14 "  +
+                                   " WHERE  M10.BarCode  =  M17.BarCode "  +
+                                     " AND  M17.BarCode  =  M14.BarCode "  +
+                                     " AND  M10.UNDERGO_WRITE  <>  'E' "  +
+                                     " AND  M10.ComNo  =  '"                         +  stringComNo             +  "' "  +
+                                     " AND  M17.PurchaseNo1  =  '"                +  stringPurchaseNo1    +  "' "  +
+                                     " AND  ISNULL(M17.ProjectID1,'')  =  '"   +  stringProjectID1        +  "' "  +
+                                     " AND  M17.PurchaseNo2  =  '"                +  stringPurchaseNo2    +  "' "  +
+                                     " AND  M17.PurchaseNo3  =  '"                +  stringPurchaseNo3    +  "' "  +
+                                     " AND  M17.FactoryNo  =  '"                     +  stringFactoryNo         +  "' "  +
+                                     " AND  M14.STATUS_CD  =  'Z' " ;
                         if(!"".equals(stringBarCodeOld)) {
                               stringSql  +=  " AND  M14.BarCode  <>  '"  + stringBarCodeOld  +  "' " ;
                      }
@@ -24057,12 +24223,12 @@ public  class  Doc2M010  extends  bTransaction{
                      for(int  intNo=0  ;  intNo<retDoc2M012.length  ;  intNo++) {
                                  stringBarCode  =  retDoc2M012[intNo][0].trim() ;
                                  stringSql          =  "SELECT  SUM(PurchaseMoney) "  +
-                                                                  " FROM  Doc5M027 "  +
-                                                      " WHERE  PurchaseNo1  =  '"             +  stringPurchaseNo1    +  "' "  +
-                                                          " AND  PurchaseNo2  =  '"             +  stringPurchaseNo2    +  "' "  +
-                                                          " AND  PurchaseNo3  =  '"             +  stringPurchaseNo3    +  "' " +
-                                                          " AND  ISNULL(ProjectID1,'')   =  '"  +  stringProjectID1     +  "' " +
-                                                          " AND  BarCode  =  '"                 +  stringBarCode        +  "' " ;
+                                                        " FROM  Doc5M027 "  +
+                                                       " WHERE  PurchaseNo1  =  '"             +  stringPurchaseNo1    +  "' "  +
+                                                         " AND  PurchaseNo2  =  '"             +  stringPurchaseNo2    +  "' "  +
+                                                         " AND  PurchaseNo3  =  '"             +  stringPurchaseNo3    +  "' " +
+                                                         " AND  ISNULL(ProjectID1,'')   =  '"  +  stringProjectID1     +  "' " +
+                                                         " AND  BarCode  =  '"                 +  stringBarCode        +  "' " ;
                                  retDoc2M017  =  dbDoc.queryFromPool(stringSql) ;
                                  if(retDoc2M017.length  !=  0) {
                                           doublePaidUpMoney  +=  doParseDouble(retDoc2M017[0][0].trim( )) ;
@@ -24071,16 +24237,16 @@ public  class  Doc2M010  extends  bTransaction{
                      //System.out.println("已付金額1---------------"+doublePaidUpMoney) ;
                      // 借款沖銷
                      stringSql  =  "SELECT  SUM(M12.RealTotalMoney)"  +
-                                       " FROM  Doc5M030 M10,  Doc5M032  M12 "  +
-                                     " WHERE  PurchaseNoExist  =  'Y'  "  +
-                                          " AND  M10.UNDERGO_WRITE  <>  'E' "  +
-                                          " AND  M10.BarCode  =  M12.BarCode "  +
-                                          " AND  M10.Barcode  IN  (SELECT  BarCode  FROM  Doc2M014  WHERE  STATUS_CD  =  'Z' )"  +
-                                          " AND  M10.ComNo  =  '"        +  stringComNo            +  "' "  +
-                                          " AND  M10.PurchaseNo1  =  '"  + stringPurchaseNo1       +  "' "  +
-                                          " AND  M10.PurchaseNo2  =  '"  + stringPurchaseNo2       +  "' "  +
-                                          " AND  M10.PurchaseNo3  =  '"  + stringPurchaseNo3       +  "' "  +
-                                          " AND  M10.FactoryNo  =  '"      + stringFactoryNo          +  "' "  ;
+                                    " FROM  Doc5M030 M10,  Doc5M032  M12 "  +
+                                   " WHERE  PurchaseNoExist  =  'Y'  "  +
+                                     " AND  M10.UNDERGO_WRITE  <>  'E' "  +
+                                     " AND  M10.BarCode  =  M12.BarCode "  +
+                                     " AND  M10.Barcode  IN  (SELECT  BarCode  FROM  Doc2M014  WHERE  STATUS_CD  =  'Z' )"  +
+                                     " AND  M10.ComNo  =  '"        +  stringComNo            +  "' "  +
+                                     " AND  M10.PurchaseNo1  =  '"  + stringPurchaseNo1       +  "' "  +
+                                     " AND  M10.PurchaseNo2  =  '"  + stringPurchaseNo2       +  "' "  +
+                                     " AND  M10.PurchaseNo3  =  '"  + stringPurchaseNo3       +  "' "  +
+                                     " AND  M10.FactoryNo  =  '"      + stringFactoryNo          +  "' "  ;
                         if(!"".equals(stringBarCodeOld)) {
                               stringSql  +=  " AND  M10.BarCode  <>  '"  + stringBarCodeOld  +  "' " ;
                      }
@@ -24121,13 +24287,13 @@ public  class  Doc2M010  extends  bTransaction{
                      String[][]     retDoc2M010                =  null ;
                      //
                      stringSql  =  "SELECT  M10.BarCode "  +
-                                         " FROM  "+stringTable10+" M10,  "+stringTable17+" M17 "  +
-                                       " WHERE  M17.BarCode  =  M10.BarCode "  +
-                                               " AND  M17.PurchaseNo  =  '"               +  stringPurchaseNo           +  "' "  +
-                                          " AND  M10.ComNo  =  '"                      +  stringComNo                   +  "' "  +
-                                          " AND  M17.FactoryNo  =  '"                  +  stringFactoryNo               +  "' "  +
-                                          " AND  M10.EDateTime  "+stringSign  +"  '"   +  stringEDateTime      +  "' " +
-                                          stringSqlAnd ;
+                                    " FROM  "+stringTable10+" M10,  "+stringTable17+" M17 "  +
+                                   " WHERE  M17.BarCode  =  M10.BarCode "  +
+                                     " AND  M17.PurchaseNo  =  '"               +  stringPurchaseNo           +  "' "  +
+                                     " AND  M10.ComNo  =  '"                      +  stringComNo                   +  "' "  +
+                                     " AND  M17.FactoryNo  =  '"                  +  stringFactoryNo               +  "' "  +
+                                     " AND  M10.EDateTime  "+stringSign  +"  '"   +  stringEDateTime      +  "' " +
+                                     stringSqlAnd ;
                      retDoc2M010  =  dbDoc.queryFromPool(stringSql) ;
                      return  retDoc2M010 ;
          }
@@ -24138,9 +24304,9 @@ public  class  Doc2M010  extends  bTransaction{
             //   0  ID
             stringSql  =  " SELECT  M10.BarCode "  +
                             " FROM  Doc5M020 M10"  +
-                                " WHERE  M10.BarCode  <>  '" +  stringBarCode  +  "' " +
-                                  " AND  M10.RetainBarCode  =  '" +  stringRetainBarCode  +  "' " +
-                                   " AND  UNDERGO_WRITE  <>  'E' " ;
+                           " WHERE  M10.BarCode  <>  '" +  stringBarCode  +  "' " +
+                             " AND  M10.RetainBarCode  =  '" +  stringRetainBarCode  +  "' " +
+                             " AND  UNDERGO_WRITE  <>  'E' " ;
             retDoc2M010  =  dbDoc.queryFromPool(stringSql) ;
             //
             if(retDoc2M010.length  >  0) {
@@ -24158,15 +24324,15 @@ public  class  Doc2M010  extends  bTransaction{
             boolean     booleanFirstTime  =  false ;
             //  0  UNDERGO_WRITE       1  BarCode
             stringSql  =  " SELECT  UNDERGO_WRITE,  BarCode "  +
-                                 " FROM  Doc5M020 "  +
-                                " WHERE  BarCode  <>  '"  +  stringBarCode  +  "' "  +
-                                  " AND  (BarCode  IN  (SELECT  BarCode  "  +
-                                                        " FROM  Doc5M021 "  +
-                                                                " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
+                            " FROM  Doc5M020 "  +
+                           " WHERE  BarCode  <>  '"  +  stringBarCode  +  "' "  +
+                             " AND  (BarCode  IN  (SELECT  BarCode  "  +
+                                                   " FROM  Doc5M021 "  +
+                                                 " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
                                       " OR  BarCode  IN  (SELECT  BarCode  "  +
-                                                        " FROM  Doc5M023 "  +
-                                                                " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
-                                        " OR FactoryNoSpec  =  '"  +  stringFactoryNo  +  "') " ;
+                                                          " FROM  Doc5M023 "  +
+                                                         " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
+                                      " OR FactoryNoSpec  =  '"  +  stringFactoryNo  +  "') " ;
             if(!"".equals(stringComNo))  stringSql  +=  " AND  ComNo  =  '"+stringComNo +"'" ;
             retDoc2M010  =  dbDoc.queryFromPool(stringSql) ;
             return  retDoc2M010 ;
@@ -24184,7 +24350,7 @@ public  class  Doc2M010  extends  bTransaction{
             //
             stringSql         =  "SELECT  SUM(RealTotalMoney) "  +
                                   " FROM  Doc5M022 "  +
-                                     "  WHERE  BarCode IN  (SELECT  BarCode  FROM  Doc5M020  WHERE  UNDERGO_WRITE<>'E' " ;
+                                "  WHERE  BarCode IN  (SELECT  BarCode  FROM  Doc5M020  WHERE  UNDERGO_WRITE<>'E' " ;
             if(!"".equals(stringPurchaseNoExist)) stringSql  +=  "  AND PurchaseNoExist  =  '"+stringPurchaseNoExist+"' " ;
             stringSql  +=  ") " ;
             if(!"".equals(stringBarCodeExcept))   stringSql  +=  " AND  BarCode  <>  '"   +  stringBarCodeExcept  +  "' " ;
@@ -24206,7 +24372,7 @@ public  class  Doc2M010  extends  bTransaction{
             // 0 BarCode      1  BarCodeRef     2  FactoryNo      3  RecordNo     4  BackRetainMoney      5  EDateTime
             stringSql         =  "SELECT  M220.BarCode,  M220.BarCodeRef,  M220.FactoryNo,  M220.RecordNo,  M220.BackRetainMoney,  M20.EDateTime "  +
                                   " FROM  Doc5M0220 M220,  Doc5M020 M20 "  +
-                                     "  WHERE  M220.BarCode  =  M20.BarCode " ;
+                                "  WHERE  M220.BarCode  =  M20.BarCode " ;
             if(!"".equals(stringFactoryNo))      stringSql  +=  "  AND  M220.FactoryNo  =  '"+stringFactoryNo   +"' " ;
             if(!"".equals(stringBarCode))        stringSql  +=  "  AND  M220.BarCode    =  '"+stringBarCode     +"' " ;
             if(!"".equals(stringBarCodeRef))     stringSql  +=  "  AND  M220.BarCodeRef =  '"+stringBarCodeRef  +"' " ;
@@ -24224,8 +24390,8 @@ public  class  Doc2M010  extends  bTransaction{
             // 0  BarCode     1  BarCodeRef     2  BackRetainMoney
             stringSql  =  "SELECT  BarCode,  BarCodeRef,  BackRetainMoney "  +
                            " FROM  Doc5M02201 "  +
-                              " WHERE  1=1 " +
-                              stringSqlAnd ;
+                          " WHERE  1=1 " +
+                            stringSqlAnd ;
             if(!"".equals(stringBarCode))     stringSql  +=  "  AND  BarCode  = '"    +stringBarCode   +"' " ;
             if(!"".equals(stringBarCodeRef))  stringSql  +=  "  AND  BarCodeRef  =  '"+stringBarCodeRef+"' " ;
             if("".equals(stringSqlAnd)  ||  stringSqlAnd.indexOf("ORDER")==-1) {
@@ -24244,8 +24410,8 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retDoc5M0271             =  null ;
             // 0 BarCode  1 ContractNo1   2 ContractNo2     3 ContractNo3     4 StageNo     5 FactoryNo     6 ContractMoney
             stringSql  =  "SELECT  BarCode,  ContractNo1,  ContractNo2,  ContractNo3,  StageNo,  FactoryNo,  ContractMoney "  +
-                               " FROM  Doc5M0271 "  +
-                              " WHERE  1=1 " ;
+                           " FROM  Doc5M0271 "  +
+                          " WHERE  1=1 " ;
             if(!"".equals(stringBarCode))   stringSql  +=  " AND  BarCode  =  '"   +  stringBarCode   +  "' " ;
             if(!"".equals(stringComNo))     stringSql  +=  " AND  BarCode  IN (SELECT  BarCode  FROM  DOc5M020  WHERE  ComNo  =  '"  +  stringComNo  +  "') " ;
             if(!"".equals(stringContract))  stringSql  +=  " AND  ContractNo =  '"+stringContract+"' " ;
@@ -24300,8 +24466,8 @@ public  class  Doc2M010  extends  bTransaction{
             // 5  RecordNo12  6  RecordNo130      7  RequestPrice      8  RequestNum      9  RequestDate
             stringSql  =  "SELECT  ComNo,       FIRM_NO,      PurchaseNo,    FactoryNo,   CostID, "  +
                                  " RecordNo12,  RecordNo130,  RequestPrice,  RequestNum,  RequestDate "  +
-                               " FROM  Doc5M02722 "  +
-                              " WHERE  1=1 " ;
+                           " FROM  Doc5M02722 "  +
+                          " WHERE  1=1 " ;
             if(!"".equals(stringComNo))       stringSql  +=  " AND  ComNo  =  '"     +stringComNo     +"' " ; 
             if(!"".equals(stringPurchaseNo))  stringSql  +=  " AND  PurchaseNo  =  '"+stringPurchaseNo+"' " ; 
             if(!"".equals(stringFactoryNo))   stringSql  +=  " AND  FactoryNo  =  '" +stringFactoryNo +"' " ; 
@@ -24320,8 +24486,8 @@ public  class  Doc2M010  extends  bTransaction{
             stringSql  =  "SELECT  M273.BarCode,       M273.PurchaseNo,     M273.RecordNo12,      M273.RecordNo130,  M273.RecordNo, "  +
                                  " M273.InOut,         M273.DepartNo,       M273.ProjectID,       M273.ProjectID1,   M273.CostID, "  +
                                  " M273.PurchaseMoney "  +
-                               " FROM  Doc5M0273 M273,  Doc5M020  M20 "  +
-                              " WHERE  M273.BarCode  =  M20.BarCode " ;
+                           " FROM  Doc5M0273 M273,  Doc5M020  M20 "  +
+                          " WHERE  M273.BarCode  =  M20.BarCode " ;
             if(!"".equals(stringBarCode))         stringSql  +=  " AND  M20.BarCode  =  '"        +  stringBarCode         +  "' " ; 
             if(!"".equals(stringComNo))           stringSql  +=  " AND  M20.ComNo    =  '"        +  stringComNo           +  "' " ; 
             if(!"".equals(stringDocNo))           stringSql  +=  " AND  M20.DocNo    =  '"        +  stringDocNo           +  "' " ; 
@@ -24340,8 +24506,8 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retDoc5M029              =  null ;
             //
             stringSql  =  "SELECT  CostID,  DocCode,  Remark, ComNo "  +
-                               " FROM  Doc5M029 "  +
-                              " WHERE  1=1 " ;
+                           " FROM  Doc5M029 "  +
+                          " WHERE  1=1 " ;
             if(!"".equals(stringCostID))   stringSql  +=  " AND  CostID  =  '"   +  stringCostID   +  "' " ;
             if(!"".equals(stringDocCode))  stringSql  +=  " AND  DocCode  =  '"  +  stringDocCode  +  "' " ;
             if("".equals(stringSqlAnd)) {
@@ -24358,8 +24524,8 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retDoc5M0291              =  null ;
             //
             stringSql  =  "SELECT  DocDescript "  +
-                               " FROM  Doc5M0291 "  +
-                              " WHERE  DocCode  =  '"        +  stringDocCode  +  "' " ;
+                           " FROM  Doc5M0291 "  +
+                          " WHERE  DocCode  =  '"        +  stringDocCode  +  "' " ;
             retDoc5M0291  =  dbDoc.queryFromPool(stringSql) ;
         if(retDoc5M0291.length>0)  return retDoc5M0291[0][0].trim() ;
             return  "" ;
@@ -24374,14 +24540,14 @@ public  class  Doc2M010  extends  bTransaction{
             boolean     booleanFirstTime    =  false ;
             //
             stringSql  =  " SELECT  UNDERGO_WRITE,  BarCode "  +
-                                 " FROM  Doc5M030 "  +
-                                " WHERE  BarCode  <>  '"  +  stringBarCode  +  "' "  +
-                                  " AND  (BarCode  IN  (SELECT  BarCode  "  +
-                                                        " FROM  Doc5M031 "  +
-                                                                " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
+                            " FROM  Doc5M030 "  +
+                           " WHERE  BarCode  <>  '"  +  stringBarCode  +  "' "  +
+                             " AND  (BarCode  IN  (SELECT  BarCode  "  +
+                                                   " FROM  Doc5M031 "  +
+                                                  " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
                                       " OR  BarCode  IN  (SELECT  BarCode  "  +
-                                                        " FROM  Doc5M033 "  +
-                                                            " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
+                                                          " FROM  Doc5M033 "  +
+                                                         " WHERE  FactoryNo  =  '"  +  stringFactoryNo  +  "') "  +
                                      " OR  FactoryNo  =  '"+stringFactoryNo+"' ) " ;
             if(!"".equals(stringComNo))  stringSql  +=  " AND  ComNo  =  '"+stringComNo+"' " ;
             retDoc6M010  =  dbDoc.queryFromPool(stringSql) ;
@@ -24389,17 +24555,17 @@ public  class  Doc2M010  extends  bTransaction{
       }
          public  boolean  isExistSignDoc5M030(String  stringComNo,   String  stringPurchaseNo1,  String  stringPurchaseNo2,  String  stringPurchaseNo3,  
                                                                       String  stringSign,       String  stringEDateTime) throws  Throwable {
-                     String            stringSql                  =  "" ;
-                     String[][]     retDoc5M030          =  null ;
-                     boolean     booleanStatus         =  false ;
+                     String         stringSql             =  "" ;
+                     String[][]     retDoc5M030           =  null ;
+                     boolean        booleanStatus         =  false ;
                      //
                      stringSql  =  "SELECT  BarCode "  +
-                                         " FROM  Doc5M030 "  +
-                                       " WHERE  PurchaseNo1  =  '"  +  stringPurchaseNo1  +  "' "  +
-                                           " AND  PurchaseNo2  =  '"  +  stringPurchaseNo2  +  "' "  +
-                                           " AND  PurchaseNo3  =  '"    +  stringPurchaseNo3  +  "' "  +
-                                           " AND  ComNo  =  '"             +  stringComNo          +  "' "  +
-                                           " AND  EDateTime  "+stringSign+"  '"      +  stringEDateTime      +  "' "  ;
+                                    " FROM  Doc5M030 "  +
+                                   " WHERE  PurchaseNo1  =  '"  +  stringPurchaseNo1  +  "' "  +
+                                     " AND  PurchaseNo2  =  '"  +  stringPurchaseNo2  +  "' "  +
+                                     " AND  PurchaseNo3  =  '"    +  stringPurchaseNo3  +  "' "  +
+                                     " AND  ComNo  =  '"             +  stringComNo          +  "' "  +
+                                     " AND  EDateTime  "+stringSign+"  '"      +  stringEDateTime      +  "' "  ;
                      retDoc5M030  =  dbDoc.queryFromPool(stringSql) ;
                      if(retDoc5M030.length  >  0)  booleanStatus=  true ;
                      for(int  intNo=0  ;  intNo<retDoc5M030.length  ;  intNo++) {
@@ -24416,7 +24582,7 @@ public  class  Doc2M010  extends  bTransaction{
             // 
             stringSql         =  "SELECT  SUM(RealTotalMoney) "  +
                                   " FROM  Doc5M032 "  +
-                                      " WHERE  BarCode  NOT  IN  (SELECT  BarCode  FROM  Doc5M030  WHERE  UNDERGO_WRITE  =  'E' )" ;
+                                 " WHERE  BarCode  NOT  IN  (SELECT  BarCode  FROM  Doc5M030  WHERE  UNDERGO_WRITE  =  'E' )" ;
             if(!"".equals(stringPurchaseNoExist)) stringSql  +=  " AND  BarCode IN  (SELECT  BarCode  FROM  Doc5M020  WHERE  PurchaseNoExist  =  '"+stringPurchaseNoExist+"') " ;
             if(!"".equals(stringBarCodeExcept))   stringSql  +=  " AND  BarCode  <>  '"   +  stringBarCodeExcept  +  "' " ;
             if(!"".equals(stringInOut))           stringSql  +=  " AND  InOut  =  '"      +  stringInOut          +  "' " ;
@@ -26863,11 +27029,10 @@ public  class  Doc2M010  extends  bTransaction{
             // 0  BudgetID    1  CostID         2  CostID1        3  Description
             stringSql  =  "SELECT  BudgetID,  CostID,  CostID1,  Description "  +
                                " FROM  Doc2M020 "  +
-                              " WHERE  1  =  1 "  +
-                                " AND  BudgetID  <>  '' "  +
+                              " WHERE  BudgetID  <>  '' "  +
                                   " AND  NOT(BudgetID  IS  NULL) "  +
                                   " AND  UseStatus  =  'Y' ";
-            if(!"".equals(stringComNo))              stringSql  +=  " AND  ComNo  =  '"         +  stringComNo          +  "' " ;
+            if(!"".equals(stringComNo))            stringSql  +=  " AND  ComNo  =  '"         +  stringComNo          +  "' " ;
             if(!"".equals(stringFunctionType))     stringSql  +=  " AND  BudgetID  LIKE  '"   +  stringFunctionType   +  "%' " ;
             stringSql   +=  " ORDER BY BudgetID,  CostID,  CostID1 " ;
             retDoc7M011  =  dbDoc.queryFromPool(stringSql) ;
@@ -28680,47 +28845,56 @@ public  class  Doc2M010  extends  bTransaction{
     }
     public  String  getVFEE(String  stringFirmNo,  String  stringComNo,  String  stringDate,  FargloryUtil  exeUtil) throws  Throwable {
          String      stringSql        =  "" ;
+         String      stringSqlAnd     =  "" ;
          String      stringDeptCd     =  "" ;
          String      stringDeptCdSum  =  "" ;
          String      stringYM         =  "" ;
-         String[][]  retVFEE          =  null ;
+         //String[][]  retVFEE          =  null ;
+         Vector      vectorVFEE       =  null ;
          //
          System.out.println("Doc2M010 getVFEE("+stringComNo+")----------------------------------S") ;
          if(",01,12,".indexOf(","+stringComNo+",")  ==  -1)  return  "" ;
-         System.out.println("Doc2M010 getVFEE----------------------------------E") ;
+         System.out.println("Doc2M010 getVFEE----------------------------------1") ;
          //
          stringDate  =  exeUtil.getDateConvertFullRoc(stringDate).replaceAll("/",  "") ;  if(exeUtil.doParseDouble(datetime.getDate(stringDate)) <  5)  stringDate  =  datetime.dateAdd(stringDate,  "m",  -1) ;
          stringDate  =  datetime.dateAdd(stringDate,  "m",  -1) ;
          stringYM    =  datetime.getYear(stringDate)+datetime.getMonth(stringDate) ;
          //
-         stringSql  =  " SELECT  ACCT_EXPENSE_CD,  PCOUNT "  +
-                         " FROM  VFEE "  +
-                        " WHERE  COMPANY_CD =  '"+stringComNo+"' "  +
+         //stringSql =  " SELECT  ACCT_EXPENSE_CD,  PCOUNT "  +
+         //               " FROM  VFEE "  +
+         //              " WHERE  1=1 " ;
+         stringSqlAnd=    " AND  COMPANY_CD =  '"+stringComNo+"' "  +
                           " AND  SALARY_YM  =  '"+stringYM   +"' "  +
-                       " ORDER BY  ACCT_EXPENSE_CD " ;
-        retVFEE  =  dbFE3D.queryFromPool(stringSql) ;
-        for(int  intNo=0  ;  intNo<retVFEE.length  ;  intNo++) {
-             stringDeptCd      =  retVFEE[intNo][0].trim() ;  if("".equals(stringDeptCd))  continue ;
+                     " ORDER BY  ACCT_EXPENSE_CD " ;
+        //retVFEE  =  dbFE3D.queryFromPool(stringSql) ;
+        System.out.println("Doc2M010 getVFEE----------------------------------2") ;
+        vectorVFEE  =  getQueryDataHashtableFE3D("VFEE",  new  Hashtable(),  stringSqlAnd,  new  Vector(),  exeUtil) ;
+        for(int  intNo=0  ;  intNo<vectorVFEE.size()  ;  intNo++) {
+             //stringDeptCd      =  retVFEE[intNo][0].trim() ;  if("".equals(stringDeptCd))  continue ;
+             stringDeptCd  =  exeUtil.getVectorFieldValue(vectorVFEE,  intNo,  "ACCT_EXPENSE_CD") ;
              if(stringDeptCd.length()  >  3)  stringDeptCd  =  stringDeptCd.substring(0,3) ;
              //if((!stringDeptCd.startsWith("A18")  &&  !stringDeptCd.startsWith("022"))  &&  stringDeptCd.length()  >  3)  stringDeptCd  =  stringDeptCd.substring(0,3) ;
              stringDeptCdSum  +=  stringDeptCd+"," ;
         }
         int     intDay        =  datetime.getDate(exeUtil.doParseInteger(stringDate)) ;
-        if(retVFEE.length==0  &&  intDay<=3  &&  !"".equals(stringFirmNo)) {
+        System.out.println("Doc2M010 getVFEE("+vectorVFEE.size()+")----------------------------------3") ;
+        if(vectorVFEE.size()==0  &&  !"".equals(stringFirmNo)) {  //eHR 修正 2017-08-15 
+        //if(vectorVFEE.size()==0  &&  intDay<=3  &&  !"".equals(stringFirmNo)) {
             stringDeptCdSum  =  getDeptCDForFirmNoSql(stringFirmNo,  "") ;
         }
+        System.out.println("Doc2M010 getVFEE----------------------------------E") ;
          return  stringDeptCdSum;
       }
       // 表格 FE3D05
       // 人員名稱
       public  String  getEmpName(String  stringEmpNo) throws  Throwable {
-            String         stringSql               =  "" ;
-            String         stringEmpName     =  "" ;
-            String[][]  retFE3D05            =  null ;
+            String         stringSql            =  "" ;
+            String         stringEmpName        =  "" ;
+            String[][]     retFE3D05            =  null ;
             //
             stringSql  =  " SELECT  EMP_NAME "  +
                             " FROM  FE3D05 " +
-                          " WHERE  EMP_NO  =  '" +  stringEmpNo  +  "' " ;
+                           " WHERE  EMP_NO  =  '" +  stringEmpNo  +  "' " ;
             retFE3D05  =  dbFE3D.queryFromPool(stringSql) ;
             if(retFE3D05.length  !=  0) {
                   stringEmpName  = retFE3D05[0][0].trim( ) ;
@@ -28757,8 +28931,8 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retFE3D05          =  null ;
             //   0  DEPT_CD         1  EMP_NO         2  EMP_NAME       3  TRX_CD     4  TRX_DATE
             stringSql  =  " SELECT  DEPT_CD,  EMP_NO,  EMP_NAME,  TRX_CD,  TRX_DATE "  +
-                                 " FROM  FE3D05 " +
-                                " WHERE  EMP_NO  =  '" +  stringEmpNo  +  "' " ;
+                            " FROM  FE3D05 " +
+                           " WHERE  EMP_NO  =  '" +  stringEmpNo  +  "' " ;
             retFE3D05  =  dbFE3D.queryFromPool(stringSql) ;
             return  retFE3D05 ;
       }
@@ -28828,13 +29002,14 @@ public  class  Doc2M010  extends  bTransaction{
             String      stringSql    =  "" ;
             String      stringEmpNo  =  "" ;
             String[][]  retFE3D05    =  null ;
-            //
+            // 原
             stringSql  =  " SELECT  DEPT_CD "  +
-                                 " FROM  FE3D05 T05,  FE3D72 T72 " +
-                                " WHERE  T05.EMP_NO  =  T72.EMP_NO " +
-                                   "AND  (T05.TRX_CD  =  '1'   OR  T05.TRX_CD  =  '4') "  +
-                                  " AND  T72.INSUR_KIND  =  '1' " +
-                                  " AND  FIRM_NO  =  '" +  stringFIRM_NO  +  "' " + stringSqlAnd ;
+                            " FROM  FE3D05 T05,  FE3D72 T72 " +
+                           " WHERE  T05.EMP_NO  =  T72.EMP_NO " +
+                              "AND  (T05.TRX_CD  =  '1'   OR  T05.TRX_CD  =  '4') "  +
+                             " AND  T72.INSUR_KIND  =  '1' " +
+                             " AND  T72.FIRM_NO  =  '" +  stringFIRM_NO  +  "' " + 
+                             stringSqlAnd ;
             retFE3D05  =  dbFE3D.queryFromPool(stringSql) ;
             return  retFE3D05 ;
       }
@@ -28873,15 +29048,17 @@ public  class  Doc2M010  extends  bTransaction{
       public  String  getComNoForEmpNo(String  stringUser)throws Throwable{
             String      stringSql      =  "" ;
             String      stringComNo    =  "" ;
+            String      stringFirmNo   =  "" ;
+            String[][]  retFE3D70      =  null ;
             String[][]  retFE3D72      =  null ;
-            //
+            // 原
             stringSql  =  " SELECT  F70.COMPANY_CD "  +
-                              " FROM  FE3D72 F72,  FE3D70 F70 ,  FE3D05 F05  "  +
-                                " WHERE  F05.EMP_NO  =  F72.EMP_NO "  +
-                                  " AND  F05.EMP_NO  =  '"  +  stringUser  +  "' "  +
-                                  " AND  F72.FIRM_NO  =  F70.FIRM_NO "  +
-                                  " AND  (F05.TRX_CD  =  '1'   OR  F05.TRX_CD  =  '4') "  +
-                                  " AND  F72.INSUR_KIND  =  '1' " ;
+                            " FROM  FE3D72 F72,  FE3D70 F70 ,  FE3D05 F05  "  +
+                           " WHERE  F05.EMP_NO  =  F72.EMP_NO "  +
+                             " AND  F05.EMP_NO  =  '"  +  stringUser  +  "' "  +
+                             " AND  F72.FIRM_NO  =  F70.FIRM_NO "  +
+                             " AND  (F05.TRX_CD  =  '1'   OR  F05.TRX_CD  =  '4') "  +
+                             " AND  F72.INSUR_KIND  =  '1' " ;
             retFE3D72  =  dbFE3D.queryFromPool(stringSql) ;
             if(retFE3D72.length  >  0)  stringComNo  =  retFE3D72[0][0].trim() ;
             return  stringComNo;
@@ -28898,7 +29075,7 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retFE3DData   =  null ;
             String[][]  retFE3D103    =  null ;
             boolean     booleanFlow   =  true ;
-         //
+            //
             if("B1085".equals(stringUserID)) {
                   stringSql  =  "SELECT   DEPT_CD,  EMP_NO,  EMP_NAME "  +
                                 "  FROM   FE3D05  "  +
@@ -28930,24 +29107,24 @@ public  class  Doc2M010  extends  bTransaction{
                   }
                   if(booleanFlow) {
                         stringSql  =  "SELECT  FE3D103.DEPT_CD,  FE3D05.EMP_NO,  FE3D05.EMP_NAME  "  +
-                                            " FROM  FE3D103  ,  FE3D05  "  +
-                                          " WHERE  FE3D103.EMP_NO  =  FE3D05.EMP_NO "  +
-                                            " AND  FE3D103.EMP_NO  <>  '"      +  stringUserID  +  "' "  +
-                                              " AND  FE3D103.DEPT_CD  =  '"      +  stringDeptCd  +  "'"  +
-                                              " AND  FE3D103.TRX_DATE_S  <=  '"  +  stringToday   +  "' "  +
-                                              " AND  FE3D103.TRX_DATE_E  >=  '"  +  stringToday   +  "' "  +
-                                             " AND  (FE3D05.TRX_CD  <>  '2'  AND  FE3D05.TRX_CD  <>  '3' )"  +
-                                      " ORDER BY  FE3D103.DEPT_CD,  FE3D05.EMP_NO  " ;
+                                       " FROM  FE3D103  ,  FE3D05  "  +
+                                      " WHERE  FE3D103.EMP_NO  =  FE3D05.EMP_NO "  +
+                                        " AND  FE3D103.EMP_NO  <>  '"      +  stringUserID  +  "' "  +
+                                        " AND  FE3D103.DEPT_CD  =  '"      +  stringDeptCd  +  "'"  +
+                                        " AND  FE3D103.TRX_DATE_S  <=  '"  +  stringToday   +  "' "  +
+                                        " AND  FE3D103.TRX_DATE_E  >=  '"  +  stringToday   +  "' "  +
+                                        " AND  (FE3D05.TRX_CD  <>  '2'  AND  FE3D05.TRX_CD  <>  '3' )"  +
+                                   " ORDER BY  FE3D103.DEPT_CD,  FE3D05.EMP_NO  " ;
                   } else {
                         stringSql  =  "SELECT  FE3D103.DEPT_CD,  FE3D05.EMP_NO,  FE3D05.EMP_NAME  "  +
-                                            " FROM  FE3D103,  FE3D05 "  +
-                                          " WHERE  FE3D103.EMP_NO  =  FE3D05.EMP_NO "  +
-                                              " AND  FE3D103.EMP_NO  <>  '"  +  stringUserID  +  "' "  +
-                                              " AND  FE3D103.DEPT_CD  LIKE  '%33%' "  +
-                                              " AND  FE3D103.TRX_DATE_S  <=  '"  +  stringToday  +  "' "  +
-                                              " AND  FE3D103.TRX_DATE_E  >=  '"  +  stringToday  +  "' "  +
-                                              " AND  (FE3D05.TRX_CD  <>  '2'  AND  FE3D05.TRX_CD  <>  '3' ) " +
-                                      " ORDER BY  FE3D103.DEPT_CD,  FE3D05.EMP_NO  " ;
+                                       " FROM  FE3D103,  FE3D05 "  +
+                                      " WHERE  FE3D103.EMP_NO  =  FE3D05.EMP_NO "  +
+                                        " AND  FE3D103.EMP_NO  <>  '"  +  stringUserID  +  "' "  +
+                                        " AND  FE3D103.DEPT_CD  LIKE  '%33%' "  +
+                                        " AND  FE3D103.TRX_DATE_S  <=  '"  +  stringToday  +  "' "  +
+                                        " AND  FE3D103.TRX_DATE_E  >=  '"  +  stringToday  +  "' "  +
+                                        " AND  (FE3D05.TRX_CD  <>  '2'  AND  FE3D05.TRX_CD  <>  '3' ) " +
+                                   " ORDER BY  FE3D103.DEPT_CD,  FE3D05.EMP_NO  " ;
                   }
                   retFE3DData  =  dbFE3D.queryFromPool(stringSql) ;
                   //System.out.println("1111---------------"  +  retFE3DData.length) ;
@@ -28965,9 +29142,9 @@ public  class  Doc2M010  extends  bTransaction{
                         stringDate        =  exeUtil.getDateConvertFullRoc(stringDate).replaceAll("/",  "") ;
          //
             stringSql  =  " SELECT  DEPT_CD,  EMP_NO "  +
-                                 " FROM  FE3D103 " +
-                                " WHERE  1  =  1" ;
-            if(!"".equals(stringEmpNo))      stringSql  +=  " AND  EMP_NO  =  '"  +  stringEmpNo   +  "' " ;
+                            " FROM  FE3D103 " +
+                           " WHERE  EMP_NO  <>  '' " ;
+            if(!"".equals(stringEmpNo))     stringSql  +=  " AND  EMP_NO  =  '"  +  stringEmpNo   +  "' " ;
             if(!"".equals(stringDeptCd))    stringSql  +=  " AND  DEPT_CD  =  '" +  stringDeptCd  +  "' " ;
             if(!"".equals(stringDate)) {
                   stringSql  +=  " AND  TRX_DATE_S  <=  '"  +  stringDate  + "' "  +
@@ -29011,8 +29188,8 @@ public  class  Doc2M010  extends  bTransaction{
             String[][]  retFED1001       =  null ;
             //
             stringSql  =  "SELECT  ITEM_CHINESE_NAME "  +
-                                " FROM  FED1001 "  +
-                              " WHERE  ITEM_CD  =  '"  +  stringItemCd  +  "' " ;
+                           " FROM  FED1001 "  +
+                          " WHERE  ITEM_CD  =  '"  +  stringItemCd  +  "' " ;
             retFED1001  =  dbFED1.queryFromPool(stringSql) ;
             if(retFED1001.length  !=  0) {
                   stringItemName  =  retFED1001[0][0].trim( ) ;
@@ -30565,7 +30742,7 @@ public  class  Doc2M010  extends  bTransaction{
             return  true ;
       }
       // 資料庫 Purchase
-      public  Vector  getQueryDataHashtablePurchase(String  stringTableName,  Hashtable  hashtableAnd,  String  stringSqlAnd,  Vector  vectorColumnName,  FargloryUtil  exeUtil) throws  Throwable {
+/*      public  Vector  getQueryDataHashtablePurchase(String  stringTableName,  Hashtable  hashtableAnd,  String  stringSqlAnd,  Vector  vectorColumnName,  FargloryUtil  exeUtil) throws  Throwable {
          return  exeUtil.getQueryDataHashtable(stringTableName,  hashtableAnd,  stringSqlAnd,  vectorColumnName,  dbPurchase) ;  
       }
       public  String  doInsertDBPurchase(String  stringTableName,  Hashtable  hashtableData,  boolean  booleanDB,  FargloryUtil  exeUtil) throws  Throwable {
@@ -30617,7 +30794,7 @@ public  class  Doc2M010  extends  bTransaction{
             if(!"".equals(stringSmallGroupNo))    stringSql  +=  " AND  SmallGroupNo  =  '"   +  stringSmallGroupNo   +  "' " ;
             retPurc1M022  =  dbPurchase.queryFromPool(stringSql) ;
             return  retPurc1M022 ;
-      }
+      }*/
       public  String  getVoucherCheckStatus (String  stringBarCode,  String  stringComNo,  String  stringPurchaseNo,  String  stringKindNo,  String  stringFactoryNo,  FargloryUtil  exeUtil) throws  Throwable {
             String         stringBarCodeL         =  "" ;
             String         stringKindNoPurchase   =  "" ;         
@@ -30703,12 +30880,11 @@ public  class  Doc2M010  extends  bTransaction{
                   // 整理 請款單之請購項目  ，結果為 部門->金額
                   stringSql  =  "SELECT  RecordNo12,  SUM(PurchaseNoTaxMoney) "  +
                                      " FROM  "+stringTable171+"   "  +
-                                    " WHERE  1=1 "  +
-                                       " AND  BarCode  =  '"  +  stringBarCodeL       +  "' " +
+                                    " WHERE  BarCode  =  '"  +  stringBarCodeL       +  "' " +
                                   " GROUP BY  RecordNo12 " ;
                   retDoc6M0171       =  getTableDataDoc(stringSql) ;
-                  vectorDeptCdDoc    =  new  Vector() ;
-                  hahstableMoneyDoc  =  new  Hashtable() ;
+                  //vectorDeptCdDoc    =  new  Vector() ;
+                  //hahstableMoneyDoc  =  new  Hashtable() ;
                   for(int  intNoL=0  ;  intNoL<retDoc6M0171.length  ;  intNoL++) {
                         stringRecordNo12    =  retDoc6M0171[intNoL][0].trim() ;
                         stringMoney         =  retDoc6M0171[intNoL][1].trim() ;
@@ -31047,7 +31223,7 @@ public  class  Doc2M010  extends  bTransaction{
             if("24".equals(stringKindNo))  stringKindNo  =  "17" ;
             // 請購單 固資系統 存在檢核
             // 0 列帳 Y      1 固資代碼         2. 合計金額     3. 未稅金額  4. 部門
-            // 5 ASS_ID     6 Doc3M012之RecordNo
+            // 5 ASS_ID       6 Doc3M012之RecordNo
             stringSql        =  " SELECT  a.ASS_ACCOUNT_ASSET,  (SELECT  FILTER FROM  AS_ASSET_FILTER  WHERE  F3_GUID = a.ASS_FILTER),  (a.ASS_AMOUNT+a.ASS_TAX_ADJ),  a.ASS_AMOUNT_UNTAX,  '',  "  +
                                                    " a.ASS_ID,              a.ASS_PURPOS "  +
                                           " FROM  AS_RECEIPT b, AS_ASSET a  " +

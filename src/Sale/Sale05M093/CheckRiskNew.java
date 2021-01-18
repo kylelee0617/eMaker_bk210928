@@ -55,8 +55,6 @@ public class CheckRiskNew extends jcx.jform.sproc {
     String[][] retSBen = getTableData("table5");
     for(int ii=0 ; ii<retSBen.length ; ii++) {
       String[] custom1 = retSBen[ii];
-      System.out.println("1>>>" + custom1.length);
-      System.out.println("1>>>" + custom1[0]);
       
       List list = new ArrayList();
       list.add( custom1[0].toString().trim() );
