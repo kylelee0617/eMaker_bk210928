@@ -41,14 +41,16 @@ import jcx.db.talk;
 import jcx.jform.bvalidate;
 
 /**
- * 洗錢各態樣查詢 1. 初版(態樣18 & 態樣21)還沒用eclipse開發，使用bean裝載變數不方便，故先用map。 2.
- * 第二版因為放在eclipse中開發了，故使用AMLBean做參數傳遞處理。 3. 期望我或後手有時間把初版的模式改變一下。
+ * 洗錢各態樣查詢 
+ * 1. 初版(態樣18 & 態樣21)還沒用eclipse開發，使用bean裝載變數不方便，故先用map。 
+ * 2. 第二版因為放在eclipse中開發了，故使用AMLBean做參數傳遞處理。 
+ * 3. 期望我或後手有時間把初版的模式改變一下。
  * 
  * @author B04391
  *
  */
 
-public class AMLTools extends bvalidate {
+public class AMLTools_bk20210126 extends bvalidate {
   // DB
   talk db400 = null;
   talk dbSale = null;
@@ -81,14 +83,14 @@ public class AMLTools extends bvalidate {
   String empNo = "";
 
   AMLBean aml;
-  Map mapCustomers = new HashMap();
+  Map mapCustomers = new HashMap() ;
   List orderList = null;
   List customNoList = null;
 
-  public AMLTools() throws Throwable {
+  public AMLTools_bk20210126() throws Throwable {
   }
 
-  public AMLTools(AMLBean aml) throws Throwable {
+  public AMLTools_bk20210126(AMLBean aml) throws Throwable {
     db400 = getTalk("400CRM");
     dbSale = getTalk("Sale");
     dbEIP = getTalk("EIP");
@@ -119,12 +121,12 @@ public class AMLTools extends bvalidate {
 
     // 取得AML態樣中文說明
     this.getAML();
-
-    // 取得本收款單所有客戶ID姓名對應
+    
+    //取得本收款單所有客戶ID姓名對應
     this.getCustomers();
   }
 
-  public AMLTools(Map cons) throws Throwable {
+  public AMLTools_bk20210126(Map cons) throws Throwable {
     db400 = getTalk("400CRM");
     dbSale = getTalk("Sale");
     dbEIP = getTalk("EIP");
@@ -156,13 +158,13 @@ public class AMLTools extends bvalidate {
   public void getCustomers() throws Throwable {
     String sql = "select CustomNo , CustomName from sale05M084 where DocNo = '" + this.aml.getDocNo() + "' ";
     String[][] retQuery = dbSale.queryFromPool(sql);
-    if (retQuery.length > 0) {
-      for (int i = 0; i < retQuery.length; i++) {
-        mapCustomers.put(retQuery[i][0].trim(), retQuery[i][1].trim());
-      }
+    if( retQuery.length > 0 ) {
+     for(int i=0 ; i<retQuery.length ; i++) {
+       mapCustomers.put( retQuery[i][0].trim() , retQuery[i][1].trim() );
+     }
     }
   }
-
+  
   public Map getAMLReTurn() throws Throwable {
     Map rsMap = new HashMap();
     String sql = "select * from saleRY773 where AMLType = 'AML' order by AMLNo asc";
@@ -173,7 +175,7 @@ public class AMLTools extends bvalidate {
     }
     return rsMap;
   }
-
+  
   public String getAML() throws Throwable {
     String rs = "getAML Error";
     String sql = "select * from saleRY773 where AMLType = 'AML' order by AMLNo asc";
@@ -196,18 +198,18 @@ public class AMLTools extends bvalidate {
     strActionNo = strNowDate + strNowTime + ram;
     System.out.println("strActionNo=====>" + strActionNo);
   }
-
-  // 能依照功能切換版本
+  
+  //能依照功能切換版本
   public void getRecordNo070ByType(AMLBean aml) throws Throwable {
     String stringSQL = "";
-    if ("收款".equals(aml.getFuncName()) && !"".equals(aml.getDocNo())) {
+    if ("收款".equals(aml.getFuncName()) && !"".equals(aml.getDocNo()) ) {
       stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE DocNo ='" + aml.getDocNo() + "' ";
-    } else {
+    }else {
       stringSQL = "SELECT MAX(RecordNo) AS MaxNo FROM Sale05M070 WHERE OrderNo ='" + aml.getOrderNo() + "' ";
     }
-
+    
     String[][] ret05M070 = dbSale.queryFromPool(stringSQL);
-    if (ret05M070.length > 0 && !"".equals(ret05M070[0][0].trim())) {
+    if ( ret05M070.length > 0 && !"".equals(ret05M070[0][0].trim()) ) {
       intRecordNo = Integer.parseInt(ret05M070[0][0].trim()) + 1;
     }
     System.out.println("intRecordNo=====>" + intRecordNo);
@@ -258,17 +260,16 @@ public class AMLTools extends bvalidate {
   public boolean check(String value) throws Throwable {
     return false;
   }
-
+  
   /**
-   * AML 001
-   * 同一客戶同一營業日內2筆(含)以上包含現金、匯款、信用卡、支票交易，且每筆皆介於新台幣450,000~499,999元，系統檢核預警。(收款本日所有繳款)
-   * 觸發條件: 必定觸發 查詢條件包含45~49判斷，程式無須再處理
-   * 
+   * AML 001  同一客戶同一營業日內2筆(含)以上包含現金、匯款、信用卡、支票交易，且每筆皆介於新台幣450,000~499,999元，系統檢核預警。(收款本日所有繳款)
+   * 觸發條件: 必定觸發
+   * 查詢條件包含45~49判斷，程式無須再處理
    * @param aml
    * @return
    * @throws Throwable
    */
-  public Result chkAML001(AMLBean aml, String type) throws Throwable {
+  public Result chkAML001(AMLBean aml , String type) throws Throwable {
     Result rs = new Result();
     StringBuilder sbMsg = new StringBuilder();
     StringBuilder sbSQL = new StringBuilder();
@@ -281,11 +282,11 @@ public class AMLTools extends bvalidate {
       rs.setReturnMsg(rsStat.NODATA_AMLMSG[3]);
       return rs;
     }
-
+    
     System.out.println("AML01 start>>>");
     String shareCondition = "";
     // 訂單
-    if ("order".equals(type)) {
+    if("order".equals(type)) {
       aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
       aml.setCustomNames(aml.getCustomNames());
       shareCondition = "and a.EDate = '" + aml.getTrxDate() + "' and c.OrderNo in (" + aml.getOrderNos() + ") ";
@@ -331,98 +332,108 @@ public class AMLTools extends bvalidate {
       for (int i = 0; i < retAML0011.length; i++) {
         String thisKey1 = retAML0011[i][0].trim();
         if (lastKey1.equals(thisKey1)) { // 相同即表示第二筆
-          if (count1 >= 1)
-            continue; // 訊息一次就好
+          if (count1 >= 1) continue; // 訊息一次就好
           String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames());
           sbMsg.append(msg).append("\n");
           aml.setErrMsg(msg);
           count1++;
-
-          // 寫符合紀錄
+          
+          //寫符合紀錄
           aml.setOrderNo(thisKey1);
           this.insSale070(aml);
           this.insCR400(aml);
-
-          // 從清單中移除符合的編號
+          
+          //從清單中移除符合的編號
           orderList.remove("'" + thisKey1 + "'");
-        } else {
+        }else {
           count1 = 0;
         }
         lastKey1 = thisKey1;
       }
-
-      // 寫不符合紀錄
+      
+      //寫不符合紀錄
       for (int i = 0; i < orderList.size(); i++) {
         aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
         aml.setErrMsg("不符合");
         this.insSale070(aml);
       }
-    } // End type = order
+    } //End type = order
 
     // 客戶部分
-    if ("custom".equals(type)) {
+    if( "custom".equals(type) ) {
       aml.setOrderNo("");
       shareCondition = "and a.EDate = '" + aml.getTrxDate() + "' and c.CustomNo in (" + aml.getCustomNos() + ") ";
-      String sql = "select distinct c.CustomNo , c.CustomName ,a.EDate " + ", 'cash' " + ", ISNULL(a.CashMoney , 0) as money "
+      String sql = "select distinct c.CustomNo , c.CustomName ,a.EDate "
+          + ", 'cash' " + ", ISNULL(a.CashMoney , 0) as money "
           + ", (select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo) "
-          + ", ISNULL(a.CashMoney , 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 " + "from Sale05M080 a , sale05m084 c  "
+          + ", ISNULL(a.CashMoney , 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 " 
+          + "from Sale05M080 a , sale05m084 c  "
           + "where 1=1 and a.DocNo=c.DocNo  "
           + "and (ISNULL(a.CashMoney , 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) "
-          + shareCondition + "UNION " + "select distinct c.CustomNo , c.CustomName ,a.EDate " + ", 'credit' " + ", ISNULL(b.CreditCardMoney, 0) as money "
+          + shareCondition 
+          + "UNION " 
+          + "select distinct c.CustomNo , c.CustomName ,a.EDate "
+          + ", 'credit' " + ", ISNULL(b.CreditCardMoney, 0) as money "
           + ", (select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo) "
           + ", ISNULL(a.CreditCardMoney , 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 "
           + "from Sale05M080 a  , Sale05M083 b , sale05m084 c " + "where b.DocNo = a.DocNo and a.DocNo=c.DocNo "
-          + "and (ISNULL(b.CreditCardMoney, 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) "
-          + shareCondition + "UNION " + "select distinct c.CustomNo , c.CustomName ,a.EDate " + ", 'bank' " + ", ISNULL(b.BankMoney, 0) as money "
+          + "and (ISNULL(b.CreditCardMoney, 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) " 
+          + shareCondition
+          + "UNION " 
+          + "select distinct c.CustomNo , c.CustomName ,a.EDate "
+          + ", 'bank' " + ", ISNULL(b.BankMoney, 0) as money "
           + ", (select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo) "
           + ", ISNULL(a.BankMoney , 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 "
           + "from Sale05M080 a  , Sale05M328 b , sale05m084 c " + "where b.DocNo = a.DocNo and a.DocNo=c.DocNo "
-          + "and (ISNULL(b.BankMoney, 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and  499999) "
-          + shareCondition + "UNION " + "select distinct c.CustomNo , c.CustomName ,a.EDate " + ", 'check' " + ", ISNULL(b.CheckMoney, 0) as money "
+          + "and (ISNULL(b.BankMoney, 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and  499999) " 
+          + shareCondition
+          + "UNION " 
+          + "select distinct c.CustomNo , c.CustomName ,a.EDate "
+          + ", 'check' " + ", ISNULL(b.CheckMoney, 0) as money "
           + ", (select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo) "
           + ", ISNULL(a.CheckMoney , 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 "
           + "from Sale05M080 a  , Sale05M082 b , sale05m084 c " + "where b.DocNo = a.DocNo and a.DocNo=c.DocNo "
-          + "and (ISNULL(b.CheckMoney, 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) "
-          + shareCondition + "order by c.CustomNo desc ,a.EDate DESC ";
+          + "and (ISNULL(b.CheckMoney, 0)*(select top 1 Percentage from Sale05M084 e where e.DocNo=a.DocNo and e.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) " 
+          + shareCondition
+          + "order by c.CustomNo desc ,a.EDate DESC ";
       String[][] retAML0012 = dbSale.queryFromPool(sql, 300);
       int count2 = 0;
       String lastKey2 = "";
       for (int i = 0; i < retAML0012.length; i++) {
         String thisKey2 = retAML0012[i][0].trim();
-        if (lastKey2.equals(thisKey2)) { // 相同即表示第二筆
-          if (count2 >= 1)
-            continue; // 訊息一次就好
+        if ( lastKey2.equals(thisKey2) ) { // 相同即表示第二筆
+          if (count2 >= 1) continue; // 訊息一次就好
           String msg = amlDesc.replaceAll("<customName>", retAML0012[i][1].trim());
           sbMsg.append(msg).append("\n");
           aml.setErrMsg(msg);
           count2++;
-
-          // 寫符合紀錄
+          
+          //寫符合紀錄
           aml.setCustomId(thisKey2);
           aml.setCustomName(retAML0012[i][1].trim());
           this.insSale070(aml);
           this.insCR400(aml);
-
-          // 從清單中移除符合的編號
+          
+          //從清單中移除符合的編號
           customNoList.remove("'" + thisKey2 + "'");
-        } else {
+        }else {
           count2 = 0;
         }
-
+        
         lastKey2 = thisKey2;
       }
-
-      // 寫不符合紀錄
+      
+      //寫不符合紀錄
       for (int i = 0; i < customNoList.size(); i++) {
-        String noMatchId = customNoList.get(i).toString().replaceAll("'", "");
+        String noMatchId = customNoList.get(i).toString().replaceAll("'", ""); 
         aml.setCustomId(noMatchId);
         aml.setCustomName(mapCustomers.get(noMatchId).toString());
         aml.setErrMsg("不符合");
         this.insSale070(aml);
       }
-    } // End of type = custom
-
-    // 重置名單
+    } //End of type = custom
+    
+    //重置名單
     orderList = new ArrayList(Arrays.asList(aml.getOrderNos().split(",")));
     customNoList = new ArrayList(Arrays.asList(aml.getCustomNos().split(",")));
 
@@ -430,17 +441,20 @@ public class AMLTools extends bvalidate {
     rs.setData(sbMsg.toString());
     return rs;
   }
-
+  
+  
   /**
-   * Kyle AML 002 同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元, 觸發條件:
-   * 收款單本身命中一次45~49萬需執行檢核。 查詢前兩日再命中一次即產生態樣。 2020/11/26 :
-   * 發現訂單跟客戶應該要分開處理(因為在收款單那邊就要拆分訂單跟個人是否命中)，客戶部分已經寫好就懶得改了!!
+   * Kyle
+   * AML 002 同一客戶3個營業日內，有2日以現金或匯款達450,000~499,999元,
+   * 觸發條件: 收款單本身命中一次45~49萬需執行檢核。
+   * 查詢前兩日再命中一次即產生態樣。
+   * 2020/11/26 : 發現訂單跟客戶應該要分開處理(因為在收款單那邊就要拆分訂單跟個人是否命中)，客戶部分已經寫好就懶得改了!!
    * 
    * @param aml
    * @return
    * @throws Throwable
    */
-  public Result chkAML002(AMLBean aml, String type) throws Throwable {
+  public Result chkAML002(AMLBean aml , String type) throws Throwable {
     Result rs = new Result();
     StringBuilder sbMsg = new StringBuilder();
     StringBuilder sbSQL = new StringBuilder();
@@ -459,10 +473,10 @@ public class AMLTools extends bvalidate {
     String endEDate = kutil.getDateAfterNDays(aml.getTrxDate().trim(), "/", -1);
 
     System.out.println("AML02 start>>>");
-    // 訂單
+    //訂單
     aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
     aml.setCustomNames(aml.getCustomNames());
-    if ("order".equals(type)) {
+    if("order".equals(type)) {
       sbSQL.append("SELECT c.OrderNo ,a.EDate ");
       sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
       sbSQL.append(", SUM(a.BankMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as BankMoney ");
@@ -477,36 +491,35 @@ public class AMLTools extends bvalidate {
       String lastKey1 = "";
       for (int i = 0; i < retAML0021.length; i++) {
         String thisKey1 = retAML0021[i][0].trim();
-        if (lastKey1.equals(thisKey1))
-          continue; // 重複的不要
-
-        // 處理命中訊息
+        if (lastKey1.equals(thisKey1)) continue; // 重複的不要
+        
+        //處理命中訊息
         String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames());
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
-
-        // 寫符合紀錄
+        
+        //寫符合紀錄
         aml.setOrderNo(thisKey1);
         this.insSale070(aml);
         this.insCR400(aml);
-
-        // 從清單中移除符合的編號
+        
+        //從清單中移除符合的編號
         orderList.remove("'" + thisKey1 + "'");
-
+        
         lastKey1 = thisKey1;
       }
-
-      // 寫不符合紀錄
+      
+      //寫不符合紀錄
       for (int i = 0; i < orderList.size(); i++) {
         aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
         aml.setErrMsg("不符合");
         this.insSale070(aml);
       }
     }
-
-    // 客戶
+    
+    //客戶
     aml.setOrderNo("");
-    if ("custom".equals(type)) {
+    if("custom".equals(type)) {
       sbSQL.append("select c.CustomNo ,c.CustomName ,a.EDate ");
       sbSQL.append(", SUM(a.CashMoney)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 as CashMoney ");
       sbSQL.append(", SUM(a.BankMoney)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 as BankMoney ");
@@ -514,63 +527,60 @@ public class AMLTools extends bvalidate {
       sbSQL.append("where 1=1 and a.DocNo=c.DocNo ");
       sbSQL.append("and a.EDate BETWEEN '" + startEDate + "' AND '" + endEDate + "' and c.CustomNo = '" + aml.getCustomId() + "' ");
       sbSQL.append("GROUP BY a.DocNo ,a.EDate , c.CustomNo ,c.CustomName ,a.CashMoney ,a.CreditCardMoney ,a.BankMoney ,a.CheckMoney ");
-      sbSQL.append(
-          "HAVING ((ISNULL(a.CashMoney , 0)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) ");
-      sbSQL.append(
-          "or (ISNULL(a.BankMoney , 0)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) ) ");
+      sbSQL.append("HAVING ((ISNULL(a.CashMoney , 0)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) ");
+      sbSQL.append("or (ISNULL(a.BankMoney , 0)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 BETWEEN 450000 and 499999) ) ");
       sbSQL.append("ORDER BY c.CustomNo DESC ,a.EDate DESC ");
       String[][] retAML0022 = dbSale.queryFromPool(sbSQL.toString(), 300);
       String lastKey2 = "";
       for (int i = 0; i < retAML0022.length; i++) {
         String thisKey2 = retAML0022[i][0].trim();
-        if (lastKey2.equals(thisKey2))
-          continue; // 重複的不要
-
-        // 處理命中訊息
+        if (lastKey2.equals(thisKey2)) continue; // 重複的不要
+        
+        //處理命中訊息
         String msg = amlDesc.replaceAll("<customName>", retAML0022[i][1].trim());
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
-
-        // 寫符合紀錄
+        
+        //寫符合紀錄
         aml.setCustomId(thisKey2);
         aml.setCustomName(retAML0022[i][1].trim());
         this.insSale070(aml);
         this.insCR400(aml);
-
-        // 從清單中移除符合的編號
+        
+        //從清單中移除符合的編號
         customNoList.remove("'" + thisKey2 + "'");
-
+        
         lastKey2 = thisKey2;
       }
-
-      // 寫不符合紀錄
+      
+      //寫不符合紀錄
       for (int i = 0; i < customNoList.size(); i++) {
-        String noMatchId = customNoList.get(i).toString().replaceAll("'", "");
+        String noMatchId = customNoList.get(i).toString().replaceAll("'", ""); 
         aml.setCustomId(noMatchId);
         aml.setCustomName(mapCustomers.get(noMatchId).toString());
         aml.setErrMsg("不符合");
         this.insSale070(aml);
       }
     }
-
-    // 重置名單
+    
+    //重置名單
     orderList = new ArrayList(Arrays.asList(aml.getOrderNos().split(",")));
     customNoList = new ArrayList(Arrays.asList(aml.getCustomNos().split(",")));
-
+    
     rs.setReturnCode(Integer.parseInt(rsStat.SUCCESS[0]));
     rs.setData(sbMsg.toString());
     return rs;
   }
-
+  
   /**
-   * AML 0031 同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。 觸發條件 :
-   * 收款單當下有收現金，且昨日、前日未命中大額(AML003) 查詢訂單或單一客戶三日內收款累計，超過50萬產生態樣
-   * 
+   * AML 0031  同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。
+   * 觸發條件 : 收款單當下有收現金，且昨日、前日未命中大額(AML003)
+   * 查詢訂單或單一客戶三日內收款累計，超過50萬產生態樣
    * @param aml
    * @return
    * @throws Throwable
    */
-  public Result chkAML0031(AMLBean aml, String keyNo, String type) throws Throwable {
+  public Result chkAML0031(AMLBean aml , String keyNo , String type) throws Throwable {
     Result rs = new Result();
     StringBuilder sbMsg = new StringBuilder();
     StringBuilder sbSQL = new StringBuilder();
@@ -584,92 +594,110 @@ public class AMLTools extends bvalidate {
       return rs;
     }
 
-    //設定日期範圍
     String startEDate = aml.getTrxDate().trim();
     String endEDate = aml.getTrxDate().trim();
 
     System.out.println("AML031 start>>>");
-    System.out.println("AML031 日期範圍>>>" + startEDate + " - " + endEDate);
-    System.out.println("AML031 訂單號碼>>>" + aml.getOrderNos()); // sql in 格式
-    System.out.println("AML031 客戶IDS>>>" + aml.getCustomNos()); // sql in 格式
-    System.out.println("AML031 客戶NAMES>>>" + aml.getCustomNames()); // name、name、name
-
+    System.out.println("AML031 日期範圍>>>" + startEDate + " AND " + endEDate);
+    System.out.println("AML031 訂單號碼>>>" + aml.getOrderNos()); //sql in 格式
+    System.out.println("AML031 客戶IDS>>>" + aml.getCustomNos()); //sql in 格式
+    System.out.println("AML031 客戶NAMES>>>" + aml.getCustomNames()); //name、name、name
+    
     // 訂單
     aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
     aml.setCustomNames(aml.getCustomNames());
-    if ("order".equals(type)) {
+    if("order".equals(type)) {
+      System.out.println("AML031 訂單>>>");
       String orderNo = keyNo;
-      System.out.println("AML031 訂單>>>"+ orderNo);
-
-      String[][] retO = this.getOrderDayPayA4(startEDate, startEDate, orderNo);
-      float dayAmt = 0; // 每日累計
-      for (int i = 0; i < retO.length; i++) {
+      
+      String[][] retO = this.getOrderDayPayA4(startEDate, startEDate , orderNo);
+      float dayAmt = 0;     //每日累計
+      for(int i=0 ; i<retO.length ; i++) {
         String keyDate = retO[i][3].toString().trim();
-        float amt = Float.parseFloat(retO[i][2].toString().trim());
+        float amt = Float.parseFloat( retO[i][2].toString().trim() );
         dayAmt += amt;
         System.out.println("AML031 日期>>>" + keyDate + "// 金額>>>" + amt);
       }
-      System.out.println("AML031 日期>>>" + aml.getTrxDate() + "// 單日累計>>>" + dayAmt);
-
-      if (dayAmt >= 500000) {
-        // 單日累計達標，產生態樣
-        String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames() + "(" + orderNo + ")");
+      
+      if(dayAmt >= 500000) {
+        //單日累計達標，產生態樣
+        String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames()+"("+orderNo+")");
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
-
-        // 寫符合紀錄
+        
+        //寫符合紀錄
         aml.setOrderNo(orderNo);
         this.insSale070(aml);
         this.insCR400(aml);
-
-        // 從清單中移除符合的編號
+        
+        //從清單中移除符合的編號
         customNoList.remove("'" + orderNo + "'");
       }
-
-      // TODO: 寫不符合態樣
+      
+      //TODO: 寫不符合態樣
     }
-
+    
+    
     // 客戶
     aml.setOrderNo("");
-    if ("custom".equals(type)) {
+    if("custom".equals(type)) {
+      System.out.println("AML031 客戶>>>");
       String[] arrCustNos = aml.getCustomNos().split(",");
       String[] arrCustNames = aml.getCustomNames().split("、");
       int ii = 0;
-      for (ii = 0; ii < arrCustNos.length; ii++) {
-        if (keyNo.equals(arrCustNos[ii].toString().trim().replaceAll("'", "")))
-          break; // 找本ID在陣列中的位置
+      for(ii=0 ; ii<arrCustNos.length ; ii++) {
+        if ( keyNo.equals(arrCustNos[ii].toString().trim().replaceAll("'", "")) ) break; //找本ID在陣列中的位置
       }
       String custName = arrCustNames[ii].toString().trim();
       String custNo = arrCustNos[ii].toString().trim().replaceAll("'", "");
-      System.out.println("AML031 客戶>>>" + custNo+custName);
-
+      
       String[][] retC = this.getCustDayPayA4(startEDate, endEDate, custNo);
-      float dayAmt = 0; // 每日累計
-      for (int i = 0; i < retC.length; i++) {
+      float totalAmt = 0; //累計總額
+      String lastKey = "";
+      float dayAmt = 0; //每日累計
+      for(int i=0 ; i<retC.length ; i++) {
         String keyDate = retC[i][3].toString().trim();
-        float amt = Float.parseFloat(retC[i][2].toString().trim());
+        float amt = Float.parseFloat( retC[i][2].toString().trim() );
+        
+        //key不同 每日加進總額後歸零
+        if(!lastKey.equals(keyDate)) {
+          totalAmt += dayAmt;
+          dayAmt = 0;
+        }
+        
         dayAmt += amt;
         System.out.println("AML031 日期>>>" + keyDate + "// 金額>>>" + amt);
+        
+        //每日累計達大額標準，退出流程(三日內有大額即不顯示累計)
+        if(dayAmt >= 500000) {
+          System.out.println("AML031 本日大額" + keyDate + ">>>，流程結束");
+          break;
+        }
+        
+        //最後一筆 = 每日加回總額
+        if(i == retC.length-1) totalAmt += dayAmt;  
+        
+        lastKey = keyDate;
       }
-      System.out.println("AML031 日期>>>" + aml.getTrxDate() + "// 單日累計>>>" + dayAmt);
-
-      if (dayAmt >= 500000) {
-        //累計達標
+      System.out.println("AML031 三日累計>>>" + totalAmt);
+      
+      if(totalAmt >= 500000) {
+        //三日累計達標，產生態樣
         String msg = amlDesc.replaceAll("<customName>", custName);
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
-
-        // 寫符合紀錄
+        
+        //寫符合紀錄
         aml.setCustomId(custNo);
         aml.setCustomName(custName);
         this.insSale070(aml);
         this.insCR400(aml);
-
-        // 從清單中移除符合的編號
+        
+        //從清單中移除符合的編號
         customNoList.remove("'" + custNo + "'");
       }
-
-      // TODO: 寫不符合態樣
+      
+      //TODO: 寫不符合態樣
     }
 
     rs.setReturnCode(Integer.parseInt(rsStat.SUCCESS[0]));
@@ -677,15 +705,130 @@ public class AMLTools extends bvalidate {
     return rs;
   }
 
+  
   /**
-   * AML 0041 同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。 觸發條件 :
-   * 收款單當下有收現金，且昨日、前日未命中大額(AML003) 查詢訂單或單一客戶三日內收款累計，超過50萬產生態樣
-   * 
+   * AML 003  同一客戶同一營業日現金繳納累計達50萬元(含)以上，須檢核是否符合疑似洗錢交易表徵。
+   * 觸發條件 : 收款單當下有收現金需檢核
+   * 查詢訂單或單一客戶當日收款，超過50萬產生態樣
    * @param aml
    * @return
    * @throws Throwable
    */
-  public Result chkAML0041(AMLBean aml, String keyNo, String type) throws Throwable {
+  public Result chkAML003(AMLBean aml) throws Throwable {
+    Result rs = new Result();
+    StringBuilder sbMsg = new StringBuilder();
+    StringBuilder sbSQL = new StringBuilder();
+    aml.setAMLNo("003");
+
+    // 先取得樣態說明
+    String amlDesc = mapAMLMsg.get(aml.getAMLNo()).toString().trim(); // 樣態示警文字
+    if ("".equals(amlDesc)) {
+      rs.setReturnCode(Integer.parseInt(rsStat.NODATA_AMLMSG[0]));
+      rs.setReturnMsg(rsStat.NODATA_AMLMSG[3]);
+      return rs;
+    }
+
+    System.out.println("AML03 start>>>");
+    // 訂單
+    aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
+    aml.setCustomNames(aml.getCustomNames());
+    sbSQL.append("select c.OrderNo ");
+//    sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
+    sbSQL.append(", SUM(a.CashMoney) as CashMoney ");
+    sbSQL.append("from Sale05M080 a , sale05m086 c ");
+    sbSQL.append("where 1=1 and a.DocNo=c.DocNo ");
+    sbSQL.append("and a.EDate = '" + aml.getTrxDate() + "' and c.OrderNo in (" + aml.getOrderNos() + ") ");
+//    sbSQL.append("GROUP BY c.OrderNo , a.DocNo ,a.CashMoney ");
+    sbSQL.append("GROUP BY c.OrderNo ");
+//    sbSQL.append("HAVING ( (ISNULL(a.CashMoney , 0)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) >= 500000) ) ");
+    sbSQL.append("ORDER BY c.OrderNo DESC ");
+    String[][] retAML0031 = dbSale.queryFromPool(sbSQL.toString(), 300);
+    String lastKey1 = "";
+    for (int i = 0; i < retAML0031.length; i++) {
+      String thisKey1 = retAML0031[i][0].trim();
+      
+      if (lastKey1.equals(thisKey1)) continue; // 重複的不要
+      
+      String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames());
+      sbMsg.append(msg).append("\n");
+      aml.setErrMsg(msg);
+      
+      //寫符合紀錄
+      aml.setOrderNo(thisKey1);
+      this.insSale070(aml);
+      this.insCR400(aml);
+      
+      //從清單中移除符合的編號
+      orderList.remove("'" + thisKey1 + "'");
+      
+      lastKey1 = thisKey1;
+    }
+    
+    //寫不符合紀錄
+    for (int i = 0; i < orderList.size(); i++) {
+      aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
+      aml.setErrMsg("不符合");
+      this.insSale070(aml);
+    }
+
+    // 客戶
+    aml.setOrderNo("");
+    sbSQL = new StringBuilder();
+    sbSQL.append("select c.CustomNo ,c.CustomName ");
+    sbSQL.append(", SUM(a.CashMoney)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 as CashMoney ");
+    sbSQL.append("from Sale05M080 a , sale05m084 c ");
+    sbSQL.append("where 1=1 and a.DocNo=c.DocNo ");
+    sbSQL.append("and a.EDate = '" + aml.getTrxDate() + "' and c.CustomNo in (" + aml.getCustomNos() +") ");
+    sbSQL.append("GROUP BY a.DocNo ,c.CustomNo ,c.CustomName ,a.CashMoney ");
+    sbSQL.append("HAVING ( (ISNULL(a.CashMoney , 0)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100) >= 500000 ) ");
+    sbSQL.append("ORDER BY c.CustomNo DESC ");
+    String[][] retAML0032 = dbSale.queryFromPool(sbSQL.toString(), 300);
+    String lastKey2 = "";
+    for (int i = 0; i < retAML0032.length; i++) {
+      String thisKey2 = retAML0032[i][0].trim();
+      
+      if (lastKey2.equals(thisKey2)) continue; // 重複的不要
+      
+      String msg = amlDesc.replaceAll("<customName>", retAML0032[i][1].trim());
+      sbMsg.append(msg).append("\n");
+      aml.setErrMsg(msg);
+      
+      //寫符合紀錄
+      aml.setCustomId(thisKey2);
+      aml.setCustomName(retAML0032[i][1].trim());
+      this.insSale070(aml);
+      this.insCR400(aml);
+      
+      //從清單中移除符合的編號
+      customNoList.remove("'" + thisKey2 + "'");
+      
+      lastKey2 = thisKey2;
+    }
+    
+    //寫不符合紀錄
+    for (int i = 0; i < customNoList.size(); i++) {
+      String noMatchId = customNoList.get(i).toString().replaceAll("'", ""); 
+      aml.setCustomId(noMatchId);
+      aml.setCustomName(mapCustomers.get(noMatchId).toString());
+      aml.setErrMsg("不符合");
+      this.insSale070(aml);
+    }
+
+    rs.setReturnCode(Integer.parseInt(rsStat.SUCCESS[0]));
+    rs.setData(sbMsg.toString());
+    return rs;
+  }
+  
+  
+  /**
+   * AML 0041  同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。
+   * 觸發條件 : 收款單當下有收現金，且昨日、前日未命中大額(AML003)
+   * 查詢訂單或單一客戶三日內收款累計，超過50萬產生態樣
+   * @param aml
+   * @return
+   * @throws Throwable
+   */
+  public Result chkAML0041(AMLBean aml , String keyNo , String type) throws Throwable {
     Result rs = new Result();
     StringBuilder sbMsg = new StringBuilder();
     StringBuilder sbSQL = new StringBuilder();
@@ -704,143 +847,144 @@ public class AMLTools extends bvalidate {
 
     System.out.println("AML041 start>>>");
     System.out.println("AML041 日期範圍>>>" + startEDate + " AND " + endEDate);
-    System.out.println("AML041 訂單號碼>>>" + aml.getOrderNos()); // sql in 格式
-    System.out.println("AML041 客戶IDS>>>" + aml.getCustomNos()); // sql in 格式
-    System.out.println("AML041 客戶NAMES>>>" + aml.getCustomNames()); // name、name、name
-
+    System.out.println("AML041 訂單號碼>>>" + aml.getOrderNos()); //sql in 格式
+    System.out.println("AML041 客戶IDS>>>" + aml.getCustomNos()); //sql in 格式
+    System.out.println("AML041 客戶NAMES>>>" + aml.getCustomNames()); //name、name、name
+    
     // 訂單
     aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
     aml.setCustomNames(aml.getCustomNames());
-    if ("order".equals(type)) {
+    if("order".equals(type)) {
+      System.out.println("AML041 訂單>>>");
       String orderNo = keyNo;
-      System.out.println("AML041 訂單>>>"+ orderNo);
-
-      String[][] retAML0041 = this.getOrderDayPayA4(startEDate, startEDate, orderNo);
-      float totalAmt = 0; // 累計總額
-      float dayAmt = 0; // 每日累計
+      
+      String[][] retAML0041 = this.getOrderDayPayA4(startEDate, startEDate , orderNo);
+      float totalAmt = 0; //累計總額
+      float dayAmt = 0;   //每日累計
       String lastKey = "";
-      for (int i = 0; i < retAML0041.length; i++) {
+      for(int i=0 ; i<retAML0041.length ; i++) {
         String keyDate = retAML0041[i][3].toString().trim();
-        float amt = Float.parseFloat(retAML0041[i][2].toString().trim());
-
-        // key不同 每日加進總額後歸零
-        if (!lastKey.equals(keyDate)) {
+        float amt = Float.parseFloat( retAML0041[i][2].toString().trim() );
+        
+        //key不同 每日加進總額後歸零
+        if(!lastKey.equals(keyDate)) {
           System.out.println("AML041 日期小記" + keyDate + ">>>" + dayAmt);
           totalAmt += dayAmt;
           dayAmt = 0;
         }
-
+        
         dayAmt += amt;
         System.out.println("AML041 日期>>>" + keyDate + "// 金額>>>" + amt);
-
-        // 每日累計達大額標準，退出流程(三日內有大額即不顯示累計)
-        if (dayAmt >= 500000) {
+        
+        //每日累計達大額標準，退出流程(三日內有大額即不顯示累計)
+        if(dayAmt >= 500000) {
           System.out.println("AML041 本日大額" + keyDate + ">>>，流程結束");
           break;
         }
-
-        // 最後一筆 = 每日加回總額
-        if (i == retAML0041.length - 1)
-          totalAmt += dayAmt;
-
+        
+        //最後一筆 = 每日加回總額
+        if(i == retAML0041.length-1) totalAmt += dayAmt;
+        
         lastKey = keyDate;
       }
       System.out.println("AML041 三日累計>>>" + totalAmt);
-
-      if (totalAmt >= 500000) {
-        // 三日累計達標，產生態樣
+      
+      if(totalAmt >= 500000) {
+        //三日累計達標，產生態樣
         String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames());
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
-
-        // 寫符合紀錄
+        
+        //寫符合紀錄
         aml.setOrderNo(orderNo);
         this.insSale070(aml);
         this.insCR400(aml);
-
-        // 從清單中移除符合的編號
+        
+        //從清單中移除符合的編號
         customNoList.remove("'" + orderNo + "'");
       }
-
+      
       /*
-       * 感覺會有問題，先不寫 
-       * //寫不符合紀錄 
-       * for (int i = 0; i < orderList.size(); i++) {
-       * aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
-       * aml.setErrMsg("不符合"); this.insSale070(aml); }
-       */
+       * 感覺會有問題，先不寫
+      //寫不符合紀錄
+      for (int i = 0; i < orderList.size(); i++) {
+        aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
+        aml.setErrMsg("不符合");
+        this.insSale070(aml);
+      }
+      */
     }
-
+    
     // 客戶
     aml.setOrderNo("");
-    if ("custom".equals(type)) {
+    if("custom".equals(type)) {
+      System.out.println("AML041 客戶>>>");
       String[] arrCustNos = aml.getCustomNos().split(",");
       String[] arrCustNames = aml.getCustomNames().split("、");
       int ii = 0;
-      for (ii = 0; ii < arrCustNos.length; ii++) {
-        if (keyNo.equals(arrCustNos[ii].toString().trim().replaceAll("'", "")))
-          break; // 找本ID在陣列中的位置
+      for(ii=0 ; ii<arrCustNos.length ; ii++) {
+        if ( keyNo.equals(arrCustNos[ii].toString().trim().replaceAll("'", "")) ) break; //找本ID在陣列中的位置
       }
       String custName = arrCustNames[ii].toString().trim();
       String custNo = arrCustNos[ii].toString().trim().replaceAll("'", "");
-      System.out.println("AML041 客戶>>>"+custNo+custName);
-
+      
       String[][] retCustA4 = this.getCustDayPayA4(startEDate, endEDate, custNo);
-      float totalAmt = 0; // 累計總額
+      float totalAmt = 0; //累計總額
       String lastKey = "";
-      float dayAmt = 0; // 每日累計
-      for (int i = 0; i < retCustA4.length; i++) {
+      float dayAmt = 0; //每日累計
+      for(int i=0 ; i<retCustA4.length ; i++) {
         String keyDate = retCustA4[i][3].toString().trim();
         float amt = Float.parseFloat(retCustA4[i][2].toString().trim());
-
-        // key不同 每日加進總額後歸零
-        if (!lastKey.equals(keyDate)) {
+        
+        //key不同 每日加進總額後歸零
+        if(!lastKey.equals(keyDate)) {
           totalAmt += dayAmt;
           dayAmt = 0;
         }
-
+        
         dayAmt += amt;
         System.out.println("AML041 日期>>>" + keyDate + "// 金額>>>" + amt);
-
-        // 每日累計達大額標準，退出流程(三日內有大額即不顯示累計)
-        if (dayAmt >= 500000) {
+        
+        //每日累計達大額標準，退出流程(三日內有大額即不顯示累計)
+        if(dayAmt >= 500000) {
           System.out.println("AML041 本日大額" + keyDate + ">>>，流程結束");
           break;
         }
-
-        // 最後一筆 = 每日加回總額
-        if (i == retCustA4.length - 1)
-          totalAmt += dayAmt;
-
+        
+        //最後一筆 = 每日加回總額
+        if(i == retCustA4.length-1) totalAmt += dayAmt;  
+        
         lastKey = keyDate;
       }
       System.out.println("AML041 三日累計>>>" + totalAmt);
-
-      if (totalAmt >= 500000) {
-        // 三日累計達標，產生態樣
+      
+      if(totalAmt >= 500000) {
+        //三日累計達標，產生態樣
         String msg = amlDesc.replaceAll("<customName>", custName);
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
-
-        // 寫符合紀錄
+        
+        //寫符合紀錄
         aml.setCustomId(custNo);
         aml.setCustomName(custName);
         this.insSale070(aml);
         this.insCR400(aml);
-
-        // 從清單中移除符合的編號
+        
+        //從清單中移除符合的編號
         customNoList.remove("'" + custNo + "'");
       }
-
+      
       /*
-       * 感覺會有問題，先不寫 
-       * //寫不符合紀錄 
-       * for (int i = 0; i < customNoList.size(); i++) { String
-       * noMatchId = customNoList.get(i).toString().replaceAll("'", "");
-       * aml.setCustomId(noMatchId);
-       * aml.setCustomName(mapCustomers.get(noMatchId).toString());
-       * aml.setErrMsg("不符合"); this.insSale070(aml); }
-       */
+       * 感覺會有問題，先不寫
+      //寫不符合紀錄
+      for (int i = 0; i < customNoList.size(); i++) {
+        String noMatchId = customNoList.get(i).toString().replaceAll("'", ""); 
+        aml.setCustomId(noMatchId);
+        aml.setCustomName(mapCustomers.get(noMatchId).toString());
+        aml.setErrMsg("不符合");
+        this.insSale070(aml);
+      }
+      */
     }
 
     rs.setReturnCode(Integer.parseInt(rsStat.SUCCESS[0]));
@@ -848,29 +992,188 @@ public class AMLTools extends bvalidate {
     return rs;
   }
   
-  public String[][] getOrderDayPayA4(String sDate, String eDate, String orderNo) throws Throwable {
+  public String[][] getCustDayPayA4(String sDate , String eDate, String custNo)  throws Throwable {
     StringBuilder sbSQL = new StringBuilder();
-    sbSQL.append("select c.OrderNo , a.DocNo ");
-    sbSQL.append(", (a.CashMoney/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo)) as CashMoney ");
-    sbSQL.append(", a.EDate ");
-    sbSQL.append("from Sale05M080 a , sale05m086 c where 1=1 and a.DocNo=c.DocNo ");
-    sbSQL.append("and a.EDate BETWEEN '" + sDate + "' AND '" + eDate + "' and c.OrderNo = '" + orderNo + "' ");
-    sbSQL.append("ORDER BY c.OrderNo DESC , a.edate DESC ");
-    String[][] ret = dbSale.queryFromPool(sbSQL.toString());
-    return ret;
-  }
-
-  public String[][] getCustDayPayA4(String sDate, String eDate, String custNo) throws Throwable {
-    StringBuilder sbSQL = new StringBuilder();
-    sbSQL.append("select c.CustomNo ,c.CustomName ");
-    sbSQL.append(", (a.CashMoney * (select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100) as CashMoney ");
+    sbSQL.append("select c.CustomNo ,c.CustomName "); 
+    sbSQL.append(", a.CashMoney * (select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 as CashMoney ");
     sbSQL.append(", a.EDate ");
     sbSQL.append("from Sale05M080 a , sale05m084 c where 1=1 and a.DocNo=c.DocNo ");
     sbSQL.append("and a.EDate BETWEEN '" + sDate + "' AND '" + eDate + "' and c.CustomNo = '" + custNo + "' ");
+    sbSQL.append("GROUP BY c.CustomNo ,c.CustomName , a.DocNo ,a.EDate ,a.CashMoney ");
     sbSQL.append("ORDER BY c.CustomNo DESC ,a.edate DESC ");
     String[][] ret = dbSale.queryFromPool(sbSQL.toString());
     return ret;
   }
+  public String[][] getOrderDayPayA4(String sDate, String eDate, String orderNo)  throws Throwable {
+    StringBuilder sbSQL = new StringBuilder();
+    sbSQL.append("select c.OrderNo , '' ");
+    sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
+    sbSQL.append(", a.EDate ");
+    sbSQL.append("from Sale05M080 a , sale05m086 c ");
+    sbSQL.append("where 1=1 and a.DocNo=c.DocNo ");
+    sbSQL.append("and a.EDate BETWEEN '" + sDate + "' AND '" + eDate + "' and c.OrderNo = '" + orderNo + "' ");
+    sbSQL.append("GROUP BY c.OrderNo, a.EDate ");
+    sbSQL.append("ORDER BY c.OrderNo DESC , a.edate DESC ");
+    String[][] ret = dbSale.queryFromPool(sbSQL.toString());
+    return ret;
+  }
+  
+  /**
+   * AML 004  同一客戶3個營業日內，累計繳交現金超過50萬元, 系統檢核提示通報。
+   * 觸發條件 : 收款單當下有收現金，且昨日、前日未命中大額(AML003)
+   * 查詢訂單或單一客戶三日內收款累計，超過50萬產生態樣
+   * @param aml
+   * @return
+   * @throws Throwable
+   */
+  public Result chkAML004(AMLBean aml , String type) throws Throwable {
+    Result rs = new Result();
+    StringBuilder sbMsg = new StringBuilder();
+    StringBuilder sbSQL = new StringBuilder();
+    aml.setAMLNo("004");
+
+    // 先取得樣態說明
+    String amlDesc = mapAMLMsg.get(aml.getAMLNo()).toString().trim(); // 樣態示警文字
+    if ("".equals(amlDesc)) {
+      rs.setReturnCode(Integer.parseInt(rsStat.NODATA_AMLMSG[0]));
+      rs.setReturnMsg(rsStat.NODATA_AMLMSG[3]);
+      return rs;
+    }
+
+    String startEDate = kutil.getDateAfterNDays(aml.getTrxDate().trim(), "/", -2);
+    String endEDate = aml.getTrxDate().trim();
+
+    System.out.println("AML04 start>>>");
+    // 訂單
+    aml.setCustomId(aml.getCustomNos().replaceAll("'", ""));
+    aml.setCustomNames(aml.getCustomNames());
+    if("order".equals(type)) {
+      sbSQL.append("select c.OrderNo ,a.DocNo ,a.EDate "); 
+      sbSQL.append(", SUM(a.CashMoney)/(select COUNT(cc.OrderNo) from Sale05M086 cc where cc.DocNo=a.DocNo group by cc.DocNo) as CashMoney ");
+      sbSQL.append("from Sale05M080 a , sale05m086 c ");
+      sbSQL.append("where 1=1 and a.DocNo=c.DocNo ");
+      sbSQL.append("and a.EDate BETWEEN '" + startEDate + "' AND '" + endEDate + "' and c.OrderNo in (" + aml.getOrderNos() + ") ");
+      sbSQL.append("GROUP BY c.OrderNo , a.DocNo ,a.EDate ,a.CashMoney ");
+      sbSQL.append("ORDER BY c.OrderNo DESC ,a.edate DESC ");
+      String[][] retAML0041 = dbSale.queryFromPool(sbSQL.toString(), 300);
+      String lastKey1 = "";
+      String passKey1 = "";
+      double totalMoney1 = 0;
+      for (int i = 0; i < retAML0041.length; i++) {
+        String thisKey1 = retAML0041[i][0].trim();
+        double thisMoney = Double.parseDouble(retAML0041[i][3].trim());
+        
+        if (passKey1.equals(thisKey1)) {
+          continue;  //已略過的key(路上有過大額 or 已處理過)
+        }
+        
+        if(thisMoney >= 500000) {
+          passKey1 = thisKey1;  //這天大額 pass 這個訂單
+          continue;
+        }
+        
+        if(thisKey1.equals(lastKey1)) {   //同單號累計，異單號更新 
+          totalMoney1 += thisMoney;
+        }else {
+          totalMoney1 = thisMoney;
+        }
+        
+        if( thisKey1.equals(lastKey1) && totalMoney1 >= 500000 ) {   //一旦超過標準，產生態樣 & 標記為pass
+          String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames());
+          sbMsg.append(msg).append("\n");
+          aml.setErrMsg(msg);
+          
+          //寫符合紀錄
+          aml.setOrderNo(thisKey1);
+          this.insSale070(aml);
+          this.insCR400(aml);
+          
+          //從清單中移除符合的編號
+          orderList.remove("'" + thisKey1 + "'");
+          
+          passKey1 = thisKey1;
+        }
+        
+        lastKey1 = thisKey1;
+      }
+      
+      //寫不符合紀錄
+      for (int i = 0; i < orderList.size(); i++) {
+        aml.setOrderNo(orderList.get(i).toString().replaceAll("'", ""));
+        aml.setErrMsg("不符合");
+        this.insSale070(aml);
+      }
+    }
+    
+    // 客戶
+    aml.setOrderNo("");
+    if("custom".equals(type)) {
+      sbSQL = new StringBuilder();
+      sbSQL.append("select c.CustomNo ,c.CustomName ,a.DocNo ,a.EDate "); 
+      sbSQL.append(", SUM(a.CashMoney)*(select top 1 cc.Percentage from Sale05M084 cc where cc.DocNo=a.DocNo and cc.CustomNo=c.CustomNo)/100 as CashMoney ");
+      sbSQL.append("from Sale05M080 a , sale05m084 c ");
+      sbSQL.append("where 1=1 and a.DocNo=c.DocNo ");
+      sbSQL.append("and a.EDate BETWEEN '" + startEDate + "' AND '" + endEDate + "' and c.CustomNo in (" + aml.getCustomNos() + ") ");
+      sbSQL.append("GROUP BY c.CustomNo ,c.CustomName , a.DocNo ,a.EDate ,a.CashMoney ");
+      sbSQL.append("ORDER BY c.CustomNo DESC ,a.edate DESC ");
+      String[][] retAML0042 = dbSale.queryFromPool(sbSQL.toString(), 300);
+      String lastKey2 = "";
+      String passKey2 = "";
+      double totalMoney2 = 0;
+      for (int i = 0; i < retAML0042.length; i++) {
+        String thisKey = retAML0042[i][0].trim();
+        double thisMoney =  Double.parseDouble(retAML0042[i][4].trim());
+        
+        if (passKey2.equals(thisKey)) {
+          continue;  //已略過的key(路上有過大額 or 已處理過) 
+        }
+        
+        if(thisMoney >= 500000) {
+          passKey2 = thisKey;  //這天大額 pass 這個人
+          continue;
+        }
+        
+        if(thisKey.equals(lastKey2)) {   //同人累計，異單號更新 
+          totalMoney2 += thisMoney;
+        }else {
+          totalMoney2 = thisMoney;
+        }
+        
+        if( thisKey.equals(lastKey2) && totalMoney2 >= 500000 ) {   //一旦超過標準，產生態樣 & 標記為pass
+          String msg = amlDesc.replaceAll("<customName>", retAML0042[i][1].trim());
+          sbMsg.append(msg).append("\n");
+          aml.setErrMsg(msg);
+          
+          //寫符合紀錄
+          aml.setCustomId(thisKey);
+          aml.setCustomName(retAML0042[i][1].trim());
+          this.insSale070(aml);
+          this.insCR400(aml);
+          
+          //從清單中移除符合的編號
+          customNoList.remove("'" + thisKey + "'");
+          
+          passKey2 = thisKey;
+        }
+        
+        lastKey2 = thisKey;
+      }
+      
+      //寫不符合紀錄
+      for (int i = 0; i < customNoList.size(); i++) {
+        String noMatchId = customNoList.get(i).toString().replaceAll("'", ""); 
+        aml.setCustomId(noMatchId);
+        aml.setCustomName(mapCustomers.get(noMatchId).toString());
+        aml.setErrMsg("不符合");
+        this.insSale070(aml);
+      }
+    }
+
+    rs.setReturnCode(Integer.parseInt(rsStat.SUCCESS[0]));
+    rs.setData(sbMsg.toString());
+    return rs;
+  }
+  
 
   // 21. 政治PEPS X171
   public String chkX171_PEPS(Map cons) throws Throwable {
@@ -948,19 +1251,24 @@ public class AMLTools extends bvalidate {
 
     return rsMsg;
   }
-
+  
+  
   /**
-   * 寫Sale log Bean版 funcName(Func) : 功能項 EX 換名、購屋證明單 funcName2(RecordType) :
-   * 功能項細項 EX 客戶資料、代理人資料 ActionName(ActionName) : 新增、修改、刪除 errMsg :
-   * 符合的樣態內容，或為"不適用" or "不符合" AMLNo : AML樣態編號
+   * 寫Sale log  Bean版
+   * funcName(Func) : 功能項 EX 換名、購屋證明單 
+   * funcName2(RecordType) : 功能項細項 EX 客戶資料、代理人資料
+   * ActionName(ActionName) : 新增、修改、刪除 
+   * errMsg : 符合的樣態內容，或為"不適用" or "不符合" 
+   * AMLNo : AML樣態編號
    */
   public String insSale070(AMLBean aml) throws Throwable {
     String rsMsg = "0";
     String sql = "INSERT INTO Sale05M070 "
-        + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
-        + "VALUES " + "('" + aml.getDocNo() + "','" + aml.getOrderNo() + "','" + strProjectID1 + "','" + intRecordNo + "','" + strActionNo + "', " + "'" + aml.getFuncName() + "','"
-        + aml.getFuncName2() + "','" + strActionName + "','" + aml.getErrMsg() + "', " + "'" + aml.getCustomId() + "','" + aml.getCustomName() + "','" + strOrderDate
-        + "','RY','773','" + aml.getAMLNo() + "','" + aml.getErrMsg() + "', " + "'" + empNo + "', '" + rocNowDate + "', '" + strNowTime + "') ";
+        + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) " 
+        + "VALUES "
+        + "('" + aml.getDocNo() + "','" + aml.getOrderNo() + "','" + strProjectID1 + "','" + intRecordNo + "','" + strActionNo + "', " + "'" + aml.getFuncName() + "','" + aml.getFuncName2() + "','"
+        + strActionName + "','" +  aml.getErrMsg() + "', " + "'" +  aml.getCustomId() + "','" + aml.getCustomName() + "','" + strOrderDate + "','RY','773','"
+        + aml.getAMLNo() + "','" + aml.getErrMsg() + "', " + "'" + empNo + "', '" + rocNowDate + "', '" + strNowTime + "') ";
     dbSale.execFromPool(sql);
     intRecordNo++;
     return rsMsg;
@@ -968,21 +1276,25 @@ public class AMLTools extends bvalidate {
 
   public String insCR400(AMLBean aml) throws Throwable {
     String pKey = "0";
-    String amlNo = aml.getAMLNo(); // 不同功能下放的欄位有所不同
-    if ("001".equals(amlNo) || "002".equals(amlNo) || "003".equals(amlNo) || "004".equals(amlNo)) {
+    String amlNo = aml.getAMLNo();  //不同功能下放的欄位有所不同
+    if( "001".equals(amlNo) || "002".equals(amlNo) || "003".equals(amlNo) || "004".equals(amlNo) ) {
       pKey = aml.getDocNo();
-    } else if ("018".equals(amlNo) || "021".equals(amlNo)) {
+    } else if("018".equals(amlNo) || "021".equals(amlNo)) {
       pKey = aml.getOrderNo();
     }
-
+    
     String customId = aml.getCustomId().toString().split(",")[0].toString();
     String rsMsg = "";
-    String sql = "INSERT INTO PSHBPF " + "(SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) " + "VALUES " + "('RY', '" + pKey + "', '" + rocNowDate
-        + "', '" + customId + "', '" + aml.getCustomName() + "'" + ", '773', '" + aml.getAMLNo() + "', " + "'" + aml.getErrMsg() + "','" + empNo + "','" + rocNowDate + "','"
-        + strNowTime + "') ";
+    String sql = "INSERT INTO PSHBPF " 
+               + "(SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) " 
+               + "VALUES "
+               + "('RY', '" + pKey + "', '" + rocNowDate + "', '" + customId + "', '" + aml.getCustomName() + "'"
+               + ", '773', '" + aml.getAMLNo() + "', " + "'" + aml.getErrMsg() + "','" + empNo + "','"
+               + rocNowDate + "','" + strNowTime + "') ";
     db400.execFromPool(sql);
     return rsMsg;
   }
+  
 
   /**
    * funcName(Func) : 功能項 EX 換名、購屋證明單 funcName2(RecordType) : 功能項2 EX 客戶資料、代理人資料

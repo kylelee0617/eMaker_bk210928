@@ -21,7 +21,7 @@ import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class CheckAML2 extends bproc{
+public class CheckAML2_bk20210126 extends bproc{
   public String getDefaultValue(String value)throws Throwable{
     //20191107 洗錢及資恐風險管理政策處理程序作業+防制洗錢及打擊資恐風險評估處理程序作業+洗錢及資恐名單比對處理程序作業
     System.out.println("===========AML============S");
@@ -213,6 +213,40 @@ public class CheckAML2 extends bproc{
       }
     }
     
+    /*////////////////////////////////////////////////////////////////////////////
+    //本單要符合兩項45~50 (應該命中一項就好，先預備)
+    //態樣1 - 訂單
+    //各項總金額判斷是否有兩筆45~50
+    double[] aa = {dCashMoney , dCreditMoney, dCheckMoney, dBankMoney};
+    int countA1 = 0;
+    for(int ii=0 ; ii<aa.length ; ii++) {
+      if(aa[ii] >= 450000 && aa[ii] < 500000 ) {
+        countA1++;
+      }
+      if(countA1 >= 2) {   //兩筆45~50 印啦~
+        tempMsg = amlTool.chkAML001(aml, "order").getData().toString();
+        errMsg += tempMsg;
+        break;
+      }
+    }
+    //態樣1 - 個人    
+    for(int g=0 ; g<customNos.length ; g++) {
+      double custPers = Double.parseDouble(percentages[g].trim())/100;
+      countA1 = 0;
+      for(int ii=0 ; ii<aa.length ; ii++) {
+        double tmpAmt = aa[ii]*custPers;
+        if( tmpAmt >= 450000 && tmpAmt < 500000 ) {
+          countA1++;
+        }
+        if(countA1 >= 2) {   //兩筆45~50 印啦~
+          tempMsg = amlTool.chkAML001(aml, "custom").getData().toString();
+          errMsg += tempMsg;
+          break;
+        }
+      }
+    }
+    *//////////////////////////////////////////////////////////////////////////////
+    
     //態樣2
     //本單若有一筆現金或匯款介於45~49則檢查前兩天
     //Tips: 訂單跟客戶要分開處理
@@ -233,15 +267,8 @@ public class CheckAML2 extends bproc{
     
     //態樣3
     if(dCashMoney > 0) {
-      for (int g = 0; g < orderNoss.length; g++) {
-        tempMsg = amlTool.chkAML0031(aml , orderNoss[g].trim(), "order").getData().toString();
-        errMsg += tempMsg;
-      }
-      
-      for(int g=0 ; g<customNos.length ; g++) {
-        tempMsg = amlTool.chkAML0031(aml , customNos[g].trim() , "custom").getData().toString();
-        errMsg += tempMsg;
-      }
+      tempMsg = amlTool.chkAML003(aml).getData().toString();
+      errMsg += tempMsg;
     }
     
     //態樣4
@@ -267,9 +294,9 @@ public class CheckAML2 extends bproc{
         errMsg += tempMsg;
       }
     }
+    
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //End of 態樣1~4 Kyle
-    
     
     //洗錢追蹤流水號
     //20201207 Kyle : 因為態樣1~4另外獨立處理，避免影響原流水號運行，故稍微下移

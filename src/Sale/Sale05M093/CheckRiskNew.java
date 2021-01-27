@@ -34,12 +34,16 @@ public class CheckRiskNew extends jcx.jform.sproc {
       List list = new ArrayList(Arrays.asList(custom1));
       
       list.add(""); //對齊用(異動日期)
-      //不需要處理的，於23位置加上一個"C"，即可忽略(理論上會是最後)
+      //不需要處理的，於23位置加上一個"C"，即可忽略
       if( "0".equals(list.get(2).toString()) ) {
         list.add("C");  
       }else if( "1".equals(list.get(2).toString()) ) {
         list.add("");
       }
+      
+      //再增加一個對齊24-行業別代碼
+      list.add("");
+      
       //移除這個，以對齊欄位順序
       list.remove(2);
       

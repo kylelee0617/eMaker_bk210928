@@ -37,9 +37,6 @@ public class Sale02R030 extends bTransaction {
 
   //欄位檢核
   public boolean isBatchCheckOK() throws Throwable {
-    String stringPrintFile = "";
-    String stringTmp = "";
-    String stringSql = "";
     // 案別
     if ("".equals(getValue("ProjectID").trim())) {
       message("案別不可為空白。");
@@ -63,9 +60,12 @@ public class Sale02R030 extends bTransaction {
       }
     }
     
+    //付訂日跟簽約日必須要有一flag
+    int countOC = 0;
+    
     // 付訂日期
     String retDate = "";
-    int count = 0;
+    int countDate = 0;
     String stringOrderDateStart = getValue("OrderDateStart").trim();
     if( !"".equals(stringOrderDateStart) ) {
       retDate = getDateAC(stringOrderDateStart, "付訂日期(起)");
@@ -75,7 +75,8 @@ public class Sale02R030 extends bTransaction {
         return false;
       }
       setValue("OrderDateStart", retDate);
-      count++;
+      countDate++;
+      countOC++;
     }
     String stringOrderDateEnd = getValue("OrderDateEnd").trim();
     if( !"".equals(stringOrderDateEnd) ) {
@@ -86,139 +87,139 @@ public class Sale02R030 extends bTransaction {
         return false;
       }
       setValue("OrderDateEnd", retDate);
-      count++;
+      countDate++;
     }
-    System.out.println("count>>>" + count);
-    if(count == 1) {
+    if(countDate == 1) {
       message("[付訂日期(起)(迄)] 須同時限制。");
-      getcLabel("OrderDateStart").requestFocus();
       return false;
     }
     
     // 補足日期
+    countDate = 0;
     String stringEnougDateStart = getValue("EnougDateStart").trim();
-    String stringEnougDateEnd = getValue("EnougDateEnd").trim();
-    if (!"".equals(stringEnougDateStart) && !"".equals(stringEnougDateEnd)) {
+    if ( !"".equals(stringEnougDateStart) ) {
       retDate = getDateAC(stringEnougDateStart, "補足日期(起)");
-      if (!"".equals(stringEnougDateStart) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("EnougDateStart").requestFocus();
         return false;
-      } else {
-        setValue("EnougDateStart", retDate);
       }
+      setValue("EnougDateStart", retDate);
+      countDate++;
+    }
+    String stringEnougDateEnd = getValue("EnougDateEnd").trim();
+    if ( !"".equals(stringEnougDateEnd) ) {
       retDate = getDateAC(stringEnougDateEnd, "補足日期(起)");
-      if (!"".equals(stringEnougDateEnd) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("EnougDateEnd").requestFocus();
         return false;
-      } else {
-        setValue("EnougDateEnd", retDate);
       }
+      setValue("EnougDateEnd", retDate);
+      countDate++;
     }
-    if (!"".equals(stringEnougDateStart)) {
+    if(countDate == 1) {
       message("[補足日期(起)(迄)] 須同時限制。");
-      getcLabel("EnougDateStart").requestFocus();
       return false;
     }
-    if (!"".equals(stringEnougDateEnd)) {
-      message("[補足日期(起)(迄)] 須同時限制。");
-      getcLabel("EnougDateEnd").requestFocus();
-      return false;
-    }
+    
     // 簽約日期
+    countDate = 0;
     String stringContrDateStart = getValue("ContrDateStart").trim();
-    String stringContrDateEnd = getValue("ContrDateEnd").trim();
-    if (!"".equals(stringContrDateStart) && !"".equals(stringContrDateEnd)) {
+    if (!"".equals(stringContrDateStart)) {
       retDate = getDateAC(stringContrDateStart, "簽約日期(起)");
-      if (!"".equals(stringContrDateStart) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("ContrDateStart").requestFocus();
         return false;
-      } else {
-        setValue("ContrDateStart", retDate);
       }
+      setValue("ContrDateStart", retDate);
+      countDate++;
+      countOC++;
+    }
+    String stringContrDateEnd = getValue("ContrDateEnd").trim();
+    if ( !"".equals(stringContrDateEnd) ) {
       retDate = getDateAC(stringContrDateEnd, "簽約日期(起)");
-      if (!"".equals(stringContrDateEnd) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("ContrDateEnd").requestFocus();
         return false;
-      } else {
-        setValue("ContrDateEnd", retDate);
       }
+      setValue("ContrDateEnd", retDate);
+      countDate++;
     }
-    if (!"".equals(stringContrDateStart)) {
+    if(countDate == 1) {
       message("[簽約日期(起)(迄)] 須同時限制。");
-      getcLabel("ContrDateStart").requestFocus();
       return false;
     }
-    if (!"".equals(stringContrDateEnd)) {
-      message("[簽約日期(起)(迄)] 須同時限制。");
-      getcLabel("ContrDateEnd").requestFocus();
-      return false;
-    }
+    
     // 合約會審
+    countDate = 0;
     String stringDateCheckStart = getValue("DateCheckStart").trim();
     String stringDateCheckEnd = getValue("DateCheckEnd").trim();
-    if (!"".equals(stringDateCheckStart) && !"".equals(stringDateCheckEnd)) {
+    if (!"".equals(stringDateCheckStart)) {
       retDate = getDateAC(stringDateCheckStart, "合約會審(起)");
-      if (!"".equals(stringDateCheckStart) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("DateCheckStart").requestFocus();
         return false;
       } else {
         setValue("DateCheckStart", retDate);
       }
+      countDate++;
+    }
+    if (!"".equals(stringDateCheckEnd)) {
       retDate = getDateAC(stringDateCheckEnd, "合約會審(起)");
-      if (!"".equals(stringDateCheckEnd) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("DateCheckEnd").requestFocus();
         return false;
       } else {
         setValue("DateCheckEnd", retDate);
       }
+      countDate++;
     }
-    if (!"".equals(stringDateCheckStart)) {
-      message("[合約會審(起)(迄)] 須同時限制。");
-      getcLabel("ContrDateStart").requestFocus();
+    if(countDate == 1) {
+      message("[合約會審日期(起)(迄)] 須同時限制。");
       return false;
     }
-    if (!"".equals(stringDateCheckEnd)) {
-      message("[合約會審(起)(迄)] 須同時限制。");
-      getcLabel("DateCheckEnd").requestFocus();
-      return false;
-    }
+    
     // 簽約金到期
+    countDate = 0;
     String stringDateRangeStart = getValue("DateRangeStart").trim();
-    String stringDateRangeEnd = getValue("DateRangeEnd").trim();
-    if (!"".equals(stringDateRangeStart) && !"".equals(stringDateRangeEnd)) {
+    if (!"".equals(stringDateRangeStart)) {
       retDate = getDateAC(stringDateRangeStart, "簽約金到期(起)");
-      if (!"".equals(stringDateRangeStart) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("DateRangeStart").requestFocus();
         return false;
       } else {
         setValue("DateRangeStart", retDate);
       }
+      countDate++;
+    }
+    String stringDateRangeEnd = getValue("DateRangeEnd").trim();
+    if (!"".equals(stringDateRangeEnd)) {
       retDate = getDateAC(stringDateRangeEnd, "簽約金到期(起)");
-      if (!"".equals(stringDateRangeEnd) && retDate.length() != 10) {
+      if (retDate.length() != 10) {
         message(retDate);
         getcLabel("DateRangeEnd").requestFocus();
         return false;
       } else {
         setValue("DateRangeEnd", retDate);
       }
+      countDate++;
     }
-    if (!"".equals(stringDateRangeStart)) {
-      message("[簽約金到期(起)(迄)] 須同時限制。");
-      getcLabel("DateRangeStart").requestFocus();
+    if(countDate == 1) {
+      message("[簽約金到期日(起)(迄)] 須同時限制。");
       return false;
     }
-    if (!"".equals(stringDateRangeEnd)) {
-      message("[簽約金到期(起)(迄)] 須同時限制。");
-      getcLabel("DateRangeEnd").requestFocus();
+    
+    if(countOC == 0) {
+      message("[付訂日期] 與 [簽約日期] 必須擇一。");
       return false;
     }
+    
     // Check File 是否存在
     message("");
     return true;
@@ -230,6 +231,8 @@ public class Sale02R030 extends bTransaction {
     String stringExcelName = "";
     String stringFunction = getValue("Function").trim();
     String stringDisplay = "";
+    System.out.println("stringFunction>>>" + stringFunction);
+    
     switch (Integer.parseInt(stringFunction)) {
     case 0:
       stringDisplay = getValue("Display").trim();
@@ -305,6 +308,12 @@ public class Sale02R030 extends bTransaction {
     String stringThisType = "";
     boolean booleanHouse = true;
     boolean booleanLand = true;
+    
+    if( "".equals(stringOrderDateStart) ) {
+      message("[付訂/退戶日期]，必填");
+      return false;
+    }
+    
     //
     switch (Integer.parseInt(stringFunction)) {
     case 0:
@@ -804,17 +813,14 @@ public class Sale02R030 extends bTransaction {
 //      String     stringOrderBy             =  "" ;
     //
     switch (Integer.parseInt(stringFunction)) {
-    case 0:
     case 1:
-    case 2:
       stringThisType = "房子"; // 房子車位
       break;
-    case 3:
     case 4:
-    case 5:
       stringThisType = "車位"; // 房子車位
       break;
     }
+     
     switch (Integer.parseInt(stringHouseLand)) {
     case 0:
       stringHouseCar = "";
@@ -864,11 +870,13 @@ public class Sale02R030 extends bTransaction {
     exeFun.putDataIntoExcel(0, 1, getACom(stringDistributeNo), objectSheet2);
     // 案別
     exeFun.putDataIntoExcel(0, 3, "案別：" + stringProjectID, objectSheet2);
-    // 日期
-    // if("B3018".equals(getUser()))
-    // messagebox(stringOrderDateStart+"："+getConertFormatDate(stringOrderDateStart)
-    // + "~" + stringOrderDateEnd+"："+getConertFormatDate(stringOrderDateEnd));
-    exeFun.putDataIntoExcel(5, 3, "日期：" + getConertFormatDate(stringOrderDateStart) + "~" + getConertFormatDate(stringOrderDateEnd), objectSheet2);
+    
+    // 日期 
+    //EMK20210115004 Kyle Mod
+    String excelOrderDate = ("-1".equals(getConertFormatDate(stringOrderDateStart))? "":getConertFormatDate(stringOrderDateStart)) 
+        + "~" + ("-1".equals(getConertFormatDate(stringOrderDateEnd))? "":getConertFormatDate(stringOrderDateEnd));
+    exeFun.putDataIntoExcel(5, 3, "付訂日期：" + (excelOrderDate.length()>1 ? excelOrderDate:"-"), objectSheet2);
+    
     // 條件SQL
     String stringConditionDescription = getConditionDescription();
     String stringConditionDescription2 = getConditionDescription2();
@@ -1187,6 +1195,7 @@ public class Sale02R030 extends bTransaction {
   }
 
   public boolean doSaleOutDetailSale(String stringExcelName, String stringTableSelect) throws Throwable {
+//    System.out.println("doSaleOutDetailSale>>>");
     Farglory.Excel.FargloryExcel exeFun = new Farglory.Excel.FargloryExcel(6, 20, 28, 1);
     //
     String stringTmp = "";
@@ -1210,32 +1219,28 @@ public class Sale02R030 extends bTransaction {
     boolean booleanLand = true;
     // retAProjectLocal START
     String[][] retAProjectLocal = getSaleForAProject(stringProjectID);
-    //
     stringHComLocal = retAProjectLocal[0][0];
     stringLComLocal = retAProjectLocal[0][1];
     // retAProjectLocal END
+    
     switch (Integer.parseInt(stringFunction)) {
     case 0:
-    case 1:
-    case 2:
       stringThisType = "房子"; // 房子車位
-      if ("1".equals(stringOrderForm)) {
-        stringOrderBy = "OrderDate"; // 排序方式
-      } else {
-        stringOrderBy = "Position"; // 排序方式
-      }
+      stringOrderBy = "Position"; // 排序: 依棟樓別(預設)
       break;
     case 3:
-    case 4:
-    case 5:
       stringThisType = "車位"; // 房子車位
-      if ("1".equals(stringOrderForm)) {
-        stringOrderBy = "Car"; // 排序方式
-      } else {
-        stringOrderBy = "OrderDate"; // 排序方式
-      }
+      stringOrderBy = "Car"; // 排序: 依棟樓別(預設)
       break;
     }
+    if("2".equals(stringOrderForm)) {
+      stringOrderBy = "ContrDate"; // 排序: 依簽約
+    }else if ("1".equals(stringOrderForm)) {
+      stringOrderBy = "OrderDate"; // 排序: 依附定日
+    }
+//    System.out.println("stringOrderBy>>>" + stringOrderBy);
+//    System.out.println("stringThisType>>>" + stringThisType);
+    
     switch (Integer.parseInt(stringHouseLand)) {
     case 0:
       stringHouseCar = "";
@@ -1247,6 +1252,7 @@ public class Sale02R030 extends bTransaction {
       stringHouseCar = "L_";
       break;
     }
+    
     // 主體
     /*
      * OrderMon2 0 _ H_Com 1 _ L_Com 2 _ Position 3 _ Car 4 _ Custom 5 _ OrderDate 6
@@ -1286,8 +1292,13 @@ public class Sale02R030 extends bTransaction {
     exeFun.putDataIntoExcel(0, 1, getACom(stringDistributeNo), objectSheet2);
     // 案別
     exeFun.putDataIntoExcel(0, 3, "案別：" + stringProjectID, objectSheet2);
+
     // 日期
-    exeFun.putDataIntoExcel(4, 3, "日期：" + getConertFormatDate(stringOrderDateStart) + "~" + getConertFormatDate(stringOrderDateEnd), objectSheet2);
+    //ENK20210115004 Kyle Mod
+    String excelOrderDate = ("-1".equals(getConertFormatDate(stringOrderDateStart))? "":getConertFormatDate(stringOrderDateStart)) 
+        + "~" + ("-1".equals(getConertFormatDate(stringOrderDateEnd))? "":getConertFormatDate(stringOrderDateEnd));
+    exeFun.putDataIntoExcel(4, 3, "付訂日期：" + (excelOrderDate.length()>1 ? excelOrderDate:"-"), objectSheet2);
+    
     // 條件SQL
     String stringConditionDescription = getConditionDescription();
     String stringConditionDescription2 = getConditionDescription2();
@@ -1725,6 +1736,9 @@ public class Sale02R030 extends bTransaction {
   public String getSqlAnd() throws Exception {
     String stringSqlAnd = "";
     // 付訂日期
+    String stringOrderDateStart = getValue("OrderDateStart").trim();
+    if (!"".equals(stringOrderDateStart))
+      stringSqlAnd += " AND  OrderDate  >=  '" + stringOrderDateStart + "'";
     String stringOrderDateEnd = getValue("OrderDateEnd").trim();
     if (!"".equals(stringOrderDateEnd))
       stringSqlAnd += " AND  OrderDate  <=  '" + stringOrderDateEnd + "'";
@@ -2157,13 +2171,14 @@ public class Sale02R030 extends bTransaction {
         + stringHouseCar + "CommMoney1,    H_LastMoney,                                  L_LastMoney,                                 H_GiftMoney, \n"
         + " L_GiftMoney,                                H_CommMoney,                             L_CommMoney,                              H_CommMoney1,   \n"
         + " L_CommMoney1,                         H_BalaMoney,                                 L_BalaMoney,                         H_ViMoney,                                 L_ViMoney "
-        + " FROM  A_SALE \n" + " WHERE  ProjectID1  =  '" + stringProjectID + "' \n" + " AND  OrderDate  Between  '" + stringOrderDateStart + "'   AND  '" + stringOrderDateEnd
-        + "' \n" + stringSql前端畫面;
+        + " FROM  A_SALE " + " WHERE  ProjectID1  =  '" + stringProjectID + "' " 
+//        + " AND  OrderDate  Between  '" + stringOrderDateStart + "'   AND  '" + stringOrderDateEnd + "' " 
+        + stringSql前端畫面;
     // " AND Not IsDate(DelDate) " ;
     if ("房子".equals(stringThisType)) {
-      stringSql += " AND  LEN(PositionRent)  >  0 \n" + " ORDER BY  OrderDate,  Custom \n";
+      stringSql += " AND  LEN(PositionRent)  >  0  ORDER BY  OrderDate,  Custom ";
     } else if ("車位".equals(stringThisType)) {
-      stringSql += " AND  LEN(CarRent)  >  0 \n" + " ORDER BY  OrderDate,  Custom \n";
+      stringSql += " AND  LEN(CarRent)  >  0  ORDER BY  OrderDate,  Custom ";
     }
     retASale = dbSale.queryFromPool(stringSql);
     return retASale;
@@ -2200,8 +2215,11 @@ public class Sale02R030 extends bTransaction {
         + " UseType,                                      Remark,                                       DateRange,                                  DateCheck, "
         + " DateFile,                                       DateBonus,                                SaleName6,                                  SaleName7, "
         + " SaleName8,                                  SaleName9,                                SaleName10, " + stringHouseCar + "CommMoney1, "
-        + " H_CommMoney1,                         L_CommMoney1 , " + stringHouseCar + "ViMoney, " + " H_ViMoney,                                   L_ViMoney " + " FROM  A_Sale "
-        + " WHERE  ProjectID1  =  '" + stringProjectID + "'" + " AND  OrderDate  Between  '" + stringOrderDateStart + "'  AND  '" + stringOrderDateEnd + "' " + stringSqlAnd2
+        + " H_CommMoney1,                         L_CommMoney1 , " + stringHouseCar + "ViMoney, " + " H_ViMoney,                                   L_ViMoney " 
+        + " FROM  A_Sale "
+        + " WHERE  ProjectID1  =  '" + stringProjectID + "' " 
+        //+ " AND  OrderDate  Between  '" + stringOrderDateStart + "'  AND  '" + stringOrderDateEnd + "' " 
+        + stringSqlAnd2
         + stringSqlAnd;
     if ("房子".equals(stringThisType)) {
       stringSql += " AND  LEN(Position)  >  0  ORDER BY  " + stringOrderBy;
@@ -2214,6 +2232,11 @@ public class Sale02R030 extends bTransaction {
 
   public String[][] getSumSaleForASale(String stringHouseCar, String stringProjectID, String stringOrderDateEnd, String stringThisType, String stringSqlAnd2) throws Exception {
     String stringSql = "";
+    String stringContrDateEnd = getValue("ContrDateEnd").trim();
+    String stringEnougDateEnd = getValue("EnougDateEnd").trim();
+    String stringDateCheckEnd = getValue("DateCheckEnd").trim();
+    String stringDateRangeEnd = getValue("DateRangeEnd").trim();
+    
     /*
      * 0 H_Com 1 L_Com 2. SumPingSu 3. SumPreMoney 4. SumPreMoney2 5. SumPreMoney3
      * 6. SumDealMoney 7. SumDealMoney2 8. SumDealMoney3 9. SumGiftMoney 10.
@@ -2229,7 +2252,14 @@ public class Sale02R030 extends bTransaction {
         + stringHouseCar + "PureMoney),     SUM(H_PureMoney), " + " SUM(L_PureMoney),    SUM(" + stringHouseCar + "LastMoney),       SUM(H_LastMoney),  "
         + " SUM(L_LastMoney),     SUM(" + stringHouseCar + "BalaMoney),       SUM(H_BalaMoney), " + " SUM(L_BalaMoney),     SUM(" + stringHouseCar
         + "CommMoney1),  SUM(H_CommMoney1),  " + " SUM(L_CommMoney1),     SUM(" + stringHouseCar + "ViMoney),  SUM(H_ViMoney),  " + " SUM(L_ViMoney)" + " FROM  A_SALE "
-        + " WHERE  ProjectID1 = '" + stringProjectID + "'" + " AND DEalmoney <> 0 " + " AND  OrderDate <= '" + stringOrderDateEnd + "'  " + stringSqlAnd2;
+        + " WHERE  ProjectID1 = '" + stringProjectID + "'" + " AND DEalmoney <> 0 "
+        + stringSqlAnd2;
+        if( !"".equals(stringOrderDateEnd) ) stringSql += " AND  OrderDate <= '" + stringOrderDateEnd + "' ";
+        if( !"".equals(stringContrDateEnd) ) stringSql += " AND  ContrDate <= '" + stringContrDateEnd + "' ";
+        if( !"".equals(stringEnougDateEnd) ) stringSql += " AND  EnougDate <= '" + stringEnougDateEnd + "' ";
+        if( !"".equals(stringDateCheckEnd) ) stringSql += " AND  DateCheck <= '" + stringDateCheckEnd + "' ";
+        if( !"".equals(stringDateRangeEnd) ) stringSql += " AND  DateRange <= '" + stringDateRangeEnd + "' ";
+        
     // " AND Not IsDate(DelDate) " ;
     if ("房子".equals(stringThisType)) {
       stringSql += " AND LEN(Position) > 0 ";
@@ -2246,6 +2276,7 @@ public class Sale02R030 extends bTransaction {
       throws Exception {
     String stringSql = "";
     String stringOrderDateCondition = getValue("OrderDateCondition").trim();
+    
     /*
      * 0.Position 1.PositionRent 2.Car 3.CarRent 4.Custom 5.OrderDate 6.OrderMon1
      * 7.OrderMon2 8.OrderMon3 9.EnougDate 10.EnougMon1 11.EnougMon2 12.EnougMon3
@@ -2274,7 +2305,8 @@ public class Sale02R030 extends bTransaction {
         + " DateFile,                            DateBonus,                         H_COM,                              L_COM, "
         + " SaleName6,                       SaleName7,                          SaleName8,                       SaleName9, " + " SaleName10, " + stringType
         + "CommMoney1,  H_CommMoney1,           L_CommMoney1 ," + " " + stringType + "ViMoney,  H_ViMoney,           L_ViMoney " + " FROM A_Sale1 " + " WHERE  ProjectID1  =  '"
-        + stringProjectID + "' " + " AND  DelDate  Between  '" + stringOrderDateStart + "'  AND  '" + stringOrderDateEnd + "' " + stringSqlAnd;
+        + stringProjectID + "' " + " AND  DelDate  Between  '" + stringOrderDateStart + "'  AND  '" + stringOrderDateEnd + "' " 
+        + stringSqlAnd;
     // " AND IsDate(DelDate) "
     if ("Y".equals(stringOrderDateCondition)) {
       stringSql += " AND  OrderDate  NOT  BETWEEN  '" + stringOrderDateStart + "'  AND  '" + stringOrderDateEnd + "' ";

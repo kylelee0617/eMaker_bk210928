@@ -179,6 +179,12 @@ public class RiskCheckTool extends bvalidate {
       //     4           5           6           8           9            10        11     12     13      14      16    17       23          24
       //CountryName , CustomNo , CustomName , Birthday , MajorName , PositionName , ZIP , City , Town , Address , Tel , Tel2 , statusCD , industryCode
       for (int i = 0; i < retCustom.length; i++) { // start 客戶for
+        
+        if (isTest) {
+          for(int ii=0 ; ii<retCustom[i].length ; ii++) {
+            System.out.println("custom>>>" + ii + "-" + retCustom[i][ii]);
+          }
+        }
 
         // 忽略已被換名的 (或需要忽略的資料，給C)
         if ("C".equals(retCustom[i][23].trim()))  continue;
@@ -355,14 +361,15 @@ public class RiskCheckTool extends bvalidate {
       if (this.bean.isUpdSale05M277()) this.updSaleM277(list);
 
     } catch (Exception e) {
+      System.out.println("ERROR");
+      System.out.println("錯誤訊息:" + e.toString());
       e.printStackTrace();
       ra.disconnect();
     }
     System.out.println("存入風險計算客戶資料-----------------------------------E");
 
     // insert into Sale05M070
-    if (bean.isUpd070Log())
-      this.insSale05M070(list);
+    if (bean.isUpd070Log()) this.insSale05M070(list);
 
     // 組成MAIL
     SendMailBean smBean = new SendMailBean();

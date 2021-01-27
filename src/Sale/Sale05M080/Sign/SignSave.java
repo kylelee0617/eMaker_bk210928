@@ -141,9 +141,11 @@ public  class  SignSave  extends  bproc {
             //檢核發票日期不可小於兩天前 : by Kyle
             String today = datetime.getToday("YYYY/mm/dd");
             long subDays = kUtil.subACDaysRDay(today, stringEDate);
-            if(subDays > 2) {
-              messagebox("發票日期不可小於兩天前。。。 崩╰(〒皿〒)╯潰 ");
-              return value;
+            if( "prod".equals(serverKind) ) {
+              if(subDays > 2) {
+                messagebox("發票日期不可小於兩天前。。。 崩╰(〒皿〒)╯潰 ");
+                return value;
+              }
             }
             
             // 取得公司
