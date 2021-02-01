@@ -613,7 +613,7 @@ public class AMLTools extends bvalidate {
 
       if (dayAmt >= 500000) {
         // 單日累計達標，產生態樣
-        String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames() + "(" + orderNo + ")");
+        String msg = amlDesc.replaceAll("<customName>", aml.getCustomNames() );
         sbMsg.append(msg).append("\n");
         aml.setErrMsg(msg);
 

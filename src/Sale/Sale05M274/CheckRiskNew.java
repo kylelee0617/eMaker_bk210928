@@ -6,7 +6,6 @@ import Farglory.util.*;
 import jcx.db.talk;
 
 public class CheckRiskNew extends jcx.jform.sproc {
-  
   KUtils util = new KUtils();
   
   public String getDefaultValue(String value) throws Throwable {
@@ -211,7 +210,7 @@ public class CheckRiskNew extends jcx.jform.sproc {
         list.add( retCustomers[ii][12].toString().trim() ); //23 statusCd
         retCustom[ii] = (String[]) list.toArray(new String[list.size()]);
       }else {
-        rsMsg += "客戶" + customName + "洗錢風險等級 :" + riskValue + "\n";
+        rsMsg += "客戶 " + customName + " 洗錢風險等級 :" + riskValue + "\n";
         String M277Sql = "UPDATE Sale05M277 SET RiskValue = '" + riskValue + "' " + "WHERE ContractNo = '" + strContractNoDisplay + "' AND CustomNo = '"
             + customNo + "' and ISNULL(StatusCd , '') = '';  ";
         trans.append(M277Sql);
