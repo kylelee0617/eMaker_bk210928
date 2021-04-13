@@ -601,7 +601,7 @@ public class AMLTools extends bvalidate {
       String orderNo = keyNo;
       System.out.println("AML031 訂單>>>"+ orderNo);
 
-      String[][] retO = this.getOrderDayPayA4(startEDate, startEDate, orderNo);
+      String[][] retO = this.getOrderDayPayA4(startEDate, endEDate, orderNo);
       float dayAmt = 0; // 每日累計
       for (int i = 0; i < retO.length; i++) {
         String keyDate = retO[i][3].toString().trim();
@@ -715,7 +715,7 @@ public class AMLTools extends bvalidate {
       String orderNo = keyNo;
       System.out.println("AML041 訂單>>>"+ orderNo);
 
-      String[][] retAML0041 = this.getOrderDayPayA4(startEDate, startEDate, orderNo);
+      String[][] retAML0041 = this.getOrderDayPayA4(startEDate, endEDate, orderNo);
       float totalAmt = 0; // 累計總額
       float dayAmt = 0; // 每日累計
       String lastKey = "";
@@ -950,17 +950,22 @@ public class AMLTools extends bvalidate {
   }
 
   /**
-   * 寫Sale log Bean版 funcName(Func) : 功能項 EX 換名、購屋證明單 funcName2(RecordType) :
-   * 功能項細項 EX 客戶資料、代理人資料 ActionName(ActionName) : 新增、修改、刪除 errMsg :
-   * 符合的樣態內容，或為"不適用" or "不符合" AMLNo : AML樣態編號
+   * 寫Sale log Bean版 
+   * funcName(Func) : 功能項 EX 換名、購屋證明單 
+   * funcName2(RecordType) : 功能項細項 EX 客戶資料、代理人資料 
+   * ActionName(ActionName) : 新增、修改、刪除 
+   * errMsg : 符合的樣態內容，或為"不適用" or "不符合" 
+   * AMLNo : AML樣態編號
    */
   public String insSale070(AMLBean aml) throws Throwable {
     String rsMsg = "0";
     String sql = "INSERT INTO Sale05M070 "
-        + "(DocNo,OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
-        + "VALUES " + "('" + aml.getDocNo() + "','" + aml.getOrderNo() + "','" + strProjectID1 + "','" + intRecordNo + "','" + strActionNo + "', " + "'" + aml.getFuncName() + "','"
-        + aml.getFuncName2() + "','" + strActionName + "','" + aml.getErrMsg() + "', " + "'" + aml.getCustomId() + "','" + aml.getCustomName() + "','" + strOrderDate
-        + "','RY','773','" + aml.getAMLNo() + "','" + aml.getErrMsg() + "', " + "'" + empNo + "', '" + rocNowDate + "', '" + strNowTime + "') ";
+        + "(DocNo,OrderNo, ContractNo, ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate, EDate, CDate, SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) "
+        + "VALUES " 
+        + "('" + aml.getDocNo() + "','" + aml.getOrderNo() + "', '"+ aml.getContractNo()+"', '" + strProjectID1 + "','" + intRecordNo + "','" + strActionNo + "', " + "'" + aml.getFuncName() + "' "
+        + ",'"+ aml.getFuncName2() + "','" + strActionName + "','" + aml.getErrMsg() + "', " + "'" + aml.getCustomId() + "','" + aml.getCustomName() + "' "
+        + ",'" + aml.getOrderDate() + "' ,'"+aml.geteDate()+"' ,'"+aml.getcDate()+"' "
+        + ",'RY','773','" + aml.getAMLNo() + "','" + aml.getErrMsg() + "', " + "'" + empNo + "', '" + rocNowDate + "', '" + strNowTime + "') ";
     dbSale.execFromPool(sql);
     intRecordNo++;
     return rsMsg;

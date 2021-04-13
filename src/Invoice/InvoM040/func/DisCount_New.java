@@ -40,6 +40,7 @@ public class DisCount_New extends bTransaction{
        message("明細必須至少有一筆");
        return false;
     }
+    
     //折讓日期不可小於發票日期
     for(int ii=0 ; ii<A_table.length ; ii++) {
       String[] aTable = A_table[ii];

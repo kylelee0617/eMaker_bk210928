@@ -1,31 +1,57 @@
 package Sale.test;
-import javax.swing.*;
-import jcx.jform.bproc;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
+import java.util.ResourceBundle;
 
-public class test111 extends bproc{
+import Farglory.aml.AMLTools_Lyods;
+import Farglory.aml.AMLyodsBean;
+import Farglory.aml.RiskCheckTools_Lyods;
+import Farglory.aml.RiskCustomBean;
+import Farglory.util.Result;
+import Farglory.util.RiskCheckRS;
+import jcx.jform.sproc;
+
+public class test111 extends sproc{
   public String getDefaultValue(String value)throws Throwable{
     
-    talk dbSale = getTalk("Sale");
-    String sql = "select CustomNo , CustomName , EDate , SUM(CashMoney) as CashMoney , SUM(CreditCardMoney) as CreditCardMoney , SUM(BankMoney) as BankMoney " 
-               + ", SUM(d.CheckMoney) as CheckMoney " 
-               + "from Sale05M080 a , Sale05M086 b , Sale05M091 c , Sale05M082 d "
-               + "where 1=1 " 
-               + "and a.DocNo = b.DocNo and b.OrderNo = c.OrderNo and a.DocNo = d.DocNo " 
-               + "and CustomNo in ('03062401') " 
-               + "group by CustomNo , CustomName , edate " 
-               + "order by CustomNo , edate ";
-    Hashtable h = dbSale.queryFromPoolH(sql);
+    //config
+    ResourceBundle resource = ResourceBundle.getBundle("configK");
+    String serverType = resource.getString("serverType").trim();
+    String lyodsSoapURL = resource.getString("lyodsSoapURL").trim();
+
+    //客戶資料
     
-    System.out.println(h);
-    System.out.println(h.get("03062401天Ｏ行有"));
+    RiskCustomBean custBean = new RiskCustomBean();
+    custBean.setCustomNo("E200157225");
+    custBean.setCustomName("黃Ｏ錦惠");
+    custBean.setBirthday("19830101");
+    custBean.setIndustryCode("22");
     
-    DecimalFormat df = new DecimalFormat("#,###");
-  
+    
+    AMLyodsBean aBean = new AMLyodsBean();
+    aBean.setOrderNo("CS0331H110A10203015");
+    aBean.setOrderDate("20130327");
+    aBean.setEmakerUserNo(this.getUser());
+    aBean.setTestServer("PROD".equals(serverType)? false:true);
+    aBean.setLyodsSoapURL(lyodsSoapURL);
+    aBean.setDb400CRM(getTalk("400CRM"));
+    aBean.setDbSale(getTalk("Sale"));
+    aBean.setDbEIP(getTalk("EIP"));
+    aBean.setDbEMail(getTalk("eMail"));
+    aBean.setDbPw0D(getTalk("pw0d"));
+    
+    AMLTools_Lyods aml = new AMLTools_Lyods(aBean);
+    Result rs1 = aml.chkAML018_San(custBean);
+    System.out.println("rs1>>>" + (String)rs1.getData());
+    System.out.println("rs12>>>" + (String)rs1.getRsStatus()[1]);
+    
+    RiskCustomBean[] cBeans = new RiskCustomBean[1];
+    cBeans[0] = custBean;
+    RiskCheckTools_Lyods risk = new RiskCheckTools_Lyods(aBean);
+    Result rs2 = risk.processRisk(cBeans);
+    System.out.println("rs2>>>" + ((RiskCheckRS)rs2.getData()).getRsMsg() );
+    System.out.println("rs22>>>" + (String)rs2.getRsStatus()[1]);
+    
+    
+    
     return value;
   }
   public String getInformation(){

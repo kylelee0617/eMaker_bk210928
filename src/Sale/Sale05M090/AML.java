@@ -222,8 +222,8 @@ public class AML extends bproc {
         if (ret171List.length > 0) {
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
               + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','購屋證明單','客戶資料','" + strActionName + "','客戶" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','客戶" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+              + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','客戶" + strCustomName
+              + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;
           // AS400
@@ -232,15 +232,15 @@ public class AML extends bproc {
               + RocNowDate + "','" + strNowTime + "')";
           dbJGENLIB.execFromPool(stringSQL);
           if ("".equals(errMsg)) {
-            errMsg = "客戶" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
+            errMsg = "客戶" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
           } else {
-            errMsg = errMsg + "\n客戶" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
+            errMsg = errMsg + "\n客戶" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
           }
         } else {
           // 不符合
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
               + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','購屋證明單','客戶資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','021','客戶" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
+              + strCustomName + "','" + stringOrderDate + "','RY','773','021','客戶" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
               + RocNowDate + "','" + strNowTime + "')";
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;
@@ -515,8 +515,8 @@ public class AML extends bproc {
         if (ret171List.length > 0) {
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
               + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','購屋證明單','實質受益人資料','" + strActionName + "','實質受益人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','實質受益人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+              + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','實質受益人" + strCustomName
+              + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;
           // AS400
@@ -525,15 +525,15 @@ public class AML extends bproc {
               + RocNowDate + "','" + strNowTime + "')";
           dbJGENLIB.execFromPool(stringSQL);
           if ("".equals(errMsg)) {
-            errMsg = "實質受益人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
+            errMsg = "實質受益人" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
           } else {
-            errMsg = errMsg + "\n實質受益人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
+            errMsg = errMsg + "\n實質受益人" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
           }
         } else {
           // 不符合
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
               + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','購屋證明單','實質受益人資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','021','實質受益人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
+              + strCustomName + "','" + stringOrderDate + "','RY','773','021','實質受益人" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
               + RocNowDate + "','" + strNowTime + "')";
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;
@@ -810,8 +810,8 @@ public class AML extends bproc {
         if (ret171List.length > 0) {
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
               + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','購屋證明單','代理人資料','" + strActionName + "','代理人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','代理人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
+              + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','代理人" + strCustomName
+              + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;
           // AS400
@@ -819,13 +819,13 @@ public class AML extends bproc {
               + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '021', '客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','" + empNo + "','"
               + RocNowDate + "','" + strNowTime + "')";
           dbJGENLIB.execFromPool(stringSQL);
-          errMsg += custSA + "代理人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。\n";
+          errMsg += custSA + "代理人" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。\n";
 
         } else {
           // 不符合
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
               + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','購屋證明單','代理人資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','021','代理人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
+              + strCustomName + "','" + stringOrderDate + "','RY','773','021','代理人" + strCustomName + "為重要政治性職務人士與其家庭成員及有密切關係之人，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
               + RocNowDate + "','" + strNowTime + "')";
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;

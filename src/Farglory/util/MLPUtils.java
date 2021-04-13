@@ -26,8 +26,8 @@ public  class  MLPUtils  extends bvalidate{
     //DB connection
     talk dbSale = getTalk("Sale");
     talk dbPW0D  =  getTalk("pw0d");
-	talk db400CRM  =  getTalk("400CRM");
-	Farglory.util.FargloryUtil  exeFun    =  new  Farglory.util.FargloryUtil() ;
+  talk db400CRM  =  getTalk("400CRM");
+  Farglory.util.FargloryUtil  exeFun    =  new  Farglory.util.FargloryUtil() ;
 
     // 是數字回傳 true，否則回傳 false。
     public boolean check(String value)throws Throwable{
@@ -114,9 +114,9 @@ public  class  MLPUtils  extends bvalidate{
         StringBuilder sqlQ1 = new StringBuilder();
         for( int i=0 ; i<orderNo.size() ; i++){
             if( i != 0 ){
-				sqlQ1.append(",");
-			}
-			sqlQ1.append("'").append(orderNo.get(i)).append("'");
+        sqlQ1.append(",");
+      }
+      sqlQ1.append("'").append(orderNo.get(i)).append("'");
         }
 
         StringBuilder sqlQ2_Cus = new StringBuilder();
@@ -147,34 +147,27 @@ public  class  MLPUtils  extends bvalidate{
         return sb.toString();
     }
 
-    // 購買人控管名單處理
-    public String getBuyerCtrlYN(String projectID, Map queryLog, String customNos, String customNames) throws Throwable {
-      String[] cusNo = customNos.split("\n");
-      String[] cusName = customNames.split("\n");
-      StringBuilder sbRS = new StringBuilder();
-      System.out.println("buyer size>>>" + cusNo.length);
-      
-      for (int i = 0; i < cusNo.length; i++) {
-        if(i > 0) sbRS.append("\n");
-        String thisCusNo = cusNo[i];
-        String thisCusName = cusName[i];
-        String thisMapKey = projectID + thisCusNo + thisCusName;
-        System.out.println(">>> buyer key >>>" + thisMapKey);
-        if ("Y".equals(queryLog.get(thisMapKey))) {
-          sbRS.append("是");
-        }else {
-          sbRS.append("否");
+    //購買人控管名單處理
+    public String getBuyerCtrlYN( String projectID , Map queryLog , String customNos , String customNames) throws Throwable {
+        String[] cusNo = customNos.split("\n");
+        String[] cusName = customNames.split("\n");
+        for( int i=0 ; i<cusNo.length ; i++ ){
+            String thisCusNo = cusNo[i];
+            String thisCusName = cusName[i];
+            String thisMapKey = projectID + thisCusNo + thisCusName;
+            System.out.println(">>> buyer key >>>" + thisMapKey );
+            if( "Y".equals( queryLog.get(thisMapKey) ) ){
+                return "是";
+            }
         }
-      }
-      
-      return sbRS.toString();
+        return "否";
     }
 
     //判斷購買人中是否有法人
     public boolean isCusCompany(String cusNos) throws Throwable {
-		System.out.println(">>> isCusCompany==> cusNos >>>" + cusNos) ;
+    System.out.println(">>> isCusCompany==> cusNos >>>" + cusNos) ;
         
-		boolean boo = false;
+    boolean boo = false;
         String[] cusNo = cusNos.split("\n");
         for( int i=0 ; i<cusNo.length ; i++ ){
             String thisCusNo = cusNo[i].trim();
@@ -233,7 +226,7 @@ public  class  MLPUtils  extends bvalidate{
             amlTools = new AMLTools( amlCons );
         }
         for (int idx2=0; idx2<bCustoms.length; idx2++) {
-			String[] ben1 = bCustoms[idx2];
+      String[] ben1 = bCustoms[idx2];
             String birthDay = exeFun.getDateAC(ben1[5].trim(),  "");
             String stringCustomNo = ben1[4].trim();
             String stringCustomName = ben1[3].trim();
@@ -245,10 +238,10 @@ public  class  MLPUtils  extends bvalidate{
             if ("".equals( ben1[7].trim() )) {
                 messagebox("請指定實質受益人 [" + stringCustomName + "]  之對象別。" );
                 return false;
-			}
-			if(birthDay.length() != 10){
-				messagebox("實質受益人 [" + stringCustomName + "]  日期格式需為YYYY/MM/DD");
-				return false;
+      }
+      if(birthDay.length() != 10){
+        messagebox("實質受益人 [" + stringCustomName + "]  日期格式需為YYYY/MM/DD");
+        return false;
             }
             
             //制裁名單檢核
@@ -267,8 +260,8 @@ public  class  MLPUtils  extends bvalidate{
         
         return true;
     }
-	
-	/**
+  
+  /**
      *  交易時客戶欄位檢核
      * customers : id , name
      */

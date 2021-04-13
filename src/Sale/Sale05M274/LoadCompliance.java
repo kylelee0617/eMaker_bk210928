@@ -111,10 +111,11 @@ public class LoadCompliance extends bproc {
           }
         }
         // AML场だ
-        stringSql = "SELECT OrderDate,EDate,CDate,RecordDesc,Func,RecordType,ActionName,SHB98,SHB06B,customid, customName FROM Sale05M070 WHERE RecordDesc <> 'ぃ才' AND RecordDesc<>'ぃ続ノ' AND SHB06B <> '022' AND SHB06B <> '018'  AND orderNo='"
-            + strOrderNo + "'  " + " UNION "
-            + " SELECT OrderDate,EDate,CDate,RecordDesc,Func,RecordType,ActionName,SHB98,SHB06B,customid, customName FROM Sale05M070 WHERE RecordDesc <> 'ぃ才' AND RecordDesc<>'ぃ続ノ' AND SHB06B <> '022' AND SHB06B = '018'  AND RecordType = 'ン-﹚材'  AND orderNo='"
-            + strOrderNo + "' " + " ORDER BY Func DESC, RecordType DESC, OrderDate ASC, CDate ASC, EDate ASC";
+        stringSql = 
+              " SELECT OrderDate,EDate,CDate,RecordDesc,Func,RecordType,ActionName,SHB98,SHB06B,customid, customName FROM Sale05M070 WHERE RecordDesc <> 'ぃ才' AND RecordDesc<>'ぃ続ノ' AND SHB06B <> '022' AND SHB06B <> '018'  AND orderNo='"+ strOrderNo + "'  " 
+            + " UNION "
+            + " SELECT OrderDate,EDate,CDate,RecordDesc,Func,RecordType,ActionName,SHB98,SHB06B,customid, customName FROM Sale05M070 WHERE RecordDesc <> 'ぃ才' AND RecordDesc<>'ぃ続ノ' AND SHB06B <> '022' AND SHB06B = '018'  AND RecordType = 'ン-﹚材'  AND orderNo='"+ strOrderNo + "' " 
+            + " ORDER BY Func DESC, RecordType DESC, OrderDate ASC, CDate ASC, EDate ASC";
         String retAMLData[][] = dbSale.queryFromPool(stringSql);
         if (retAMLData.length > 0) {// 掸才
           String lastKey = ""; // ノ筁耾魁
@@ -137,6 +138,10 @@ public class LoadCompliance extends bproc {
               strCheckDate = retAMLData[c][1].trim();
             } else if (!"".equals(retAMLData[c][2].trim())) {
               strCheckDate = retAMLData[c][2].trim();
+            }
+            
+            if("Μ蹿".equals( retAMLData[c][4].trim() )) {
+              strCheckDate = retAMLData[c][1].trim();
             }
 
             // 篈妓ゅ

@@ -1,21 +1,14 @@
 package Sale.Sale05M093;
 
-import javax.swing.*;
-import jcx.jform.bproc;
-import cLabel;
-import jcx.jform.bNotify;
-import jcx.jform.bBase;
-import java.io.*;
-import java.util.*;
-import jcx.util.*;
-import jcx.html.*;
-import jcx.db.*;
-
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
+import java.util.Random;
+
+import Farglory.util.KUtils;
+import Farglory.util.QueryLogBean;
+import jcx.db.talk;
+import jcx.jform.bproc;
 
 public class AML extends bproc {
   public String getDefaultValue(String value) throws Throwable {
@@ -25,6 +18,8 @@ public class AML extends bproc {
     talk dbJGENLIB = getTalk("JGENLIB");
     talk dbEIP = getTalk("EIP");
     talk dbPW0D = getTalk("pw0d");
+    
+    KUtils kutil = new KUtils();
     String stringSQL = "";
     String strBDaysql = "";
     String errMsg = "";
@@ -84,11 +79,8 @@ public class AML extends bproc {
     }
     String strActionNo = strNowDate + strNowTime + ram;
     System.out.println("strActionNo=====>" + strActionNo);
+    
     System.out.println("==============客戶資料==============");
-    // stringSQL = "SELECT
-    // CountryName,CustomNo,CustomName,IsBlackList,IsControlList,IsLinked,Birthday
-    // FROM Sale05M091 WHERE ORDERNO = '"+strOrderNo+"'";
-    // ret05M070 = dbSale05M.queryFromPool(stringSQL);
     if (tb2_string.length > 0) {
       for (int m = 0; m < tb2_string.length; m++) {// 同一訂單下
         String strCountryName = tb2_string[m][5].trim();
@@ -153,91 +145,15 @@ public class AML extends bproc {
         dbSale05M.execFromPool(stringSQL);
         intRecordNo++;
 
-        // 制裁名單
-        talk db400 = getTalk("400CRM");
-        String str400sql = "";
-        System.out.println("strBirthday=====>" + strBirthday);
-        if ("".equals(strBirthday)) {
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X181' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND CUSTOMERNAME='" + strCustomName + "'";
-        } else {
-          int x = strBirthday.indexOf("/");
-          if (x > -1) {
-            strBirthday = strBirthday.replace("/", "-");
-          } else {
-            String yyyy = strBirthday.substring(0, 4);
-            String mm = strBirthday.substring(4, 6);
-            String dd = strBirthday.substring(6, 8);
-
-            strBirthday = yyyy + "-" + mm + "-" + dd;
-          }
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X181' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND ( CUSTOMERNAME='" + strCustomName + "' AND BIRTHDAY = '" + strBirthday
-              + "' )";
-        }
-        String retCList[][] = db400.queryFromPool(str400sql);
-        if (retCList.length > 0) {
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','客戶資料','" + strActionName + "','客戶" + strCustomName
-              + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','018','客戶" + strCustomName
-              + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-          // AS400
-          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
-              + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '018', '該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','" + empNo + "','" + RocNowDate + "','" + strNowTime
-              + "')";
-          dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "客戶" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
-          } else {
-            errMsg = errMsg + "\n客戶" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
-          }
-        } else {
-          // 不符合
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','客戶資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','018','客戶" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + empNo + "','" + RocNowDate + "','"
-              + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-        }
-        // X171
-        if ("".equals(strBirthday)) {
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X171' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND CUSTOMERNAME='" + strCustomName + "'";
-        } else {
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X171' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND ( CUSTOMERNAME='" + strCustomName + "' AND BIRTHDAY = '" + strBirthday
-              + "' )";
-        }
-        String ret171List[][] = db400.queryFromPool(str400sql);
-        if (ret171List.length > 0) {
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','客戶資料','" + strActionName + "','客戶" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','客戶" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-          // AS400
-          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
-              + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '021', '客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','" + empNo + "','"
-              + RocNowDate + "','" + strNowTime + "')";
-          dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "客戶" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
-          } else {
-            errMsg = errMsg + "\n客戶" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
-          }
-        } else {
-          // 不符合
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','客戶資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','021','客戶" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
-              + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-        }
+        // 萊斯 : 制裁名單 & PEPS
+        QueryLogBean qBean = kutil.getQueryLogByCustNoProjectId(stringProjectID1, strCustomNo);
+        String birth = strBirthday.length() == 0 ? " " : strBirthday.toString().replace("-", "");
+        String ind = qBean.getJobType().length() == 0 ? " " : qBean.getJobType();
+        String amlText = strOrderNo + "," + stringOrderDate + "," + strCustomNo + "," + strCustomName + "," + birth + "," + ind + "," + "query18";
+        setValue("AMLText" , amlText);
+        getButton("BtCustAML").doClick();
+        errMsg += getValue("AMLText").trim();
+        
         // 資恐地區
         stringSQL = "SELECT CZ07 FROM PDCZPF WHERE CZ01='NATIONCODE' AND CZ09='" + strCountryName + "'";
         retPat001 = dbJGENLIB.queryFromPool(stringSQL);
@@ -376,11 +292,9 @@ public class AML extends bproc {
       } // for end
     }
     System.out.println("============================");
+    
+    
     System.out.println("==============實質受益人==============");
-    // stringSQL = "SELECT
-    // CountryName,BCustomNo,BenName,IsBlackList,IsControlList,IsLinked,Birthday
-    // FROM Sale05M091BEN WHERE ORDERNO = '"+strOrderNo+"'";
-    // ret05M070 = dbSale05M.queryFromPool(stringSQL);
     if (tb5_string.length > 0) {// 實質受益人 START
       for (int m = 0; m < tb5_string.length; m++) {// 同一訂單下
         String strCountryName = tb5_string[m][6].trim();
@@ -445,89 +359,16 @@ public class AML extends bproc {
         dbSale05M.execFromPool(stringSQL);
         intRecordNo++;
 
-        // 制裁名單
-        talk db400 = getTalk("400CRM");
-        String str400sql = "";
-        if ("".equals(strBirthday)) {
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X181' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND CUSTOMERNAME='" + strCustomName + "'";
-        } else {
-          if (strBirthday.indexOf("/") == -1) {
-            String yyyy = strBirthday.substring(0, 4);
-            String MM = strBirthday.substring(4, 6);
-            String dd = strBirthday.substring(6, 8);
-            strBirthday = yyyy + "-" + MM + "-" + dd;
-          } else {
-            strBirthday = strBirthday.replace("/", "-");
-          }
-          System.out.println("strBirthday=====>" + strBirthday);
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X181' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND ( CUSTOMERNAME='" + strCustomName + "' AND BIRTHDAY = '" + strBirthday
-              + "' )";
-        }
-        String retCList[][] = db400.queryFromPool(str400sql);
-        if (retCList.length > 0) {
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','實質受益人資料','" + strActionName + "','實質受益人" + strCustomName
-              + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','018','實質受益人" + strCustomName
-              + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-          // AS400
-          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
-              + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '018', '該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','" + empNo + "','" + RocNowDate + "','" + strNowTime
-              + "')";
-          dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "實質受益人" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
-          } else {
-            errMsg = errMsg + "\n實質受益人" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
-          }
-        } else {
-          // 不符合
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','實質受益人資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','018','實質受益人" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + empNo + "','" + RocNowDate
-              + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-        }
-        // 制裁名單X171
-        if ("".equals(strBirthday)) {
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X171' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND CUSTOMERNAME='" + strCustomName + "'";
-        } else {
-          str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X171' AND C.REMOVEDDATE >= '"
-              + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' AND ( CUSTOMERNAME='" + strCustomName + "' AND BIRTHDAY = '" + strBirthday
-              + "' )";
-        }
-        String ret171List[][] = db400.queryFromPool(str400sql);
-        if (ret171List.length > 0) {
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','實質受益人資料','" + strActionName + "','實質受益人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','實質受益人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-          // AS400
-          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
-              + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '021', '客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','" + empNo + "','"
-              + RocNowDate + "','" + strNowTime + "')";
-          dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "實質受益人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
-          } else {
-            errMsg = errMsg + "\n實質受益人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
-          }
-        } else {
-          // 不符合
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','實質受益人資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','021','實質受益人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
-              + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-        }
+        // 萊斯 : 制裁名單 & PEPS
+        QueryLogBean qBean = kutil.getQueryLogByCustNoProjectId(stringProjectID1, strCustomNo);
+        String birth = strBirthday.length() == 0 ? " " : strBirthday.toString().replace("-", "");
+        String ind = qBean.getJobType().length() == 0 ? " " : qBean.getJobType();
+        String amlText = strOrderNo + "," + stringOrderDate + "," + strCustomNo + "," + strCustomName + "," + birth + "," + ind + "," + "query18";
+        setValue("AMLText" , amlText);
+        getButton("BtCustAML").doClick();
+        errMsg += getValue("AMLText").trim();
+
+        
         // 資恐地區
         stringSQL = "SELECT CZ07 FROM PDCZPF WHERE CZ01='NATIONCODE' AND CZ09='" + strCountryName + "'";
         retPat001 = dbJGENLIB.queryFromPool(stringSQL);
@@ -667,11 +508,8 @@ public class AML extends bproc {
     } // 實質受益人 END
     System.out.println("============================");
 
+    
     System.out.println("==============代理人==============");
-    // stringSQL = "SELECT
-    // CountryName,ACustomNo,AgentName,IsBlackList,IsControlList,IsLinked, AgentRel
-    // FROM Sale05M091Agent WHERE ORDERNO = '"+strOrderNo+"'";
-    // ret05M070 = dbSale05M.queryFromPool(stringSQL);
     if (tb6_string.length > 0) {// 代理人 START
       for (int m = 0; m < tb6_string.length; m++) {// 同一訂單下
         String strCountryName = tb6_string[m][5].trim();
@@ -682,6 +520,11 @@ public class AML extends bproc {
         String strIsControlList = tb6_string[m][9].trim();
         String strIsLinked = tb6_string[m][10].trim();
         String strAgentRel = tb6_string[m][6].trim();
+        
+        
+        String custSA = "客戶" + strOrderCustomName + "之";
+        if (m == 0)
+          errMsg += "\n";
 
         // 不適用LOG1~4,6,7
         // 1
@@ -725,77 +568,16 @@ public class AML extends bproc {
         dbSale05M.execFromPool(stringSQL);
         intRecordNo++;
 
-        // 制裁名單
-        talk db400 = getTalk("400CRM");
-        // Query_Log 拿生日
-        String strPW0Dsql = "SELECT BIRTHDAY FROM QUERY_LOG WHERE PROJECT_ID = '" + stringProjectID1 + "' AND QUERY_ID = '" + strCustomNo + "' AND NAME = '" + strCustomName + "'";
-        retQueryLog = dbPW0D.queryFromPool(strPW0Dsql);
-        if (retQueryLog.length > 0) {
-          strBDaysql = "AND ( CUSTOMERNAME='" + strCustomName + "' AND BIRTHDAY = '" + retQueryLog[0][0].trim().replace("/", "-") + "' )";
-        } else {
-          strBDaysql = "AND CUSTOMERNAME='" + strCustomName + "'";
-        }
-        System.out.println("strBDaysql====>" + strBDaysql);
-        // AS400
-        String str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X181' AND C.REMOVEDDATE >= '"
-            + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' " + strBDaysql;
-        String retCList[][] = db400.queryFromPool(str400sql);
-        if (retCList.length > 0) {
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','代理人資料','" + strActionName + "','代理人" + strCustomName
-              + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','018','代理人" + strCustomName
-              + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-          // AS400
-          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
-              + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '018', '該客戶為控管名單對象之制裁名單，禁止交易並請依防制洗錢內通報作業會辦法遵室。','" + empNo + "','" + RocNowDate + "','" + strNowTime
-              + "')";
-          dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "代理人" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
-          } else {
-            errMsg = errMsg + "\n代理人" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。";
-          }
-        } else {
-          // 不符合
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','代理人資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','018','代理人" + strCustomName + "為控管之制裁名單對象，請禁止交易，並依洗錢防制內部通報作業送呈法遵室。','" + empNo + "','" + RocNowDate + "','"
-              + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-        }
-        // AS400 X171
-        str400sql = "SELECT * FROM CRCLNAPF WHERE CONTROLLISTNAMECODE IN (SELECT DISTINCT C.CONTROLLISTNAMECODE FROM CRCLNCPF C,CRCLCLPF L WHERE C.CONTROLCLASSIFICATIONCODE=L.CONTROLCLASSIFICATIONCODE AND L.CONTROLCLASSIFICATIONCODE ='X171' AND C.REMOVEDDATE >= '"
-            + strNowTimestamp + "' ) AND ISREMOVE = 'N'  AND CUSTOMERID = '" + strCustomNo + "' " + strBDaysql;
-        String ret171List[][] = db400.queryFromPool(str400sql);
-        if (ret171List.length > 0) {
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','代理人資料','" + strActionName + "','代理人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + strCustomNo + "','" + strCustomName + "','" + stringOrderDate + "','RY','773','021','代理人" + strCustomName
-              + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-          // AS400
-          stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
-              + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '021', '客戶或其受益人、家庭成員及有密切關係之人，為現任、曾任國內外政府或國際組織重要政治性職務，請加強客戶盡職調查，請依洗錢防制作業辦理。','" + empNo + "','"
-              + RocNowDate + "','" + strNowTime + "')";
-          dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "代理人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
-          } else {
-            errMsg = errMsg + "\n代理人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。";
-          }
-        } else {
-          // 不符合
-          stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
-              + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','代理人資料','" + strActionName + "','不符合','" + strCustomNo + "','"
-              + strCustomName + "','" + stringOrderDate + "','RY','773','021','代理人" + strCustomName + "、家庭成員及有密切關係之人，為重要政治性職務人士，請加強客戶盡職調查，並依洗錢及資恐防制作業辦理。','" + empNo + "','"
-              + RocNowDate + "','" + strNowTime + "')";
-          dbSale05M.execFromPool(stringSQL);
-          intRecordNo++;
-        }
+        // 萊斯 : 制裁名單 & PEPS
+        QueryLogBean qBean = kutil.getQueryLogByCustNoProjectId(stringProjectID1, strCustomNo);
+        String birth = qBean.getBirthday().length() == 0 ? " " : qBean.getBirthday().toString().replace("-", "");
+        String ind = qBean.getJobType().length() == 0 ? " " : qBean.getJobType();
+        String amlText = strOrderNo + "," + stringOrderDate + "," + strCustomNo + "," + strCustomName + "," + birth + "," + ind + "," + "query18";
+        setValue("AMLText" , amlText);
+        getButton("BtCustAML").doClick();
+        errMsg += getValue("AMLText").trim();
+   
+
         // 洗錢第八條
         stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
             + strOrderNo + "','" + stringProjectID1 + "','" + intRecordNo + "','" + strActionNo + "','換名','代理人資料','" + strActionName + "','代理人" + strCustomName
@@ -807,11 +589,13 @@ public class AML extends bproc {
         stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate + "', '"
             + strCustomNo + "', '" + strCustomName + "', '773', '008', '不動產銷售由第三方代理或繳款，系統檢核提示通報。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
         dbJGENLIB.execFromPool(stringSQL);
-        if ("".equals(errMsg)) {
-          errMsg = "代理人" + strCustomName + "代為辦理不動產交易，請依洗錢及資恐防制作業辦理。";
-        } else {
-          errMsg = errMsg + "\n代理人" + strCustomName + "代為辦理不動產交易，請依洗錢及資恐防制作業辦理。";
-        }
+        errMsg += custSA + "代理人" + strCustomName + "代為辦理其不動產交易，請依洗錢及資恐防制作業辦理。\n";
+//        if ("".equals(errMsg)) {
+//          errMsg = "代理人" + strCustomName + "代為辦理不動產交易，請依洗錢及資恐防制作業辦理。";
+//        } else {
+//          errMsg = errMsg + "\n代理人" + strCustomName + "代為辦理不動產交易，請依洗錢及資恐防制作業辦理。";
+//        }
+
         // 資恐地區
         stringSQL = "SELECT CZ07 FROM PDCZPF WHERE CZ01='NATIONCODE' AND CZ09='" + strCountryName + "'";
         retPat001 = dbJGENLIB.queryFromPool(stringSQL);
@@ -830,11 +614,13 @@ public class AML extends bproc {
                 + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '009', '客戶係來自主管機關所公告防制洗錢與打擊資恐有嚴重缺失之國家或地區，及其他未遵循或未充分遵循之國家或地區，應檢核其合理性。','" + empNo + "','" + RocNowDate
                 + "','" + strNowTime + "')";
             dbJGENLIB.execFromPool(stringSQL);
-            if ("".equals(errMsg)) {
-              errMsg = "代理人" + strCustomName + "係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區,，請依洗錢及資恐防制作業辦理。";
-            } else {
-              errMsg = errMsg + "\n代理人" + strCustomName + "係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區,，請依洗錢及資恐防制作業辦理。";
-            }
+            errMsg += custSA + "代理人" + strCustomName + "係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區,請依洗錢及資恐防制作業辦理。\n";
+//            if ("".equals(errMsg)) {
+//              errMsg = "代理人" + strCustomName + "係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區,，請依洗錢及資恐防制作業辦理。";
+//            } else {
+//              errMsg = errMsg + "\n代理人" + strCustomName + "係來自洗錢及資恐防制有嚴重缺失、未遵循或未充分遵循之國家或地區,，請依洗錢及資恐防制作業辦理。";
+//            }
+
           } else {
             // 不符合
             stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
@@ -845,6 +631,7 @@ public class AML extends bproc {
             intRecordNo++;
           }
         }
+
         // 關係
         if (!"".equals(strAgentRel)) {
           if ("朋友".equals(strAgentRel) || "其他".equals(strAgentRel)) {
@@ -858,11 +645,12 @@ public class AML extends bproc {
             stringSQL = "INSERT INTO PSHBPF (SHB00, SHB01, SHB03, SHB04, SHB05, SHB06A, SHB06B, SHB06, SHB97, SHB98, SHB99) VALUES ('RY', '" + strOrderNo + "', '" + RocNowDate
                 + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '005', '代繳款人與購買人關係為非二等親內血/姻親，系統檢核提示通報。','" + empNo + "','" + RocNowDate + "','" + strNowTime + "')";
             dbJGENLIB.execFromPool(stringSQL);
-            if ("".equals(errMsg)) {
-              errMsg = "代理人" + strCustomName + "與客戶" + strOrderCustomName + "非二親等內親屬關係，請依洗錢及資恐防制作業辦理。";
-            } else {
-              errMsg = errMsg + "\n代理人" + strCustomName + "與客戶" + strOrderCustomName + "非二親等內親屬關係，請依洗錢及資恐防制作業辦理。";
-            }
+            errMsg += custSA + "代理人" + strCustomName + "與客戶" + strOrderCustomName + "非二親等內親屬關係，請依洗錢及資恐防制作業辦理。\n";
+//            if ("".equals(errMsg)) {
+//              errMsg = "代理人" + strCustomName + "與客戶" + strOrderCustomName + "非二親等內親屬關係，請依洗錢及資恐防制作業辦理。";
+//            } else {
+//              errMsg = errMsg + "\n代理人" + strCustomName + "與客戶" + strOrderCustomName + "非二親等內親屬關係，請依洗錢及資恐防制作業辦理。";
+//            }
           } else {
             // 不符合
             stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
@@ -873,6 +661,7 @@ public class AML extends bproc {
             intRecordNo++;
           }
         }
+
         // 黑名單
         // 控管名單
         if ("Y".equals(strIsBlackList) || "Y".equals(strIsControlList)) {
@@ -887,11 +676,12 @@ public class AML extends bproc {
               + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '020', '該客戶為疑似黑名單對象，請執行加強式客戶盡職審查並依防制洗錢內部通報作業辦理。','" + empNo + "','" + RocNowDate + "','" + strNowTime
               + "')";
           dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "代理人" + strCustomName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。";
-          } else {
-            errMsg = errMsg + "\n代理人" + strCustomName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。";
-          }
+          errMsg += custSA + "代理人" + strCustomName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
+//          if ("".equals(errMsg)) {
+//            errMsg = "代理人" + strCustomName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。";
+//          } else {
+//            errMsg = errMsg + "\n代理人" + strCustomName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。";
+//          }
         } else {
           // 不符合
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
@@ -901,6 +691,7 @@ public class AML extends bproc {
           dbSale05M.execFromPool(stringSQL);
           intRecordNo++;
         }
+
         // 利害關係人
         if ("Y".equals(strIsLinked)) {
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"
@@ -914,11 +705,12 @@ public class AML extends bproc {
               + "', '" + strCustomNo + "', '" + strCustomName + "', '773', '019', '該客戶為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。','" + empNo + "','" + RocNowDate + "','" + strNowTime
               + "')";
           dbJGENLIB.execFromPool(stringSQL);
-          if ("".equals(errMsg)) {
-            errMsg = "代理人" + strCustomName + "為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。";
-          } else {
-            errMsg = errMsg + "\n代理人" + strCustomName + "為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。";
-          }
+          errMsg += custSA + "代理人" + strCustomName + "為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
+//          if ("".equals(errMsg)) {
+//            errMsg = "代理人" + strCustomName + "為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。";
+//          } else {
+//            errMsg = errMsg + "\n代理人" + strCustomName + "為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。";
+//          }
         } else {
           // 不符合
           stringSQL = "INSERT INTO Sale05M070 (OrderNo,ProjectID1,RecordNo,ActionNo,Func,RecordType,ActionName,RecordDesc,CustomID,CustomName,OrderDate,SHB00,SHB06A,SHB06B,SHB06,SHB97,SHB98,SHB99) VALUES ('"

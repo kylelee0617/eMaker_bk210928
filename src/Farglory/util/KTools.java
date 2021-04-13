@@ -294,7 +294,7 @@ public class KTools
             log.error("chgImagePx Has Error = " + ex);
             check = false;
         }
-        return imageR;
-    }
+    return imageR;
+  }
 
 }

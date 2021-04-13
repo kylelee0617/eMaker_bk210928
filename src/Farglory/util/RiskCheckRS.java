@@ -2,6 +2,8 @@ package Farglory.util;
 
 import java.util.List;
 
+import com.fglife.soap.cr.MainReply;
+
 /**
  * 計算風險值結果回覆
  * 
@@ -10,7 +12,7 @@ import java.util.List;
  */
 
 public class RiskCheckRS {
-  private String rsMsg = "";    //風險值結果訊息
+  private String rsMsg = "";          //風險值結果訊息
   private List sendMailList = null;   //寄發EMAIL資訊
   
   public String getRsMsg() {
@@ -25,5 +27,4 @@ public class RiskCheckRS {
   public void setSendMailList(List sendMailList) {
     this.sendMailList = sendMailList;
   }
-
 }

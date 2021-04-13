@@ -44,7 +44,7 @@ public class DisCountCancel extends bproc{
     }
     }
     //
-    Calendar cal= Calendar.getInstance();//Current time
+    Calendar cal= Calendar.getInstance(); //Current time
     stringUserkey = getUser() + "_T" + ""+( (cal.get(Calendar.HOUR_OF_DAY)*10000) + (cal.get(Calendar.MINUTE)*100) + cal.get(Calendar.SECOND) );
     String retSystemDateTime[][] = dbInvoice.queryFromPool("spInvoSystemDateTime  'Admin'");
     String stringSystemDateTime ="";

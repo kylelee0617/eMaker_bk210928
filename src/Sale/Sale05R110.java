@@ -257,14 +257,16 @@ public class Sale05R110 extends bproc {
         Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "R" + intRecordNo }, new int[1]).toDispatch(), "Value", ctrlDeputyer);
 
         // 洗防通報1
-        Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "S" + intRecordNo }, new int[1]).toDispatch(), "Value", "□是□否");
+        String amlCall = "□是□否";
+        if (retSale05M111[intSale05M111][6].trim().length() != 10) amlCall = ""; 
+        Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "S" + intRecordNo }, new int[1]).toDispatch(), "Value", amlCall);
 
         // 洗防通報2
-        Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "T" + intRecordNo }, new int[1]).toDispatch(), "Value", "□是□否");
-        
+        Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "T" + intRecordNo }, new int[1]).toDispatch(), "Value", amlCall);
+
         // (new I ) 是否本人繳款
         Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "O" + intRecordNo }, new int[1]).toDispatch(), "Value", deputyLength > 0 ? "否" : "是");
-        
+
       }
 
       // 只要一次

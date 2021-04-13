@@ -6,7 +6,7 @@ public class Result {
   private String returnMsg = "ok";
   private Exception exp;
   private Object data;
-  private String[] rsStatus = ResultStatus.SUCCESS;
+  private String[] rsStatus = ResultStatus.SUCCESSBUTSOMEERROR;
 
   public Result() {
   }

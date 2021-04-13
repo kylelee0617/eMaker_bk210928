@@ -14,6 +14,8 @@ import Farglory.util.FargloryUtil;
 import Farglory.Excel.FargloryExcel;
 
 public class Sale03R510_202101 extends bproc {
+  String dateType = ""; 
+  
   public String getDefaultValue(String value) throws Throwable {
     System.out.println("ButtonExcelView20180503 ========= START =========");
     FargloryUtil exeUtil = new FargloryUtil();
@@ -21,6 +23,10 @@ public class Sale03R510_202101 extends bproc {
     talk dbDoc = getTalk("" + get("put_dbDoc"));
     talk dbDocCS = null;// exeUtil.getTalkCS("Doc") ; // 2018019 //
     talk dbAO = getTalk("" + get("put_dbAO"));
+    
+    //全域欄位取值
+    dateType = getValue("dateType").trim();
+    
     //
     if (!isBatchCheckOK())
       return value;
@@ -47,14 +53,17 @@ public class Sale03R510_202101 extends bproc {
     objectSheet1 = Dispatch.call(objectSheets, "Item", new Variant(2)).toDispatch();
     Dispatch.call(objectSheet1, "Activate");
     doExcel2(arrayRow, objectSheet1, exeExcel, exeUtil, dbAO, dbDoc, dbSale);
+    
     // 新來人
     objectSheet1 = Dispatch.call(objectSheets, "Item", new Variant(3)).toDispatch();
     Dispatch.call(objectSheet1, "Activate");
     doExcel3(arrayRow, objectSheet1, exeExcel, exeUtil, dbAO, dbDoc, dbSale);
+    
     // 總來人
     objectSheet1 = Dispatch.call(objectSheets, "Item", new Variant(4)).toDispatch();
     Dispatch.call(objectSheet1, "Activate");
     doExcel4(arrayRow, objectSheet1, exeExcel, exeUtil, dbAO, dbDoc, dbSale);
+    
     // 3-6 DATA-企劃費用 (純)8
     objectSheet1 = Dispatch.call(objectSheets, "Item", new Variant(8)).toDispatch();
     Dispatch.call(objectSheet1, "Activate");
@@ -73,7 +82,7 @@ public class Sale03R510_202101 extends bproc {
     String stringProjectID1 = getValue("ProjectID1").trim();
     String stringYearAC = getValue("YearAC").trim();
     String stringMonth = getValue("Month").trim();
-    String dateType = getValue("dateType").trim();
+//    String dateType = getValue("dateType").trim();
     // String stringFilePath =
     // "g:\\資訊室\\Excel\\SaleEffect\\Sale03R510_2017-02-18.xlt" ;
     long longTime1 = exeUtil.getTimeInMillis();
@@ -142,7 +151,7 @@ public class Sale03R510_202101 extends bproc {
     // 標題
     stringValue = stringProjectID1 + "案行銷策略月報表";
     exeExcel.putDataIntoExcel(0, 0, stringValue, objectSheet1);
-    stringValue = "年度：" + stringYearAC + "/" + stringMonth + "月";
+    stringValue = ("O".equals(dateType)? "付訂":"簽約") + "年度：" + stringYearAC + "/" + stringMonth + "月";
     exeExcel.putDataIntoExcel(0, 1, stringValue, objectSheet1);
     for (int intRow = 0; intRow <= 57; intRow++) {
       // 第一表格
@@ -161,14 +170,13 @@ public class Sale03R510_202101 extends bproc {
           }
         }
       }
+      
       // 業績
       for (int intNo = 0; intNo < retSale03R510A.length; intNo++) {
         intRowL = exeUtil.doParseInteger(retSale03R510A[intNo][0].trim()) - 1;
         //
-        if (intRowL <= 0)
-          continue;
-        if (intRowL != intRow)
-          continue;
+        if (intRowL <= 0) continue;
+        if (intRowL != intRow) continue;
         // 1-12 月
         for (int intNoL = 1; intNoL <= 12; intNoL++) {
           stringValue = retSale03R510A[intNo][intNoL + 1].trim();
@@ -183,10 +191,10 @@ public class Sale03R510_202101 extends bproc {
         exeExcel.putDataIntoExcel(28, intRowL, stringValue, objectSheet1);
         // 31 案累計 2016-08-09 改為總銷金額
         stringValue = retSale03R510A[intNo][16].trim();
-        if (intRowL == 3)
-          stringValue = stringTotMoney;
+        if (intRowL == 3) stringValue = stringTotMoney;
         exeExcel.putDataIntoExcel(31, intRowL, stringValue, objectSheet1);
       }
+      
       // 新來人數 11、總來人數 13
       for (int intNo = 0; intNo < retSale03R510A2.length; intNo++) {
         intRowL = exeUtil.doParseInteger(retSale03R510A2[intNo][0].trim()) - 1;
@@ -667,7 +675,7 @@ public class Sale03R510_202101 extends bproc {
     int intCol = 2;
     int intRow = 0;
     String stringProjectID1 = getValue("ProjectID1").trim();
-    String dateType = getValue("dateType").trim();
+//    String dateType = getValue("dateType").trim();
     String stringYearAC = getValue("YearAC").trim();
     String stringMonth = getValue("Month").trim();
     String stringMonthL = "";

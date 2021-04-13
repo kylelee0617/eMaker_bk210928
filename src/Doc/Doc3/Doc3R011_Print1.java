@@ -42,11 +42,15 @@ public class Doc3R011_Print1 extends bproc{
             String    stringFunction  =  "" ;
             //
             intRow          =  jtable.getSelectedRow() ;
-            stringBarCode       =  (""+getValueAt("Table1",  intRow,  "BarCode")) ;   System.out.println("stringBarCode("+stringBarCode+")------------------------------") ;if("".equals(stringBarCode))  return ;
+            stringBarCode       =  (""+getValueAt("Table1",  intRow,  "BarCode")) ;   
+            System.out.println("stringBarCode("+stringBarCode+")------------------------------") ;
+            
+            if("".equals(stringBarCode))  return ;
             stringFunction        =  (""+getValueAt("Table1",  intRow,  "Function")) ;    
             booleanSource       =  "A".equals(stringFunction) ;
         } else {
-            stringBarCode     =  getValue("BarCode") ;                if("".equals(stringBarCode))  return ;
+            stringBarCode     =  getValue("BarCode") ;                
+            if("".equals(stringBarCode))  return ;
             booleanSource       =  stringThisFunction.indexOf("Doc5")==-1 ;
         }
         vectorDoc3M011    =  exeUtil.getQueryDataHashtable(booleanSource ?  "Doc3M011" : "Doc5M011",   new  Hashtable(),  " AND  BarCode  =  '"+stringBarCode+"' ",               dbDoc) ;    if(vectorDoc3M011.size()==0)  return ;
@@ -132,6 +136,7 @@ public class Doc3R011_Print1 extends bproc{
     public  void  doPrintDoc3M011(boolean  booleanSource,  String  stringPrintType,  Vector  vectorDoc3M011,  Vector  vectorDoc3M012,  Dispatch  objectSheet1,  FargloryExcel  exeExcel,  FargloryUtil  exeUtil,  talk  dbDoc,  talk  dbFE3D,  talk  dbFED1,  talk  dbAsset) throws  Throwable {
         // ¤½¥q
         String  stringBarCode     =  exeUtil.getVectorFieldValue(vectorDoc3M011,  0,  "BarCode") ;
+        System.out.println("stringBarCodear>>>" + stringBarCode);
         String  stringComNo     =  exeUtil.getVectorFieldValue(vectorDoc3M011,  0,  "ComNo") ;
         String  stringComName   =  getCompanyName(stringComNo,  stringBarCode,  exeUtil,  dbDoc,  dbFED1) ; 
         exeExcel.putDataIntoExcel(16,   0,  "*"+stringBarCode+"*",        objectSheet1) ;

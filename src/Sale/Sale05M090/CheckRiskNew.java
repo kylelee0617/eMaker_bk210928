@@ -4,6 +4,10 @@ import jcx.db.talk;
 import jcx.util.*;
 import jcx.html.*;
 import java.util.*;
+
+import Farglory.aml.AMLyodsBean;
+import Farglory.aml.RiskCheckTools_Lyods;
+import Farglory.aml.RiskCustomBean;
 import Farglory.util.*;
 
 public class CheckRiskNew extends jcx.jform.sproc {
@@ -11,38 +15,42 @@ public class CheckRiskNew extends jcx.jform.sproc {
   public String getDefaultValue(String value) throws Throwable {
     System.out.println("Class >>> Sale.Sale05M090.ChekRiskNew");
     System.out.println(datetime.getTime("h:m:s"));
-
-    RiskCheckBean bean = new RiskCheckBean();
-    talk dbSale = getTalk("Sale");
-    talk dbEMail = getTalk("eMail");
-    talk db400CRM = getTalk("400CRM");
-    talk dbEIP = getTalk("EIP");
-    bean.setDbSale(dbSale);
-    bean.setDbEMail(dbEMail);
-    bean.setDb400CRM(db400CRM);
-    bean.setDbEIP(dbEIP);
-    bean.setUserNo(getUser());
-
-    String[][] retCustom = getTableData("table1");
-    String[][] retSBen = getTableData("table6");
+    
     String strOrderNo = getValue("field3").trim();
     String strOrderDate = getValue("field2").trim();
     String strProjectID1 = getValue("field1").trim();
     String actionText = getValue("actionText").trim();
-    bean.setRetCustom(retCustom);
-    bean.setRetSBen(retSBen);
-    bean.setOrderNo(strOrderNo);
-    bean.setProjectID1(strProjectID1);
-    bean.setOrderDate(strOrderDate);
-    bean.setActionText(actionText);
-    bean.setFunc("購屋證明單");
-    bean.setRecordType("風險計算結果");
-    bean.setUpdSale05M091(true);
-    bean.setUpd070Log(true);
-    bean.setSendMail(true);
-
-    RiskCheckTool check = new RiskCheckTool(bean);
-    Result rs = check.processRisk();
+    
+    //組成查詢主要客戶
+    String[][] retCustom = getTableData("table1");
+    RiskCustomBean[] cBeans = new RiskCustomBean[retCustom.length];
+    for(int ii=0 ; ii<retCustom.length ; ii++) {
+      RiskCustomBean cBean = new RiskCustomBean();
+      cBean.setCustomNo(retCustom[ii][5].trim());
+      cBean.setCustomName(retCustom[ii][6].trim());
+      cBean.setBirthday(retCustom[ii][8].trim());
+      cBean.setIndustryCode(retCustom[ii][24].trim());
+      cBeans[ii] = cBean;
+    }
+    
+    AMLyodsBean aBean = new AMLyodsBean();
+    aBean.setDbSale(getTalk("Sale"));
+    aBean.setDbEMail(getTalk("eMail"));
+    aBean.setDb400CRM(getTalk("400CRM"));
+    aBean.setDbEIP(getTalk("EIP"));
+    aBean.setDbPw0D(getTalk("pw0d"));
+    aBean.setEmakerUserNo(getUser());
+    aBean.setOrderNo(strOrderNo);
+    aBean.setProjectID1(strProjectID1);
+    aBean.setOrderDate(strOrderDate);
+    aBean.setActionName(actionText);
+    aBean.setFunc("購屋證明單");
+    aBean.setRecordType("風險計算受益人資料");
+    aBean.setUpdSale05M091(true);
+    aBean.setUpd070Log(true);
+    aBean.setSendMail(true);
+    RiskCheckTools_Lyods risk = new RiskCheckTools_Lyods(aBean);
+    Result rs = risk.processRisk(cBeans);
 
     // 執行結果
     String rsStatus = rs.getRsStatus()[3].toString().trim();
