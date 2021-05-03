@@ -5,7 +5,7 @@ import java.util.*;
 import Farglory.util.*;
 import jcx.db.talk;
 
-public class CheckRisk202102 extends jcx.jform.sproc {
+public class CheckRiskNew_bk20210413 extends jcx.jform.sproc {
   KUtils util = new KUtils();
   
   public String getDefaultValue(String value) throws Throwable {

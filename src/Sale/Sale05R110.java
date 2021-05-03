@@ -47,13 +47,10 @@ public class Sale05R110 extends bproc {
     }
 
     String stringSQL = "";
-    stringSQL = " SELECT Sale05M111.DocNo, " + " Sale05M111.Position, " + " Sale05M111.CustomNo, " + " Sale05M111.PointNo, " + " Sale05M111.DetailItem, " + " Sale05M111.Remark, "
-        + " Sale05M111.InvoiceNo, " + " Sale05M111.InvoiceMoney, " + " Sale05M111.InvoiceTax, " + " Sale05M111.InvoiceTotalMoney, " +
-// Start 修改日：20090202 員工編號：B3774
-        // " Sale05M111.InvoiceKind " +
-        "Sale05M111.InvoiceKind, " + "Sale05M111.Endorse " +
-// End
-        " FROM Sale05M110,Sale05M111 " + " WHERE Sale05M110.ReceiveNo = Sale05M111.ReceiveNo ";
+    stringSQL = " SELECT Sale05M111.DocNo, Sale05M111.Position, Sale05M111.CustomNo, Sale05M111.PointNo, Sale05M111.DetailItem, Sale05M111.Remark, "
+              + " Sale05M111.InvoiceNo, Sale05M111.InvoiceMoney, Sale05M111.InvoiceTax, Sale05M111.InvoiceTotalMoney, " 
+              + " Sale05M111.InvoiceKind, Sale05M111.Endorse "
+              + " FROM Sale05M110, Sale05M111 WHERE Sale05M110.ReceiveNo = Sale05M111.ReceiveNo ";
     if (getValue("CompanyNo").length() > 0) {
       stringSQL = stringSQL + " AND Sale05M110.CompanyNo = '" + getValue("CompanyNo") + "'";
     }
@@ -147,7 +144,6 @@ public class Sale05R110 extends bproc {
     String lastCustNo = "";
     String projectID = getValue("ProjectID1").trim(); // 案號
     for (int intSale05M111 = 0; intSale05M111 < retSale05M111.length; intSale05M111++) {
-      // System.out.println(">>>test intRecordNo>>>" + intRecordNo);
       String thisDocNo = retSale05M111[intSale05M111][0].trim(); // 本收款單號
       List listOrderNo = mlpUtils.getOrderNo(thisDocNo); // 訂單編號們
       String customNo = ""; // 統編 / ID
@@ -156,10 +152,10 @@ public class Sale05R110 extends bproc {
       Map queryLog = mlpUtils.getQueryLog(); // 受控管名單
       String[][] retDeputy = mlpUtils.getDeputy(thisDocNo); // 代繳人名單
       int deputyLength = retDeputy.length; // 代繳人名單數量
-
-      // for(int odNo=0 ; odNo<listOrderNo.size() ; odNo++){
-      // System.out.println(">>>orderNo>>>[" + listOrderNo.get(odNo)+ "]");
-      // }
+      String invoNo = retSale05M111[intSale05M111][6].trim(); //發票號碼
+      boolean isDisCount = (invoNo.length()) != 10? true:false;   //是否折讓單
+      String trxDate = "";
+      if(isDisCount) trxDate = dbInvoice.queryFromPool("select DiscountDate from InvoM040 where DiscountNo = '" + invoNo + "' ")[0][0]; //取得真正折讓單日期
 
       // 是不是同一筆收款單號
       boolean printMLP = false; // 是否輸出洗防資訊
@@ -184,10 +180,14 @@ public class Sale05R110 extends bproc {
           qOrderNo.append(",");
         qOrderNo.append("'").append(listOrderNo.get(odNo)).append("'");
       }
-      stringSQL = "select distinct " + "T84.CustomName ,T91.riskValue , T84.CustomNo " + "from Sale05M084 T84 ,  Sale05M091 T91 " + "where 1=1 "
-          + "and T84.CustomNo = T91.CustomNo  " + "and (( ISNULL(T91.TrxDate,'')<>'' ) or ISNULL(T91.TrxDate,'')='' ) " + "and T84.DocNo  =  '" + thisDocNo + "' "
-          + "and T84.CustomNo = '" + retSale05M111[intSale05M111][2].trim() + "' " + "and T91.OrderNo in (" + qOrderNo.toString().trim() + ") ";
-      // +"and ( T91.StatusCd != 'C' or T91.StatusCd is null ) ";
+      stringSQL = "select distinct T84.CustomName ,T91.riskValue , T84.CustomNo "
+          + "from Sale05M084 T84 , Sale05M091 T91 where 1=1 "
+          + "and T84.CustomNo = T91.CustomNo  "
+          + "and T84.DocNo = '" + thisDocNo + "' "
+          + "and T84.CustomNo = '" + retSale05M111[intSale05M111][2].trim() + "' "
+          + "and T91.OrderNo in (" + qOrderNo.toString().trim() + ") ";
+      if(!isDisCount) stringSQL += "and ISNULL(T91.TrxDate,'')='' and ISNULL(T91.StatusCd,'')='' ";
+      if(isDisCount) stringSQL += "and ( ISNULL(T91.TrxDate,'') = '"+trxDate+"' ) ";
       String retSale05M084[][] = dbSale.queryFromPool(stringSQL);
       if (retSale05M084.length == 0) {
         message("[客戶代碼] 不存在!");
@@ -195,17 +195,6 @@ public class Sale05R110 extends bproc {
       }
 
       if (retSale05M084.length != 0) {
-        // for(int i=0 ; i<retSale05M084.length ; i++){
-        // if( i!= 0 ) {
-        // customNo += "\n";
-        // customName += "\n";
-        // riskValue += "\n";
-        // }
-        // customNo += retSale05M084[i][2].trim();
-        // customName += retSale05M084[i][0].trim();
-        // riskValue += retSale05M084[i][1].trim();
-        // }
-
         // ID永遠只會有一筆 (理論上)
         customNo = retSale05M084[0][2].trim();
         customName = retSale05M084[0][0].trim();
@@ -220,7 +209,13 @@ public class Sale05R110 extends bproc {
       String[][] arrBeneficiary = new String[0][0];
       if (retSale05M084.length != 0) {
         if (mlpUtils.isCusCompany(customNo)) {
-          arrBeneficiary = mlpUtils.getCtrlBeneficiary(listOrderNo, customNo);
+          if(retSale05M111[intSale05M111][6].trim().length() != 10) {
+            //折讓單
+            arrBeneficiary = mlpUtils.getCtrlBeneficiary(listOrderNo, customNo , trxDate);
+          }else {
+            //發票
+            arrBeneficiary = mlpUtils.getCtrlBeneficiary(listOrderNo, customNo, "");
+          }
           realBeneficiary = mlpUtils.getBeneficiaryCtrlYN(projectID, queryLog, arrBeneficiary, "list");
         }
         Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "E" + intRecordNo }, new int[1]).toDispatch(), "Value", realBeneficiary);
@@ -258,7 +253,8 @@ public class Sale05R110 extends bproc {
 
         // 洗防通報1
         String amlCall = "□是□否";
-        if (retSale05M111[intSale05M111][6].trim().length() != 10) amlCall = ""; 
+        if (retSale05M111[intSale05M111][6].trim().length() != 10)
+          amlCall = "";
         Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "S" + intRecordNo }, new int[1]).toDispatch(), "Value", amlCall);
 
         // 洗防通報2
@@ -272,51 +268,6 @@ public class Sale05R110 extends bproc {
       // 只要一次
       if (printMLP) {
 
-        // 移走的客戶
-
-//        // (new I ) 是否本人繳款
-//        Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "O" + intRecordNo }, new int[1]).toDispatch(), "Value", deputyLength > 0 ? "否" : "是");
-
-        // //是否控管-購買人
-        // String ctrlBuyer = mlpUtils.getBuyerCtrlYN( projectID , queryLog , customNo ,
-        // customName );
-        // Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-        // {"P" + intRecordNo},new int[1]).toDispatch(), "Value", ctrlBuyer );
-
-        // //是否控管-實質受益人
-        // String ctrlRealBeneficiary = "-";
-        // if( mlpUtils.isCusCompany(customNo) ){
-        // ctrlRealBeneficiary = mlpUtils.getBeneficiaryCtrlYN( projectID , queryLog ,
-        // arrBeneficiary , "ctrl" );
-        // }
-        // Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-        // {"Q" + intRecordNo},new int[1]).toDispatch(), "Value", ctrlRealBeneficiary );
-
-        // //是否控管-代繳人
-        // String ctrlDeputyer = "-";
-        // if( deputyLength > 0 ){
-        // String depStatus = "";
-        // ctrlDeputyer = "否";
-        // for( int a=0 ; a < deputyLength ; a++){
-        // System.out.println(">>> deputy key >>>" + projectID + retDeputy[a][2].trim()
-        // + retDeputy[a][1].trim());
-        // if( "Y".equals( queryLog.get( projectID + retDeputy[a][2].trim() +
-        // retDeputy[a][1].trim() ) ) ) {
-        // ctrlDeputyer = "是";
-        // break;
-        // }
-        // }
-        // }
-        // Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-        // {"R" + intRecordNo},new int[1]).toDispatch(), "Value", ctrlDeputyer );
-
-        // //洗防通報1
-        // Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-        // {"S" + intRecordNo},new int[1]).toDispatch(), "Value", "□是□否" );
-
-        // //洗防通報2
-        // Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-        // {"T" + intRecordNo},new int[1]).toDispatch(), "Value", "□是□否" );
       }
 
       // D 摘要代碼(品名)
@@ -337,11 +288,6 @@ public class Sale05R110 extends bproc {
       // F 期別No
       Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "H" + intRecordNo }, new int[1]).toDispatch(), "Value",
           retSale05M111[intSale05M111][5].trim());
-
-      // // (new I ) 是否本人繳款
-      // Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-      // {"I" + intRecordNo},new int[1]).toDispatch(), "Value", deputyLength > 0 ?
-      // "否":"是" );
 
       // G 發票號碼
       if (retSale05M111[intSale05M111][6].trim().length() != 10) {
@@ -412,13 +358,6 @@ public class Sale05R110 extends bproc {
             stringDiscountReason += retSale05M080[0][0].trim();
           }
         }
-        // System.out.println((intSale05M111+1)+"-------------("+stringDiscountReason+")---------------"+retSale05M080.length)
-        // ;
-        /*
-         * Dispatch.put(Dispatch.invoke(objectSheet2,"Range",Dispatch.Get,new Object[]
-         * {"O" + intRecordNo},new int[1]).toDispatch(), "Value", stringDiscountReason
-         * );
-         */
       }
       Dispatch.put(Dispatch.invoke(objectSheet2, "Range", Dispatch.Get, new Object[] { "U" + intRecordNo }, new int[1]).toDispatch(), "Value", stringDiscountReason);
       /* Carrey 20071008 add start */
@@ -475,15 +414,6 @@ public class Sale05R110 extends bproc {
     Dispatch.put(Dispatch.invoke(objectSheet1, "Range", Dispatch.Get, new Object[] { "L" + intRow }, new int[1]).toDispatch(), "Value", "" + doubleTax);
     // J 總計
     Dispatch.put(Dispatch.invoke(objectSheet1, "Range", Dispatch.Get, new Object[] { "M" + intRow }, new int[1]).toDispatch(), "Value", "" + doubleTotalMoney);
-
-    // 可用
-    // Dispatch.put(Dispatch.invoke(objectSheet1,"Range",Dispatch.Get,new Object[]
-    // {"U" + intRow},new int[1]).toDispatch(),
-    // "Value",
-    // "暫收：" + format.format(convert.FourToFive(""+doubleUsableMoneySum, 0),
-    // "999,999,999").trim()
-    // );
-
     // End of Body
     //
     Dispatch.call(objectSheet1, "Activate");

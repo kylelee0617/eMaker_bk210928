@@ -1,14 +1,7 @@
 package Sale.Sale05M093;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import Farglory.aml.AMLyodsBean;
-import Farglory.aml.RiskCustomBean;
-import Farglory.util.*;
+import Farglory.util.KUtils;
 import jcx.db.talk;
 
 public class CheckRiskNew extends jcx.jform.bproc {
@@ -43,7 +36,6 @@ public class CheckRiskNew extends jcx.jform.bproc {
     aBean.setSendMail(true);
     
     //«È¤átable
-    Map name2no = new HashMap();
     String[][] retCustom = getTableData("table2");
     for(int ii=0 ; ii<retCustom.length ; ii++) {
       String custNo = retCustom[ii][5].trim();
