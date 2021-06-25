@@ -34,22 +34,43 @@ import Farglory.util.SendMailBean;
 public class BtCustAML extends jcx.jform.sproc {
   public String getDefaultValue(String value) throws Throwable {
     String rsMsg = "";
-    String serverType = "";
-    boolean isTest = false;
-    String lyodsSoapURL = "";
     Result result = null;
     
     //config
     Map config = (HashMap) get("config");
-    serverType = config.get("serverType").toString();
-    lyodsSoapURL = config.get("lyodsSoapURL").toString();
-    isTest = "PROD".equals(serverType) ? false : true;
-    
-    //param
+    boolean isTest = "PROD".equals(config.get("serverType").toString()) ? false : true;
+    String lyodsSoapURL = config.get("lyodsSoapURL").toString();
+      
+    /**
+     * Param
+     * 
+     * 0. projectId 案別代碼
+     * 1. orderNo 訂單編號
+     * 2. orderDate 訂單日期
+     * 3. func 功能大
+     * 4. recordType 功能小
+     * 5. custNo 客戶ID
+     * 6. custName 客戶name
+     * 7. birth 生日/註冊日
+     * 8. indCode 行業別代碼
+     * 9. processType 執行代碼
+     */
     String custAMLText = getValue("AMLText");
     String[] arrParam = custAMLText.split(",");
-    String orderNo = arrParam[0].toString().trim();
-    String orderDate = arrParam[1].toString().trim();
+    String projectId = arrParam[0].toString().trim();
+    String orderNo = arrParam[1].toString().trim();
+    String orderDate = arrParam[2].toString().trim();
+    String func = arrParam[3].toString().trim();
+    String recordType = arrParam[4].toString().trim();
+    String custNo = arrParam[5].toString().trim();
+    String custName = arrParam[6].toString().trim();
+    String birth = arrParam[7].toString().trim();
+    String indCode = arrParam[8].toString().trim();
+    String processType = arrParam[9].toString().trim();
+    System.out.println(">>>orderNO:" + orderNo +">>>orderDate:" + orderDate +">>>custNo:" + custNo +">>>custName:" + custName 
+        +">>>birth:" + birth +">>>indCode:" + indCode +">>>processType:" + processType);
+    
+    //欄位檢核
     if( orderNo.length() == 0 ) {
       rsMsg = "<BtCustAML無訂單編號，程序終止>";
       return value;
@@ -60,8 +81,11 @@ public class BtCustAML extends jcx.jform.sproc {
     }
     
     AMLyodsBean aBean = new AMLyodsBean();
+    aBean.setProjectID1(projectId);
     aBean.setOrderNo(orderNo);
-    aBean.setOrderDate(orderDate.replaceAll("/", "").replaceAll("/", ""));
+    aBean.setOrderDate(orderDate.replaceAll("/", "").replaceAll("-", ""));
+    aBean.setFunc(func);
+    aBean.setRecordType(recordType);
     aBean.setEmakerUserNo(getUser());
     aBean.setTestServer(isTest);
     aBean.setLyodsSoapURL(lyodsSoapURL);
@@ -71,13 +95,13 @@ public class BtCustAML extends jcx.jform.sproc {
     AMLTools_Lyods aml = new AMLTools_Lyods(aBean);
 
     RiskCustomBean custBean = new RiskCustomBean();
-    custBean.setCustomNo(arrParam[2].toString().trim());      //身分證字號
-    custBean.setCustomName(arrParam[3].toString().trim());    //姓名
-    custBean.setBirthday(arrParam[4].replaceAll("/", "").replaceAll("-", "").toString().trim());  //生日
-    custBean.setIndustryCode(arrParam[5].toString().trim());  //業別
+    custBean.setCustomNo(custNo);      //身分證字號
+    custBean.setCustomName(custName);    //姓名
+    custBean.setBirthday(birth.replaceAll("/", "").replaceAll("-", ""));  //生日
+    custBean.setIndustryCode(indCode);  //業別
     
-    String processType = arrParam[4].toString().trim();
     if( "query1821".equals(processType) ) { //查詢PEPS or 制裁
+      System.out.println(">>query1821...");
       // 制裁名單
       result = aml.chkAML018_San(custBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
@@ -88,47 +112,19 @@ public class BtCustAML extends jcx.jform.sproc {
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
         rsMsg += result.getData().toString().trim() + "\n";
       }
+//      rsMsg += aml.getLyodsHits(custBean);  //看命中甚麼
     }else if( "query18".equals(processType) ) { //只看制裁
       // 制裁名單
       result = aml.chkAML018_San(custBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
         rsMsg += result.getData().toString().trim() + "\n";
       }
-    }
-    else if( "updRelated".equals(processType) ) {  //更新關聯人
+    }else if( "updRelated".equals(processType) ) {  //更新關聯人
       result = aml.renewRelated(custBean);
       if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
         RenewRelatedReply related = (RenewRelatedReply) result.getData(); 
         rsMsg += related.getResult().toString().trim() + "\n";
       }
-    }else if( "custListRiskCheck".equals(processType) ) {  //主要客戶風險值
-      String[][] table1 = this.getTableData("table1");
-      RiskCustomBean[] cBeans = new RiskCustomBean[table1.length];
-      for(int i=0 ; i<table1.length ; i++) {
-        RiskCustomBean cBean = new RiskCustomBean();
-        cBean.setCustomNo(table1[i][5].trim());
-        cBean.setCustomName(table1[i][6].trim());
-        cBean.setBirthday(table1[i][8].trim());
-        cBean.setIndustryCode(table1[i][24].trim());
-        cBeans[i] = cBean;
-      }
-      RiskCheckTools_Lyods risk = new RiskCheckTools_Lyods(aBean);
-      result = risk.processRisk(cBeans);
-      if(ResultStatus.SUCCESS[0].equals(result.getRsStatus()[0]) ) {
-        RiskCheckRS rcRs = (RiskCheckRS) result.getData(); 
-        //風險值結果
-        rsMsg += (!"".equals(rcRs.getRsMsg())? rcRs.getRsMsg():"無風險值結果，請確認名單內容是否正確。") + "\n";
-        //寄發Email
-        if( !isTest ) {
-          List rsSendMailList = (List) rcRs.getSendMailList();
-          for (int ii = 0; ii < rsSendMailList.size(); ii++) {
-            SendMailBean smbean = (SendMailBean) rsSendMailList.get(ii);
-            String sendRS = sendMailbcc(smbean.getColm1(), smbean.getColm2(), smbean.getArrayUser(), smbean.getSubject(), smbean.getContext(), null, "", "text/html");
-            System.out.println("寄發MAIL>>>" + sendRS);
-          }
-        }
-      }
-      
     }
     
     setValue("AMLText" , rsMsg);

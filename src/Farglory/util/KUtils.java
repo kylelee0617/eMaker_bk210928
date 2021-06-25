@@ -9,28 +9,80 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
-
 import jcx.db.talk;
-import jcx.jform.bvalidate;
+import jcx.jform.bproc;
 import jcx.util.check;
 
-public class KUtils extends bvalidate {
+public class KUtils extends bproc {
+  private talk dbSale = null;
+  private talk dbPW0D = null;
+  private talk db400 = null;
+  private talk dbEIP = null;
+  private talk dbEMail = null;
+  private TalkBean tBean = null;
+  
 
-  // 是數字回傳 true，否則回傳 false。
-  public boolean check(String value) throws Throwable {
-    return false;
+  public String getDefaultValue(String value) throws Throwable {
+    return value;
+  }
+
+  public KUtils() {
+    System.err.println("KUtils init 0");
+    dbSale = getTalk("Sale");
+    dbPW0D = getTalk("pw0d");
+    db400 = getTalk("400CRM");
+    dbEIP = getTalk("EIP");
+    dbEMail = getTalk("eMail");
+    
+    TalkBean tBean = new TalkBean();
+    tBean.setDbSale(dbSale);
+    tBean.setDbPw0D(dbPW0D);
+    tBean.setDb400CRM(db400);
+    tBean.setDbEIP(dbEIP);
+    tBean.setDbEMail(dbEMail);
+    this.tBean = tBean;
+  }
+
+  public KUtils(TalkBean tBean) {
+    System.err.println("KUtils init 1");
+    dbSale = tBean.getDbSale();
+    dbPW0D = tBean.getDbPw0D();
+    db400 = tBean.getDb400CRM();
+    dbEIP = tBean.getDbEIP();
+    dbEMail = tBean.getDbEMail();
   }
   
+  public TalkBean getTBean() {
+    return tBean;
+  }
+
+  /**
+   * 取得洗錢態樣
+   * 
+   * @return
+   * @throws Throwable
+   */
+  public Map getAMLDesc() throws Throwable {
+    String sql = "select * from saleRY773 where AMLType = 'AML' order by AMLNo asc";
+    String[][] retAML = dbSale.queryFromPool(sql);
+    Map mapAMLMsg = new HashMap();
+    for (int i = 0; i < retAML.length; i++) {
+      String[] retAML1 = retAML[i];
+      mapAMLMsg.put(retAML1[1], retAML1[2]);
+    }
+    return mapAMLMsg;
+  }
+
   public String getIndustryCodeByMajorName(String majorName) throws Throwable {
-    talk db400 = getTalk("400CRM");
     String sql = "SELECT CZ02,CZ09 FROM PDCZPF WHERE CZ01='INDUSTRY' And CZ09 = '" + majorName + "'";
     String[][] retMajor = db400.queryFromPool(sql);
     String ind = "";
-    if (retMajor.length > 0) ind = retMajor[0][0] != null ? retMajor[0][0].trim() : "";
-    
+    if (retMajor.length > 0)
+      ind = retMajor[0][0] != null ? retMajor[0][0].trim() : "";
+
     return ind;
   }
-  
+
   /**
    * 
    * 用orderNo 取 orderDate
@@ -41,10 +93,8 @@ public class KUtils extends bvalidate {
    * @throws Throwable
    */
   public String getOrderDateByOrderNo(String orderNo) throws Throwable {
-    talk dbSale = getTalk("Sale");
     return dbSale.queryFromPool("select top 1 orderDate from Sale05M090 where orderNo = '" + orderNo + "' ")[0][0].trim();
   }
-  
 
   /**
    * 取得QueryLog
@@ -56,9 +106,7 @@ public class KUtils extends bvalidate {
    */
   public QueryLogBean getQueryLogByCustNoProjectId(String projectId, String custNo) throws Throwable {
     QueryLogBean bean = null;
-    talk dbPW0D = getTalk("pw0d");
-    
-    String sql = "select top 1 * from query_log where a.PROJECT_ID = '" + projectId + "' and query_id = '" + custNo + "' ";
+    String sql = "select top 1 * from query_log a where a.PROJECT_ID = '" + projectId + "' and a.query_id = '" + custNo + "' ";
     String[][] ret = dbPW0D.queryFromPool(sql);
     if (ret.length > 0) {
       bean = new QueryLogBean();
@@ -101,7 +149,6 @@ public class KUtils extends bvalidate {
    * @throws Throwable
    */
   public Map getMapQueryLogByProjectId(String projectId) throws Throwable {
-    talk dbPW0D = getTalk("pw0d");
     String sql = "select * from query_log where a.PROJECT_ID = '" + projectId + "' ";
     String[][] ret = dbPW0D.queryFromPool(sql);
 
@@ -148,7 +195,6 @@ public class KUtils extends bvalidate {
    * @throws Throwable
    */
   public QueryLogBean[] getArrQueryLogByProjectId(String projectId) throws Throwable {
-    talk dbPW0D = getTalk("pw0d");
     String sql = "select * from query_log where a.PROJECT_ID = '" + projectId + "' ";
     String[][] ret = dbPW0D.queryFromPool(sql);
 

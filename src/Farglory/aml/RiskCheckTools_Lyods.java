@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fglife.soap.cr.MainReply;
 
 import Farglory.util.Result;
@@ -46,9 +48,6 @@ public class RiskCheckTools_Lyods extends bvalidate {
     strProjectID1 = aml.getProjectID1();
     strOrderNo = aml.getOrderNo();
     strOrderDate = aml.getOrderDate();
-    System.out.println("strOrderNo=====>" + strOrderNo);
-    System.out.println("strProjectID1=====>" + strProjectID1);
-    System.out.println("strOrderDate=====>" + strOrderDate);
     
     //config
     lyodsSoapURL = this.aml.getLyodsSoapURL();
@@ -87,18 +86,15 @@ public class RiskCheckTools_Lyods extends bvalidate {
   public Result processRisk(RiskCustomBean[] cBeans) throws Throwable {
     Result rs = new Result();
     RiskCheckRS rcRS = new RiskCheckRS();
-//    rs.setRsStatus(ResultStatus.SUCCESSBUTSOMEERROR);
 
     String riskValue = "";
     String riskPoint = "";
+    String checkResult = "";
     ArrayList list = new ArrayList();
     
     try {
       String msgboxtext = "";
-      String tmpMsgText = "";
-      
-//      List custList = this.aml.getListCustom();
-//      for(int i=0 ; i<custList.size() ; i++) {
+      String tmpMsgText = "";      
       for(int i=0 ; i<cBeans.length ; i++) {
         RiskCustomBean cBean = cBeans[i];
         String custNo = cBean.getCustomNo();
@@ -108,36 +104,56 @@ public class RiskCheckTools_Lyods extends bvalidate {
           System.out.println("custom>>>" + i + "-" + cBean.getCustomNo() + "," + cBean.getCustomName());
         }
         
-//        this.aml.setOrderNo(this.strOrderNo);
-//        this.aml.setOrderDate(this.strOrderDate);
-//        this.aml.setEmakerUserNo(getUser());
-//        this.aml.setCustBean(cBean);
-        this.aml.setRiskResult("Y");
-        this.aml.setCheckAll("Y");
+        //Lyods GO
+        aml.setRiskResult("Y");
+        aml.setCheckAll("Y");
+        aml.setCustBean(cBean);
         LyodsTools lyodsTools = new LyodsTools(aml);
-        MainReply mainReply = (MainReply) lyodsTools.checkRisk().getData();
+        Result result = lyodsTools.checkRisk();
+        if(result.getRsStatus()[0] != ResultStatus.SUCCESS[0]) {
+          System.out.println(">>> checkRisk Error >>>" + i + "-" + cBean.getCustomNo() + "," + cBean.getCustomName());
+          System.out.println(">>>Error:" + result.getRsStatus()[3]);
+          continue;
+        }
         
-        //訊息處理
-        String resultMsg = !"".equals(mainReply.getMessage().trim())? mainReply.getMessage().trim() : mainReply.getRiskLevel().trim();
-        
-        riskPoint = mainReply.getRiskScore().trim();
-        riskValue = mainReply.getRiskLevel().trim();
-        System.out.println("19洗錢風險值 :" + riskPoint);
-        System.out.println("20洗錢風險等級 :" + riskValue);
-        
+        //取出結果物件
+        MainReply mainReply = (MainReply) result.getData();
+        if(mainReply != null) {
+          if(StringUtils.isBlank(mainReply.getMessage().toString())) {
+            //訊息處理
+            riskPoint = mainReply.getRiskScore().trim();
+            riskValue = mainReply.getRiskLevel().trim();
+            checkResult = mainReply.getCheckResult().trim();
+            if(StringUtils.equals(riskValue, "H")) {
+              riskValue = "高風險";
+            }else if(StringUtils.equals(riskValue, "M")) {
+              riskValue = "中風險";
+            }else if(StringUtils.equals(riskValue, "L")) {
+              riskValue = "低風險";
+            }else {
+              riskValue = "待判定";
+            }
+            System.out.println("19洗錢風險值 : " + riskPoint);
+            System.out.println("20洗錢風險等級 : " + riskValue);            
+          }
+        }
+
         String customTitle = "客戶 ";
         if(this.aml.getRecordType().indexOf("指定第三人") != -1) {
           customTitle = "指定第三人 "; 
         }
         
-        msgboxtext += customTitle + custName + " 洗錢風險等級 :" + resultMsg + "\n";
-        tmpMsgText += custName + "\t" 
-                   + resultMsg.trim() + "\t" 
-                   + riskPoint.trim() + "\t" 
-                   + mainReply.getCustomerRisk().trim() + "\t"
-                   + mainReply.getNationRisk().trim() + "\t" 
-                   + mainReply.getChannelRisk().trim() + "\t" 
-                   + mainReply.getProductRisk().trim() + "\n";
+        msgboxtext += customTitle + custName + " 洗錢風險等級 : " + riskValue + "\n";
+        tmpMsgText = customTitle + ">>>" + custName + "\n"
+                    +"isBlacklist是否黑名單" + ">>> " + mainReply.getIsBlacklist() + "\n"
+                    +"isPending是否待判定" + ">>> " + mainReply.getIsPending() + "\n"
+                    +"checkResult最後判定結果" + ">>> " + mainReply.getCheckResult() + "\n"
+                    +"riskLevel參考風險等級" + ">>> " + mainReply.getRiskScore() + "/" + mainReply.getRiskLevel() + "\n"
+                    +"settleDate最後判定日期" + ">>> " + mainReply.getSettleDate() + "\n"
+                    +"customerScore客戶分數" + ">>> " + mainReply.getCustomerScore() + "/" + mainReply.getCustomerRisk() + "\n"
+                    +"nationScore國籍分數" + ">>> " + mainReply.getNationScore() + "/" + mainReply.getNationRisk() + "\n"
+                    +"channelScore通路分數" + ">>> " + mainReply.getChannelScore() + "/" + mainReply.getChannelRisk() + "\n"
+                    +"productScore產品分數" + ">>> " + mainReply.getProductScore() + "/" + mainReply.getProductRisk() + "\n";
 
         HashMap m = new HashMap();
         m.put("p01", strProjectID1);
@@ -149,7 +165,21 @@ public class RiskCheckTools_Lyods extends bvalidate {
         m.put("p05", riskPoint);
         m.put("p06", riskValue.replace("風險", ""));
         m.put("riskValue", riskValue);
-        list.add(m);        
+        list.add(m);
+        
+        System.out.println("風險值結果: \n" + tmpMsgText);
+        
+//        System.out.println(customTitle + ">>>" + custName);
+//        System.out.println("isBlacklist是否黑名單" + ">>>" + mainReply.getIsBlacklist());
+//        System.out.println("isPending是否待判定" + ">>>" + mainReply.getIsPending());
+//        System.out.println("checkResult最後判定結果" + ">>>" + mainReply.getCheckResult());
+//        System.out.println("riskLevel參考風險等級" + ">>>" + mainReply.getRiskLevel());
+//        System.out.println("riskLevel風險總分" + ">>>" + mainReply.getRiskScore());
+//        System.out.println("settleDate最後判定日期" + ">>>" + mainReply.getSettleDate());
+//        System.out.println("customerScore客戶分數" + ">>>" + mainReply.getCustomerScore() + "/" + mainReply.getCustomerRisk());
+//        System.out.println("nationScore國籍分數" + ">>>" + mainReply.getNationScore() + "/" + mainReply.getNationRisk());
+//        System.out.println("channelScore通路分數" + ">>>" + mainReply.getChannelScore() + "/" + mainReply.getChannelRisk());
+//        System.out.println("productScore產品分數" + ">>>" + mainReply.getProductScore() + "/" + mainReply.getProductRisk());
       }
       
       // 風險值結果輸出
@@ -194,7 +224,8 @@ public class RiskCheckTools_Lyods extends bvalidate {
     stringSQL = "SELECT EMPNO FROM FGEMPMAP where FGEMPNO ='" + this.userNo + "'";
     String[][] retEip = dbEIP.queryFromPool(stringSQL);
     if (retEip.length > 0) {
-      this.empNo = retEip[0][0];
+      System.out.println(">>>EmpNo>>>" + retEip[0][0]);
+      this.empNo = retEip[0][0].trim();
     }else {
       System.out.println(">>>None EmpNo<<<");
       empNo = "FGLife";

@@ -3,6 +3,7 @@ package Farglory.aml;
 import java.util.ArrayList;
 import java.util.List;
 
+import Farglory.util.TalkBean;
 import jcx.db.talk;
 
 /**
@@ -21,13 +22,14 @@ public class AMLyodsBean {
   private talk db400CRM = null;
   private talk dbEIP = null;
   private talk dbPw0D = null;
+  private TalkBean tBean = null;
   
   private String orderNo = "";        // 購屋證明單編號
   private String orderDate = "";      // 購屋證明單日期
-  private String docNo = "";          //收款單編號
-  private String eDate = "";          //收款單日期
-  private String contractNo = "";     //合約編號
-  private String cDate = "";          //合約日期
+  private String docNo = "";          // 收款單編號
+  private String eDate = "";          // 收款單日期
+  private String contractNo = "";     // 合約編號
+  private String cDate = "";          // 合約日期
   
   private String projectID1 = "";     // 案別代碼
   private String trxDate = "";        // 處理日期
@@ -35,31 +37,32 @@ public class AMLyodsBean {
   private String actionNo = "";       // 存Sale05M070使用
   private String func = "";           // 功能 (購屋證明單、收款、合約會審、換名...等等)
   private String recordType = "";     // 甚麼資料 (客戶資料、代理人資料、風險計算...ETC)
-  private String customTitle = "";    //客戶抬頭
-  private String customId = "";       //客戶id
-  private String customName = "";     //客戶名稱
-  private String AMLNo = "";          //AML編號
-  private String errMsg = "";         //查詢結果msg
+  private String customTitle = "";    // 客戶抬頭
+  private String customId = "";       // 客戶id
+  private String customName = "";     // 客戶名稱
+  private String AMLNo = "";          // AML編號
+  private String errMsg = "";         // 查詢結果msg
   private String emakerUserNo = "";   // 使用者EMAKER編號
   
   //param
   private RiskCustomBean custBean = null;      // 送檢主要客戶
   private RiskRelatedBean relatedBean = null;  // 送檢關聯人
-  private List listCustom = new ArrayList();  //List RiskCustomBean
-  private List listBen = new ArrayList();     //List RiskRelatedBean
-  private String customNos = "";      //逗號分隔的custNos
-  private String customNames = "";    //逗號分隔的custNames
-  private String orderNos = "";       //逗號分隔的orderNos
+  private List listCustom = new ArrayList();  // List RiskCustomBean
+  private List listBen = new ArrayList();     // List RiskRelatedBean
+  private String customNos = "";      // 逗號分隔的custNos
+  private String customNames = "";    // 逗號分隔的custNames
+  private String orderNos = "";       // 逗號分隔的orderNos
 
   //萊斯用 - 預設為比對並查詢風險值
+  private String lyodsSoapURL = "";   // webservice url
   private String riskResult = "Y";    // Y: 比對，計算風險值, N: 比對，沒有計算風險值, R: 不比對，只計算風險值
   private String checkAll = "Y";      // Y: 檢查所有類別, N: 只檢查制裁名單
   private String modifyData = "Y";    // Y: 更新客戶資料, N: 不更新客戶資料，僅有查詢
   private String addCustomer = "Y";    // Y: 新增, N: 註銷
   private String addAccount = "Y";     // Y: 新增, N: 註銷
-  private String lyodsSoapURL = "";   // webservice url
-
-  private boolean isTestServer = true;   //是否為測試環境
+  private String calculationCode = "1";     // 是否計算風險評分代碼0: 不計算風險值但進行名單檢測 1: 計算風險值且進行名單檢測 2: 計算風險值但不進行名單檢測 3: 不計算風險值且不進行名單檢測
+  
+  private boolean isTestServer = true;   // 是否為測試環境
   private boolean updSale05M091 = false;
   private boolean updSale05M277 = false;
   private boolean updSale05M356 = false;
@@ -317,6 +320,18 @@ public class AMLyodsBean {
   }
   public void setAddAccount(String addAccount) {
     this.addAccount = addAccount;
+  }
+  public String getCalculationCode() {
+    return calculationCode;
+  }
+  public void setCalculationCode(String calculationCode) {
+    this.calculationCode = calculationCode;
+  }
+  public TalkBean gettBean() {
+    return tBean;
+  }
+  public void settBean(TalkBean tBean) {
+    this.tBean = tBean;
   }
   
 }

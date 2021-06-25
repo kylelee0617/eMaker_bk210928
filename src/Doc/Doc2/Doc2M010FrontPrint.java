@@ -28,12 +28,10 @@ public class Doc2M010FrontPrint extends bTransaction {
     //
     put("Doc2M010_Print_OK", "null");
     put("Doc2M010_PRINT_BarCode", "null");
-    if (!isBatchCheckOK(exeUtil))
-      return false;
+    if (!isBatchCheckOK(exeUtil)) return false;
     // System.out.println("----------------------列表機 START") ;
     stringPrinterIP = getDefaultPrinter(exeUtil);
-    if ("ERROR".equals(stringPrinterIP))
-      return false;
+    if ("ERROR".equals(stringPrinterIP)) return false;
     if (stringFunctionName.indexOf("土地") != -1) {
       stringFunction = "土地開發請款申請書-列印(Doc11R00101)";
       // if("2017/07/03".compareTo(stringToday)<=0) {
@@ -56,25 +54,23 @@ public class Doc2M010FrontPrint extends bTransaction {
 
     // 成功訊息
     String stringPrintSuccess = ("" + get("Doc2M010_Print_OK")).trim();
-    // if("B3018,".indexOf(getUser())==-1 && "Y".equals(stringPrintable) &&
-    // "OK".equals(stringPrintSuccess)) {
-    // getInternalFrame(stringFunction).setVisible(false) ;
-    // }
     if ("Y".equals(stringPrintable) && ("OK".equals(stringPrintSuccess) || "B3018".equals(getUser()))) {
       doEnd(stringComNo, jtable2, jbutton, stringFunctionName, exeUtil);
-      //
-      String[] arrayTemp = convert.StringToken(stringPrinterIP, "\\");
-      JOptionPane.showMessageDialog(null, "完成列印。(列表機：" + arrayTemp[arrayTemp.length - 1] + ")", "訊息", JOptionPane.INFORMATION_MESSAGE);
+
+//      String[] arrayTemp = convert.StringToken(stringPrinterIP, "\\");
+//      JOptionPane.showMessageDialog(null, "完成列印。(列表機：" + arrayTemp[arrayTemp.length - 1] + ")", "訊息", JOptionPane.INFORMATION_MESSAGE);
+      
+      //申20210601006 Kyle : 因疫情改為手動列印，通知訊息修改
+//      messagebox("請選擇列印方式~");
     }
     System.out.println("----------11111111----------------------列印完成" + stringFunction);
     return false;
   }
 
   public void doEnd(String stringComNo, JTable jtable2, JButton jbutton, String stringFunctionName, FargloryUtil exeUtil) throws Throwable {
-    if ("OO".equals(stringComNo))
-      return;
-    if (stringFunctionName.indexOf("土地") != -1)
-      return;
+    if ("OO".equals(stringComNo)) return;
+    if (stringFunctionName.indexOf("土地") != -1) return;
+    
     //
     String stringInOut = "";
     String stringDepart = "";
@@ -86,16 +82,14 @@ public class Doc2M010FrontPrint extends bTransaction {
     Vector vectorKey = new Vector();
     boolean booleanExcel = false;
     for (int intNo = 0; intNo < jtable2.getRowCount(); intNo++) {
-      if ("0221".equals(stringDepartNoSubject))
-        break;
+      if ("0221".equals(stringDepartNoSubject)) break;
       stringInOut = ("" + jtable2.getValueAt(intNo, 2)).trim();
       stringDepart = ("" + jtable2.getValueAt(intNo, 3)).trim();
       stringProjectID = ("" + jtable2.getValueAt(intNo, 4)).trim();
       stringProjectID1 = ("" + jtable2.getValueAt(intNo, 5)).trim();
       //
       stringKey = stringInOut + "%-%" + stringDepart + "%-%" + stringProjectID + "%-%" + stringProjectID1;
-      if (vectorKey.indexOf(stringKey) == -1)
-        vectorKey.add(stringKey);
+      if (vectorKey.indexOf(stringKey) == -1) vectorKey.add(stringKey);
       //
       if (vectorKey.size() > 1) {
         booleanExcel = true;
@@ -106,10 +100,8 @@ public class Doc2M010FrontPrint extends bTransaction {
       // 第一次才列印
       String stringPrintCount = getValue("PrintCount").trim();
       if (exeUtil.doParseInteger(stringPrintCount) == 0) {
-        // System.out.println("stringPrintCount----------------------------------["+stringPrintCount+"]")
-        // ;
-        if (jbutton != null)
-          jbutton.doClick();
+         System.out.println("stringPrintCount----------------------------------["+stringPrintCount+"]");
+        if (jbutton != null) jbutton.doClick();
       }
     }
   }
@@ -145,8 +137,7 @@ public class Doc2M010FrontPrint extends bTransaction {
     put("Doc2M010_PRINT_PrinterNAME", stringPrinterIP);
     put("Doc2M010_FUNCTION", stringType);
     //
-    if (stringFunctionName.indexOf("土地") != -1)
-      return;
+    if (stringFunctionName.indexOf("土地") != -1) return;
     //
     String stringRealMoneySum = getValue("RealMoneySum").trim();
     String stringRetainMoney = getValue("RetainMoney").trim();
@@ -160,8 +151,7 @@ public class Doc2M010FrontPrint extends bTransaction {
   // 前端資料檢核，正確回傳 True
   public boolean isBatchCheckOK(FargloryUtil exeUtil) throws Throwable {
     String stringBarCode = getValue("BarCode").trim();
-    if ("".equals(stringBarCode))
-      return false;
+    if ("".equals(stringBarCode)) return false;
     //
     String stringDepartNoSubject = "" + get("EMP_DEPT_CD");
     String stringEmployeeNo = getValue("EmployeeNo").trim();
@@ -177,8 +167,7 @@ public class Doc2M010FrontPrint extends bTransaction {
      */
     //
     String stringFunctionName = getFunctionName();
-    if (stringFunctionName.indexOf("土地") != -1)
-      return true;
+    if (stringFunctionName.indexOf("土地") != -1) return true;
     //
     System.out.println("行銷-公司-案別 80% 控管列印-----------------S");
     if (!isCanPrint10(exeUtil)) {
@@ -235,8 +224,7 @@ public class Doc2M010FrontPrint extends bTransaction {
 
       if (!"".equals(stringPrinterIPCF) && stringPrinterIP.toUpperCase().indexOf(stringPrinterIPCF) != -1) {
         messagebox("採用雷射列印，預設列表機不可為點陣式列表機。\n請重新設定預設列印機，並重新進入系統。");
-        if (!"B3018".equals(getUser()) || !"Y".equals(stringPrintable))
-          return "ERROR";
+        if (!"B3018".equals(getUser()) || !"Y".equals(stringPrintable)) return "ERROR";
       }
     }
     System.out.println("設定列表機----------------------[" + stringPrinterIP + "]");
@@ -259,14 +247,10 @@ public class Doc2M010FrontPrint extends bTransaction {
     Vector vectorBudgetCd = new Vector();
     Hashtable hashtableAnd = new Hashtable();
     //
-    if (!"B3018".equals(getUser()))
-      return true;
-    if (stringFlow.indexOf("行銷") == -1)
-      return true;
-    if (stringFlow.indexOf("經辦") == -1)
-      return true;
-    if ("Y".equals(stringPurchaseNoExist))
-      return true;
+    if (!"B3018".equals(getUser())) return true;
+    if (stringFlow.indexOf("行銷") == -1) return true;
+    if (stringFlow.indexOf("經辦") == -1) return true;
+    if ("Y".equals(stringPurchaseNoExist)) return true;
     //
     vectorBudgetCd.add("BC31"); // 郵電
     vectorBudgetCd.add("BC32"); // 水電
@@ -280,12 +264,9 @@ public class Doc2M010FrontPrint extends bTransaction {
       stringCostID1 = ("" + getValueAt("Table2", intNo, "CostID1")).trim();
       stringBudgetID = getBudgetID(stringComNo, "", stringCostID, stringCostID1, dbDoc);
       //
-      if (!stringBudgetID.startsWith("B"))
-        continue;
-      if (vectorProjectID1.indexOf(stringProjectID1) != -1)
-        continue;
-      if (vectorBudgetCd.indexOf(stringBudgetID) != -1)
-        continue;
+      if (!stringBudgetID.startsWith("B")) continue;
+      if (vectorProjectID1.indexOf(stringProjectID1) != -1) continue;
+      if (vectorBudgetCd.indexOf(stringBudgetID) != -1) continue;
       //
       vectorProjectID1.add(stringProjectID1);
       // 是否控管
@@ -293,15 +274,13 @@ public class Doc2M010FrontPrint extends bTransaction {
       hashtableAnd.put("ProjectID1", stringProjectID1);
       hashtableAnd.put("Contr_STATUS", "B");
       System.out.println("公司 80 %控管-------------------------------------------是否控管");
-      if (exeUtil.getQueryDataHashtable("Doc7M02681", hashtableAnd, "", new Vector(), dbDoc).size() == 0)
-        continue;
+      if (exeUtil.getQueryDataHashtable("Doc7M02681", hashtableAnd, "", new Vector(), dbDoc).size() == 0) continue;
       // 是否在控管日期內
       hashtableAnd.put("ComNo", stringComNo);
       hashtableAnd.put("ProjectID1", stringProjectID1);
       stringSqlAnd = " AND  TimeStart  <=  '" + stringEDateTime + "' " + " AND  (ISNULL(TimeEnd,  '')  =  ''  OR  TimeEnd  >=  '" + stringEDateTime + "') ";
       System.out.println("公司 80 %控管-------------------------------------------是否在控管日期內");
-      if (exeUtil.getQueryDataHashtable("Doc7M02683", hashtableAnd, stringSqlAnd, new Vector(), dbDoc).size() == 0)
-        continue;
+      if (exeUtil.getQueryDataHashtable("Doc7M02683", hashtableAnd, stringSqlAnd, new Vector(), dbDoc).size() == 0) continue;
       // 非例外控管申請單
       hashtableAnd.put("ComNo", stringComNo);
       hashtableAnd.put("ProjectID1", stringProjectID1);
@@ -323,16 +302,12 @@ public class Doc2M010FrontPrint extends bTransaction {
     // 0 BudgetID 1 CostID 2 CostID1 3 Description
     stringSql = "SELECT  BudgetID,  CostID,  CostID1,  Description " + " FROM  Doc2M020 " + " WHERE  ComNo  =  '" + stringComNo + "' " + " AND  BudgetID  <>  '' "
         + " AND  NOT(BudgetID  IS  NULL) " + " AND  UseStatus  =  'Y' ";
-    if (!"".equals(stringBudgetID))
-      stringSql += " AND  BudgetID  =  '" + stringBudgetID + "' ";
-    if (!"".equals(stringCostID))
-      stringSql += " AND  CostID  =  '" + stringCostID + "' ";
-    if (!"".equals(stringCostID1))
-      stringSql += " AND  CostID1  =  '" + stringCostID1 + "' ";
+    if (!"".equals(stringBudgetID)) stringSql += " AND  BudgetID  =  '" + stringBudgetID + "' ";
+    if (!"".equals(stringCostID)) stringSql += " AND  CostID  =  '" + stringCostID + "' ";
+    if (!"".equals(stringCostID1)) stringSql += " AND  CostID1  =  '" + stringCostID1 + "' ";
     stringSql += " ORDER BY BudgetID,  CostID,  CostID1 ";
     retDoc7M011 = dbDoc.queryFromPool(stringSql);
-    if (retDoc7M011.length > 0)
-      return retDoc7M011[0][0].trim();
+    if (retDoc7M011.length > 0) return retDoc7M011[0][0].trim();
     return "";
   }
 

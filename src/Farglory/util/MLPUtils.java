@@ -259,6 +259,7 @@ public class MLPUtils extends bvalidate {
       // amlCons不為NULL = 需要檢核
       amlTools = new AMLTools(amlCons);
     }
+    
     for (int idx2 = 0; idx2 < bCustoms.length; idx2++) {
       String[] ben1 = bCustoms[idx2];
       String birthDay = exeFun.getDateAC(ben1[5].trim(), "");

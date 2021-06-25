@@ -1,69 +1,72 @@
 package Sale.Sale05M093;
 
 import javax.swing.JTable;
-
+import org.apache.commons.lang.StringUtils;
 import Farglory.util.KUtils;
 import Farglory.util.QueryLogBean;
-import jcx.db.talk;
 import jcx.jform.bvalidate;
 
 public class Table5CheckCustNo extends bvalidate {
   public boolean check(String value) throws Throwable {
-    // 可自定欄位檢核條件
-    // 傳入值 value 原輸入值
-    KUtils kutil = new KUtils();
-    talk dbSale = getTalk("Sale");
-    JTable tb5 = getTable("table5");
-    int s_row = tb5.getSelectedRow();
-    String projectID = getValue("ProjectID1").trim();
-    String errMsg = "";
 
-    // 購屋證明單日期
-    String orderNo = getValue("OrderNo").trim();
-    String[][] order = dbSale.queryFromPool("select a.OrderNo , a.OrderDate from Sale05M090 a where a.OrderNo = '" + orderNo + "' ");
-    String orderDate = order[0][0].trim();
+    KUtils kUtil = new KUtils();
+    JTable tb5 = getTable("table5");
+    int sRow = tb5.getSelectedRow();
+    value = value.trim();
+    String projectId = getValue("ProjectID1").trim();
+    String orderNo = getValue("OrderNo");
+    String orderDate = kUtil.getOrderDateByOrderNo(orderNo); // 取 orderDate
 
     if (!"".equals(value)) {
-      QueryLogBean qBean = kutil.getQueryLogByCustNoProjectId(projectID, value);
-      
+      String tmpMsg = "";
+      String errMsg = "";
+      String amlRsMix = getValue("AMLRsMix").trim();
+      QueryLogBean qBean = kUtil.getQueryLogByCustNoProjectId(projectId, value);
       if (qBean != null) {
-        String benName = qBean.getName();
-        String birthDay = qBean.getBirthday();
-        String jobType = qBean.getJobType();
-        String bStatus = qBean.getbStatus();
-        String cStatus = qBean.getcStatus();
-        String rStatus = qBean.getrStatus();
-        setValueAt("table5", benName, s_row, "BenName");
-        setValueAt("table5", birthDay, s_row, "Birthday");
-        setValueAt("table5", bStatus, s_row, "IsBlackList");
-        setValueAt("table5", cStatus, s_row, "IsControlList");
-        setValueAt("table5", rStatus, s_row, "IsLinked");
-        
+        String bstatus = qBean.getbStatus();
+        String cstatus = qBean.getcStatus();
+        String rstatus = qBean.getrStatus();
+        String qName = qBean.getName();
+        String birthday = qBean.getBirthday();
+        String indCode = qBean.getJobType();
+        String funcName = getFunctionName().trim();
+        String recordType = "實質受益人資料";
+        setValueAt("table5", qName, sRow, "BenName");
+        setValueAt("table5", bstatus, sRow, "IsBlackList");
+        setValueAt("table5", cstatus, sRow, "IsControlList");
+        setValueAt("table5", rstatus, sRow, "IsLinked");
+
         // 萊斯Start
-        String birth = birthDay.length() == 0 ? " " : birthDay.toString().replace("-", "");
-        String ind = jobType.length() == 0 ? " " : jobType;
-        String amlText = orderNo + "," + orderDate + "," + value + "," + benName + "," + birth + "," + ind + "," + "query1821";
+        String amlText = projectId + "," + orderNo + "," + orderDate + "," + funcName + "," + recordType + "," + value + "," + qName + "," + birthday + "," + indCode + ","
+                       + "query1821";
         setValue("AMLText", amlText);
         getButton("BtCustAML").doClick();
-        errMsg += getValue("AMLText").trim();
+        tmpMsg = getValue("AMLText").trim();
+        if(!StringUtils.contains(amlRsMix, tmpMsg)) setValue("AMLRsMix", amlRsMix + tmpMsg);  //同一人同一態樣只顯示一次
+        errMsg += tmpMsg;
         // 萊斯END
 
-        if ("Y".equals(bStatus) || "Y".equals(cStatus)) {
-          errMsg += benName + "-實質受益人為疑似黑名單對象，請覆核確認後，再進行後續交易。\n";
+        // 黑名單 + 控管名單
+        if ("Y".equals(bstatus) || "Y".equals(cstatus)) {
+          tmpMsg = "實質受益人" + qName + "為疑似黑名單對象，請覆核確認後，再進行後續交易相關作業。\n";
+          if(!StringUtils.contains(amlRsMix, tmpMsg)) setValue("AMLRsMix", amlRsMix + tmpMsg);  //同一人同一態樣只顯示一次
+          errMsg += tmpMsg;
         }
-        
-        if ("Y".equals(rStatus)) {// 利關人
-          errMsg += benName + " -實質受益人為公司利害關系人，需依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
+
+        // 利關人
+        if ("Y".equals(rstatus)) {
+          tmpMsg += "實質受益人" + qName + "為公司利害關系人，請依保險業與利害關係人從事放款以外之其他交易管理辦法執行。\n";
+          if(!StringUtils.contains(amlRsMix, tmpMsg)) setValue("AMLRsMix", amlRsMix + tmpMsg);  //同一人同一態樣只顯示一次
+          errMsg += tmpMsg;
         }
+
+        //顯示
         if (!"".equals(errMsg)) {
           messagebox(errMsg);
         }
+
       } else {
-        setValueAt("table5", "", s_row, "BenName");
-        setValueAt("table5", "", s_row, "IsBlackList");
-        setValueAt("table5", "", s_row, "IsControlList");
-        setValueAt("table5", "", s_row, "IsLinked");
-        message("無此實質受益人資訊。");
+        message("黑名單無此資訊。");
       }
     }
     return true;

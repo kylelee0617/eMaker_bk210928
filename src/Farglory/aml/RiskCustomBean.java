@@ -9,8 +9,12 @@ import jcx.db.talk;
  */
 
 public class RiskCustomBean {
+  private String custTitle = "客戶";
   private String customNo = "";
   private String customName = "";
+  private String custTitle2 = "客戶";
+  private String customNo2 = "";
+  private String customName2 = "";
   private String birthday = "";
   private String positionName = "";
   private String countryName = "";
@@ -23,7 +27,18 @@ public class RiskCustomBean {
   private String statusCd = "";
   private String majorName = "";
   private String industryCode = "";
+  private String bStatus = "";
+  private String cStatus = "";
+  private String rStatus = "";
   
+  private String agentRel = "";
+  
+  public String getCustTitle() {
+    return custTitle;
+  }
+  public void setCustTitle(String custTitle) {
+    this.custTitle = custTitle;
+  }
   public String getCustomNo() {
     return customNo;
   }
@@ -35,6 +50,24 @@ public class RiskCustomBean {
   }
   public void setCustomName(String customName) {
     this.customName = customName;
+  }
+  public String getCustTitle2() {
+    return custTitle2;
+  }
+  public void setCustTitle2(String custTitle2) {
+    this.custTitle2 = custTitle2;
+  }
+  public String getCustomNo2() {
+    return customNo2;
+  }
+  public void setCustomNo2(String customNo2) {
+    this.customNo2 = customNo2;
+  }
+  public String getCustomName2() {
+    return customName2;
+  }
+  public void setCustomName2(String customName2) {
+    this.customName2 = customName2;
   }
   public String getBirthday() {
     return birthday;
@@ -107,6 +140,30 @@ public class RiskCustomBean {
   }
   public void setIndustryCode(String industryCode) {
     this.industryCode = industryCode;
+  }
+  public String getbStatus() {
+    return bStatus;
+  }
+  public void setbStatus(String bStatus) {
+    this.bStatus = bStatus;
+  }
+  public String getcStatus() {
+    return cStatus;
+  }
+  public void setcStatus(String cStatus) {
+    this.cStatus = cStatus;
+  }
+  public String getrStatus() {
+    return rStatus;
+  }
+  public void setrStatus(String rStatus) {
+    this.rStatus = rStatus;
+  }
+  public String getAgentRel() {
+    return agentRel;
+  }
+  public void setAgentRel(String agentRel) {
+    this.agentRel = agentRel;
   }
   
 }
